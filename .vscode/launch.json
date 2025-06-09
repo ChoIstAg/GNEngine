@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "C/C++ Runner: Debug Session",
+        "type": "cppdbg",
+        "request": "launch",
+        "args": [],
+        "environment": [
+          {
+            "name": "PATH",
+            "value": "${env:PATH};C:\\Development\\code\\project\\sdl3_test\\lib\\SDL3\\bin;C:\\Development\\code\\project\\sdl3_test\\lib\\SDL3_image\\bin;C:\\Development\\code\\project\\sdl3_test\\lib\\SDL3_ttf\\bin"
+          }
+        ],
+        "stopAtEntry": false,
+        "externalConsole": false,
+        "cwd": "${fileDirname}",
+        "program": "c:/Development/code/project/sdl3_test/build/Debug/sdl3_test.exe",
+        "MIMode": "gdb",
+        "miDebuggerPath": "C:/Development_Environment/code/msys64/ucrt64/bin/gdb.exe",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          },
+        ],
+        "preLaunchTask": "CMake: build",
+      }
+    ]
+  }
