@@ -1,24 +1,29 @@
 #pragma once
+
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <string>
+#include <vector>
 
 class TextureObj {
 
 private:
 
     SDL_Renderer* renderer;
-    bool preLoad;
+    bool preLoad = 1;
+    bool fps = 0;
+
+    // 
     SDL_Surface* surface;
     SDL_Texture* texture;
-    std::string filePath; 
+    std::string filePath;
     SDL_FRect dstRect; // Destination rectangle for rendering
     
     float x, y, scaleX, scaleY, width, height;
     
 public:   
     
-    TextureObj(SDL_Renderer*, std::string filePath, bool preLoad, float x, float y, float scaleX, float scaleY);        
+    TextureObj(SDL_Renderer*, std::string filePath, bool fps, bool preLoad, float x, float y, float scaleX, float scaleY);        
     ~TextureObj();
 
     bool load_texture();

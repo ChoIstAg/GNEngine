@@ -1,0 +1,90 @@
+# ninja log v6
+9	661	7717204065614562	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+23	682	7717204065765053	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+682	781	7717204073244207	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+682	781	7717204073244207	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+682	781	7717204073244207	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+682	781	7717204073244207	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+795	3577	7717204073485998	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+784	5512	7717204073371713	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+68	690	7717206179527647	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+55	712	7717206179397218	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+712	917	7717206185970978	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+712	917	7717206185970978	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+712	917	7717206185970978	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+712	917	7717206185970978	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+941	4208	7717206188259654	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+922	4318	7717206188068833	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+4318	6837	7717206222027409	Debug/sdl3_test.exe	340853fac638d693
+69	781	7717207454840468	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+55	817	7717207454709277	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+817	1091	7717207462323918	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+817	1091	7717207462323918	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+817	1091	7717207462323918	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+817	1091	7717207462323918	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+1116	4022	7717207465318215	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+1096	4120	7717207465118371	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+4121	4907	7717207495357527	Debug/sdl3_test.exe	340853fac638d693
+72	803	7717209074785692	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+59	830	7717209074651089	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+830	904	7717209082370175	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+830	904	7717209082370175	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+830	904	7717209082370175	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+830	904	7717209082370175	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+920	3671	7717209083259359	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+907	3966	7717209083159253	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+3966	4405	7717209113720636	Debug/sdl3_test.exe	340853fac638d693
+64	656	7717209708942618	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+54	673	7717209708842642	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+673	741	7717209715031854	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+673	741	7717209715031854	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+673	741	7717209715031854	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+673	741	7717209715031854	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+754	3591	7717209715840148	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+744	3727	7717209715735310	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+3727	4229	7717209745578986	Debug/sdl3_test.exe	340853fac638d693
+84	755	7717210204547330	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+69	769	7717210204407376	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+769	859	7717210211403753	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+769	859	7717210211403753	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+769	859	7717210211403753	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+769	859	7717210211403753	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+874	3813	7717210212445423	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+862	3938	7717210212333364	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+3938	4566	7717210243089498	Debug/sdl3_test.exe	340853fac638d693
+86	822	7717212894610681	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+70	867	7717212894448120	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+867	1017	7717212902421782	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+867	1017	7717212902421782	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+867	1017	7717212902421782	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+867	1017	7717212902421782	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+1039	4031	7717212904147284	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+1021	4166	7717212903971883	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+4166	5296	7717212935420463	Debug/sdl3_test.exe	340853fac638d693
+61	692	7717213723192362	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+73	722	7717213723312420	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+722	799	7717213729808695	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+722	799	7717213729808695	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+722	799	7717213729808695	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+722	799	7717213729808695	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+811	3217	7717213730696983	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+801	3346	7717213730593484	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+3346	3816	7717213756044698	Debug/sdl3_test.exe	340853fac638d693
+68	675	7717214259413447	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+55	695	7717214259283513	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+695	773	7717214265688853	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+695	773	7717214265688853	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+695	773	7717214265688853	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+695	773	7717214265688853	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+785	3800	7717214266587716	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+776	4262	7717214266496579	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+4262	4793	7717214301354460	Debug/sdl3_test.exe	340853fac638d693
+76	758	7717215235335876	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.ddi	a0b6ed0bf5d49c86
+63	865	7717215235195866	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.ddi	c16a1b64c66ff489
+865	969	7717215243222478	src/CMakeFiles/sdl3_test.dir/CXX.dd	48c0f6c99dd72f36
+865	969	7717215243222478	C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir/CXXModules.json	48c0f6c99dd72f36
+865	969	7717215243222478	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj.modmap	48c0f6c99dd72f36
+865	969	7717215243222478	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj.modmap	48c0f6c99dd72f36
+984	3331	7717215244413037	src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj	15a381d4bb6d488c
+972	3500	7717215244292179	src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj	c4fd4b6eb2c82413
+3500	3915	7717215269577877	Debug/sdl3_test.exe	340853fac638d693

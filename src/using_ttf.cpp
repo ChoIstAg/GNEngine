@@ -17,7 +17,7 @@
 #include <print>
 #include "TextureObj.hpp"
 
-#define PROJECT_ROOT_PATH "C:/Development/code/project/god_maga/"
+#define PROJECT_ROOT_PATH "C:/Development/code/project/Noma's Home/"
 constexpr std::string_view project_root_path = PROJECT_ROOT_PATH;
 
 
@@ -86,7 +86,6 @@ TextureManager *textureManager = new TextureManager;
 
 /* APP initialization*/
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]){
-    
     if(!appState){
         return SDL_APP_FAILURE;
     }
@@ -98,7 +97,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]){
     bool ret = TTF_Init(); /*initalize SDL_ttf*/
     if(ret){
         SDL_Log("TTF_Init() error: %s", SDL_GetError());
-    }
+    }   
 
     /* Open font*/
     std::string fontPath1 = std::string(project_root_path) + std::string("asset/font/CookieRun Black.ttf");

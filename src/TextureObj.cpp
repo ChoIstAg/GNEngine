@@ -2,13 +2,13 @@
 #include "TextureObj.hpp"
 #include <iostream>
 
-TextureObj::TextureObj(SDL_Renderer* renderer, std::string filePath, bool preLoad, float x, float y, float scaleX, float scaleY) 
-: renderer(renderer), filePath(filePath), preLoad(preLoad), x(x), y(y), scaleX(scaleX), scaleY(scaleY){
+TextureObj::TextureObj(SDL_Renderer* renderer, std::string filePath, bool fps, bool preLoad, float x, float y, float scaleX, float scaleY) 
+: renderer(renderer), filePath(filePath), fps(fps), x(x), y(y), scaleX(scaleX), scaleY(scaleY){
+    if(!renderer){ SDL_Log("renderer in TextureObj is erroneous: %s", SDL_GetError());}
 
-    std::cout << &renderer << std::endl;
-    if(preLoad == 1){ /*preLoad가 true일 때만 자동으로 로딩딩*/
+    if(preLoad == 1){ /*If preLoad is True, automatically load texture*/
         std::cout << this << "::load_texture()" << std::endl;
-        if(!load_texture()){ /* load failure */
+        if(!load_texture()){ /* if loading is fail */
             SDL_Log("load_texture failed: %s", SDL_GetError());
         }
 
@@ -83,9 +83,9 @@ void TextureObj::move_texture(float x, float y) {
 /* return position. if position is 'x' -> return x or 'y' -> return y or 'w' -> return width or 'h' -> return height.*/
 float TextureObj::get_position(char position){
     if(position == 'x') {return dstRect.x;}
-    if(position == 'y') {return dstRect.y;}
-    if(position == 'w') {return dstRect.w;}
-    if(position == 'h') {return dstRect.h;}
+    else if(position == 'y') {return dstRect.y;}
+    else if(position == 'w') {return dstRect.w;}
+    else if(position == 'h') {return dstRect.h;}
 
     return -1;
 }

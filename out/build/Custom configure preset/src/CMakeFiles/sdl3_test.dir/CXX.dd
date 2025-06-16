@@ -1,0 +1,5 @@
+ninja_dyndep_version = 1.0
+build src/CMakeFiles/sdl3_test.dir/using_Animation.cpp.obj: dyndep
+
+build src/CMakeFiles/sdl3_test.dir/TextureObj.cpp.obj: dyndep
+

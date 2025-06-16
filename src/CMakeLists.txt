@@ -4,9 +4,10 @@ add_executable(sdl3_test
     #using_myheader_texture.cpp
     #using_texture.cpp
     #draw_vector_image.cpp
-    using_ttf.cpp
+    #using_ttf.cpp
     #test.cpp
-
+    using_Animation.cpp
+        
 #sub:
     TextureObj.cpp
 )

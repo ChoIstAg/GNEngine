@@ -1,0 +1,11 @@
+{
+"rules": [
+{
+"primary-output": "src\\CMakeFiles\\sdl3_test.dir\\TextureObj.cpp.obj",
+"requires": [
+]
+}
+],
+"version": 0,
+"revision": 0
+}
