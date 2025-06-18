@@ -1,15 +1,10 @@
 add_executable(sdl3_test 
 #main:
-    #main.cpp
-    #using_myheader_texture.cpp
-    #using_texture.cpp
-    #draw_vector_image.cpp
-    #using_ttf.cpp
-    #test.cpp
-    using_Animation.cpp
         
 #sub:
     TextureObj.cpp
+    TextureManager.cpp
+    TextManager.cpp
 )
 
 find_package(SDL3 CONFIG REQUIRED)

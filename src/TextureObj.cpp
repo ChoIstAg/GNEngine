@@ -27,39 +27,42 @@ TextureObj::~TextureObj() {
 
 
 bool TextureObj::load_texture(){
-    if(frame != 0){ /* Check if */
-
-    }
-
-    /* Check if the file extension is ".bmp" or ".png" and create SDL_Surface*/
-    if(filePath.substr(filePath.size() - 4, 4) == ".bmp"){
-        surface = SDL_LoadBMP(filePath.c_str());
-        if(surface == NULL){
-            SDL_Log("SDL::SDL_LoadBMP failed: %s", SDL_GetError());
-            return false;
-        }
-
-    }
-    else if(filePath.substr(filePath.size() - 4, 4) == ".png"){
-        surface = IMG_Load(filePath.c_str());
-        if(surface == NULL){
-            SDL_Log("SDL_Image::IMG_Load failed: %s", SDL_GetError());
-            return false;
+    if(frame != 0){ /* Check if this object has animation*/
+        if(filePath.substr(filePath.size() - 4, 4) == ".gif"){
+            
         }
     }
-    else {
-        SDL_Log("Unsupported file format: %s", filePath.c_str());
-        return false;
+
+    else{
+        /* Check if the file extension is ".bmp" or ".png" and create SDL_Surface*/
+        if(filePath.substr(filePath.size() - 4, 4) == ".bmp"){
+            surface = SDL_LoadBMP(filePath.c_str());
+            if(surface == NULL){
+                SDL_Log("SDL::SDL_LoadBMP failed: %s", SDL_GetError());
+                return false;
+            }
+        }
+        else if(filePath.substr(filePath.size() - 4, 4) == ".png"){
+            surface = IMG_Load(filePath.c_str());
+            if(surface == NULL){
+                SDL_Log("SDL_Image::IMG_Load failed: %s", SDL_GetError());
+                return false;
+            }
+        }
+        else {
+            SDL_Log("Unsupported file format: %s", filePath.c_str());
+            return false;
+        }
+        std::cout << filePath << std::endl;
+
+        textures.back() = SDL_CreateTextureFromSurface(renderer, surface);
+        if(textures.back() == nullptr){
+            SDL_Log("Error occured in texture: %s", SDL_GetError());
+        }
     }
-    std::cout << filePath << std::endl;
 
-    textures.back() = SDL_CreateTextureFromSurface(renderer, surface);
-    if(textures.back() == nullptr){
-        SDL_Log("Error occured in texture: %s", SDL_GetError());
-    }
-
-
-    SDL_GetTextureSize(textures, &width, &height);
+    /*get texture size and assign to destination rectangle*/
+    SDL_GetTextureSize(textures.front(), &width, &height);
     dstRect = {x, y, width * scaleX, height * scaleY};
     if(dstRect.w == 0 || dstRect.h == 0){
         SDL_Log("Error occured in dstRect: %s", SDL_GetError());
