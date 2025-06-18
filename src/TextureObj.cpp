@@ -1,9 +1,8 @@
-
 #include "TextureObj.hpp"
 #include <iostream>
 
-TextureObj::TextureObj(SDL_Renderer* renderer, std::string filePath, bool fps, bool preLoad, float x, float y, float scaleX, float scaleY) 
-: renderer(renderer), filePath(filePath), fps(fps), x(x), y(y), scaleX(scaleX), scaleY(scaleY){
+TextureObj::TextureObj(SDL_Renderer* renderer, std::string filePath, int frame, bool preLoad, float x, float y, float scaleX, float scaleY) 
+: renderer(renderer), filePath(filePath), frame(frame), x(x), y(y), scaleX(scaleX), scaleY(scaleY){
     if(!renderer){ SDL_Log("renderer in TextureObj is erroneous: %s", SDL_GetError());}
 
     if(preLoad == 1){ /*If preLoad is True, automatically load texture*/
@@ -21,12 +20,16 @@ TextureObj::TextureObj(SDL_Renderer* renderer, std::string filePath, bool fps, b
 TextureObj::~TextureObj() {
     // Free objects
     SDL_DestroySurface(surface);
-    SDL_DestroyTexture(texture);
+    for(SDL_Texture* tex : textures){ SDL_DestroyTexture(tex);}
+
     std::cout << "Texture destroyed" << std::endl;
 }
 
 
 bool TextureObj::load_texture(){
+    if(frame != 0){ /* Check if */
+
+    }
 
     /* Check if the file extension is ".bmp" or ".png" and create SDL_Surface*/
     if(filePath.substr(filePath.size() - 4, 4) == ".bmp"){
@@ -50,13 +53,13 @@ bool TextureObj::load_texture(){
     }
     std::cout << filePath << std::endl;
 
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-    if(texture == nullptr){
+    textures.back() = SDL_CreateTextureFromSurface(renderer, surface);
+    if(textures.back() == nullptr){
         SDL_Log("Error occured in texture: %s", SDL_GetError());
     }
 
 
-    SDL_GetTextureSize(texture, &width, &height);
+    SDL_GetTextureSize(textures, &width, &height);
     dstRect = {x, y, width * scaleX, height * scaleY};
     if(dstRect.w == 0 || dstRect.h == 0){
         SDL_Log("Error occured in dstRect: %s", SDL_GetError());
@@ -67,12 +70,13 @@ bool TextureObj::load_texture(){
 }
 
 bool TextureObj::render_texture(){
-    if(SDL_RenderTexture(renderer, texture, NULL, &dstRect)) {return 1;}
+    if(SDL_RenderTexture(renderer, textures.back(), NULL, &dstRect)) {return 1;}
     else {return 0;}
 }
 
-SDL_Texture* TextureObj::get_texture(){
-    return texture;
+
+std::vector<SDL_Texture*> TextureObj::get_texture(){
+    return textures;
 }
 
 void TextureObj::move_texture(float x, float y) {

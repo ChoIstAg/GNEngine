@@ -80981,9 +80981,11 @@ class AppState{
 };
 AppState *appState = new AppState();
 
+
 class TextureManager{
 public:
-    IMG_Animation* animation;
+    SDL_Renderer* renderer = nullptr;
+    IMG_Animation* animation = nullptr;
     std::vector<SDL_Texture*> frameTextures;
     float x, y, width, height, scaleX, scaleY;
     int correntFrame = 0;
@@ -80992,8 +80994,6 @@ public:
     : scaleX(scaleX), scaleY(scaleY){
         if(preLoad == true){
             loading();
-            width = animation->w * scaleX;
-            height = animation->h * scaleY;
         }
     }
 
@@ -81004,7 +81004,11 @@ public:
             SDL_Log("animation generation is erronous: %s", SDL_GetError());
             return 0;
         }
-        else{ textureAnimationLoading();}
+        textureAnimationLoading();
+
+
+        width = animation->w * scaleX;
+        height = animation->h * scaleY;
 
         return 1;
     }
@@ -81013,13 +81017,17 @@ public:
         for (int i = 0; i < animation->count; i++) {
             SDL_Texture* texture = SDL_CreateTextureFromSurface(appState->renderer, animation->frames[i]);
             frameTextures.push_back(texture);
+
+            if (!texture) {
+                SDL_Log("Texture load error: %s", SDL_GetError());
+            }
         }
 
         std::cout << "loading complete in texture" << std::endl;
         return 1;
     }
 };
-TextureManager *textureManager = new TextureManager(1, 5, 5);
+TextureManager *textureManager = new TextureManager(0, 5, 5);
 
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]){
@@ -81032,6 +81040,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]){
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+
+    textureManager->loading();
 
     for(int i = 0; i < textureManager->animation->count; i++){
         std::cout << textureManager->animation->delays[i] << std::endl;
@@ -81054,11 +81064,11 @@ SDL_AppResult SDL_AppIterate(void *appstate){
     textureManager->correntFrame = (textureManager->correntFrame + 1) % textureManager->animation->count;
     appState->lastTime = now;
 
-    std::cout << "corrent frame: "<< textureManager->correntFrame << std::endl;
+
 
     SDL_FRect dst = {100.0f, 100.0f, textureManager->width, textureManager->height};
     if(!SDL_RenderTexture(appState->renderer, textureManager->frameTextures[textureManager->correntFrame], nullptr, &dst)){
-        SDL_Log("error occured in SDL_RenderTexture: %s", SDL_GetError());
+
     }
 
 
