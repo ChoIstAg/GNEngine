@@ -18,6 +18,7 @@
 *.pdb
 
 # Compiled Dynamic libraries
+lib/
 *.so
 *.dylib
 *.dll
@@ -33,6 +34,7 @@
 *.lib
 
 # Executables
+out/
 *.exe
 *.out
 *.app
@@ -40,9 +42,5 @@
 # debug information files
 *.dwo
 
-
-out/
-lib/
-.vscode/
 CMakeLists.txt
 CMakePresets.json
