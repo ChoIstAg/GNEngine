@@ -1,5 +1,0 @@
-C:/Development/code/project/noma's home/out/build/Custom configure preset/CMakeFiles/edit_cache.dir
-C:/Development/code/project/noma's home/out/build/Custom configure preset/CMakeFiles/rebuild_cache.dir
-C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/sdl3_test.dir
-C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/edit_cache.dir
-C:/Development/code/project/noma's home/out/build/Custom configure preset/src/CMakeFiles/rebuild_cache.dir

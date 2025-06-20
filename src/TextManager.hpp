@@ -27,5 +27,5 @@ private:
 public:
     TextManager(SDL_Renderer* renderer): renderer(renderer){};
     ~TextManager();
-    void load_textfile(const std::string& filepath);
+    bool load_textfile(const std::string& filepath);
 };
