@@ -13,7 +13,7 @@ private:
     bool preLoad = 1; /* if preLoad is true, Texture is loaded when this class is allocated*/
     int frame = 0; /* frame number of animation (0 -> mere texture)*/
     
-    /* It is animation struct if file is gif. */
+    /* It is animation struct if the object has animation. */
     std::map<std::string, IMG_Animation*> animationMap; /* {animation name : value} */
 
     std::vector<SDL_Texture*> textureVec;
