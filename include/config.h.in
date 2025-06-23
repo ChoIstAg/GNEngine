@@ -1,0 +1,6 @@
+    #pragma once
+    #ifndef PROJECT_ROOT_PATH
+    #define PROJECT_ROOT_PATH "@CMAKE_SOURCE_DIR@"
+    #endif
+    #define TEXT_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/text/"
+    #define IMAGE_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/image/"

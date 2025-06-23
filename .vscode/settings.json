@@ -59,6 +59,7 @@
         "variant": "cpp",
         "ranges": "cpp",
         "sstream": "cpp",
-        "print": "cpp"
+        "print": "cpp",
+        "map": "cpp"
     }
 }

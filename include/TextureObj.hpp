@@ -4,44 +4,47 @@
 #include <SDL3_image/SDL_image.h>
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
+#include "config.h"
 
+using Texture = class Texture{
+public:
+    SDL_Texture* texture;
+    SDL_FRect dstRect;
+    float scaleX, scaleY;
+
+    ~Texture();
+};
+
+/*The Texture object.
+Argument: bool preLoad  
+... SDL_Renderer* rawRenderer_, bool preLoad_, std::string filePath_, 
+float x_, float y_, float scaleX_, float scaleY_
+*/
 class TextureObj {
 private:    
-    SDL_Renderer* rawRenderer; /* raw renderer used in main */
-    bool preLoad = 1; /* if preLoad is true, Texture is loaded when this class is allocated*/
-    int frame = 0; /* frame number of animation (0 -> mere texture)*/
+    SDL_Renderer* rawRenderer; /* Raw renderer actually used in main */
+    bool preLoad = true; /* if preLoad is true, Texture is loaded when this class is allocated*/
     
-    /* It is animation struct if the object has animation. */
-    std::map<std::string, IMG_Animation*> animationMap; /* {animation name : value} */
-
-    std::vector<SDL_Texture*> textureVec;
-    std::string filePath;
-    SDL_FRect dstRect; // Destination rectangle for rendering
+    int count = 0; /* The number of texture */
     
-    SDL_Surface* tmpSurface= nullptr; /* */
-    SDL_Texture* tmpTexture = nullptr;
+    std::unordered_map<std::string, Texture*> textureMap; /* texture name : texture value*/
 
-    float x, y, scaleX, scaleY, width, height;
-    /* width will be setted to scaleX * w of surface and height is too.*/
-
-public:   
-    TextureObj(SDL_Renderer*, std::string filePath, int frame, bool preLoad, 
-        float x, float y, float scaleX, float scaleY);        
+public:
+    /* this args will be used for initializing*/
+    TextureObj(bool preInit_, 
+        bool preLoad_, std::string filePath_, SDL_Renderer* rawRenderer_, 
+        float x_, float y_, float scaleX_, float scaleY_);
     ~TextureObj();
 
-    bool initialize(); /* initialize variables */
-    bool load_texture(); 
+    bool initialize(bool preLoad_, std::string filePath_, SDL_Renderer* rawRenderer_, float x_, float y_, float scaleX_, float scaleY_);
+    bool loadTexture(const std::string& filePath_, float x_, float y_, float scaleX_, float scaleY_); 
+    //bool setPosition(float x_, float y_);
 
-
-    bool render_texture(); /* render a static texture to use rawRenderer*/
-    bool update_animation(const char* animationName); /* update animation to use*/
-    bool render_animation(const char* animationName); /* */
-    
-
-    void move_texture(float x, float y);
-    void rotate_texture(float angle); /* rotate clockwise*/
-    SDL_Texture* get_texture();
-    float get_position(char position); /* ex: 'x' -> return x. (x,y,w,h)*/
+    bool renderTexture(std::string fileName); /* render a static texture to use rawRenderer*/
+    void moveTexture(std::string fileName_, float x_, float y_);
+    void rotateTexture(std::string fileName_, float angle); /* rotate clockwise */
+    SDL_Texture* getTexture(std::string fileName);
+    float getPosition(std::string fileName_, char position); /* ex: ('x') -> return x. (x,y,w,h)*/
 };

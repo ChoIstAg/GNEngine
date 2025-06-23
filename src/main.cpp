@@ -8,17 +8,18 @@
 
 /* We will use this renderer to draw into this window every frame. */
 struct AppState {
-    int WINDOW_WIDTH = 1280;
-    int WINDOW_HEIGHT = 720;
+    int windowWidth = 1280;
+    int windowHeight= 720;
 
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     
 };
-static AppState *appState = new AppState(); /*allocate AppState */
+static AppState* appState = new AppState(); /*allocate AppState */
 
 
-TextureObj* texture1 = new TextureObj();
+// TextureObj* textureObj1 = nullptr; // Remove or comment out this line if not needed yet, or construct with correct arguments when needed
+TextureObj* textureObj1 = nullptr; // Will initialize properly when needed with correct constructor arguments
 
 
 /* This function runs once at startup. */
@@ -28,11 +29,12 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]){
         return SDL_APP_FAILURE;
     }
 
-
-    if (!SDL_CreateWindowAndRenderer("example", appState->WINDOW_WIDTH, appState->WINDOW_HEIGHT, 0, &appState->window, &appState->renderer)) {  //create a window and render
+    if (!SDL_CreateWindowAndRenderer("example", appState->windowWidth, appState->windowHeight, 0, &appState->window, &appState->renderer)) {  //create a window and render
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+
+    textureObj1 = new TextureObj(true, true, "example_bmp.bmp", appState->renderer, 0.0f, 0.0f, 1.0f, 1.0f);
 
      return SDL_APP_CONTINUE; 
 }    
@@ -41,6 +43,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]){
 SDL_AppResult SDL_AppIterate(void *appstate){
     SDL_RenderClear(appState->renderer); /*screen refrash*/
 
+
+    textureObj1->renderTexture("example_bmp");
 
 
     SDL_RenderPresent(appState->renderer); /*screen update*/

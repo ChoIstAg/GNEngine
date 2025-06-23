@@ -1,5 +1,6 @@
 add_executable(Noma-s_home 
     main.cpp
+    ../include/TextureObj.cpp
 )
 
 # Copy SDL3.dll to the output directory after building the target
