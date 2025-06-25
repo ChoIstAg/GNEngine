@@ -31,7 +31,9 @@ find_package(SDL3_ttf CONFIG REQUIRED)
 # target_include_directories
 target_include_directories(Noma-s_home
 PUBLIC
-    "${CMAKE_SOURCE_DIR}/include"
+    #includ engine lib
+    "${CMAKE_SOURCE_DIR}/include/engine"
+
     "${SDL3_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image/x86_64-w64-mingw32/include"
     "${CMAKE_SOURCE_DIR}/include/lib/SDL3_ttf/x86_64-w64-mingw32/include"

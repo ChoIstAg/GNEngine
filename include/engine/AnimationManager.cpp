@@ -1,6 +1,6 @@
-#include "AnimationOBJ.hpp"
+#include "AnimationManager.hpp"
 
-bool AnimationObj::load_texture(){
+bool AnimationManager::loadAnimation(std::string filePath){
         if(frame == true){ /* Check if this object has animation*/
         if(filePath_.substr(filePath_.size()-4, 4) == ".gif"){ /* Check if the file extrension is "gif"*/
             /* set key to the rest subtracted from the end of the file path*/

@@ -60,6 +60,9 @@
         "ranges": "cpp",
         "sstream": "cpp",
         "print": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "codecvt": "cpp",
+        "iomanip": "cpp",
+        "*.in": "cpp"
     }
 }

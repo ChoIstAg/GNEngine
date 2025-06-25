@@ -1,6 +1,10 @@
+file(GLOB ENGINE_SOURCES "../include/engine/*.cpp")
+
 add_executable(Noma-s_home 
     main.cpp
-    ../include/TextureObj.cpp
+    # ${ENGINE_SOURCES} <- 주석처리 사유: 이것을 활성화시키면 engine의 모든 것이 다 링크되고, 모든 파일에서 에러가 발생하지 않아야만 컴파일 오류가 발생 안함.
+    ../include/engine/Texture.cpp
+    ../include/engine/TextureManager.cpp
 )
 
 # Copy SDL3.dll to the output directory after building the target

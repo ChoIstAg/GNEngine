@@ -3,26 +3,28 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <unordered_map>
+#include "Texture.hpp"
 
-class AnimationObj{
+class AnimationManager{
 public:
-    bool preLoad;
+    bool preInit;
 
-    Animation animations;
+    std::unordered_map<std::string, Animation*> animationMap;
     int frameNum; /* frame number of animation (0 -> only one texture)*/
     
     float x, y, w, h;
     float scaleX, scaleY;
 
+    bool loadAnimation(std::string filePath);
     bool updateAnimation(const char* animationName); /* update animation to use*/
     bool renderAnimation(const char* animationName); /*  */    
 
 };
 
 using Animation = struct Animation{
-    int frame; /* number of frame*/
-    std::vector<SDL_Texture*> textureVec;
-    SDL_FRect* dstRect; /* Destination Rectangle. */
+    int frameNum; /* number of frame*/
+    Texture texture;
     int* delays; /* An array of the time between this texture and next texture */
 };
