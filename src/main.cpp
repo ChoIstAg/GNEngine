@@ -1,72 +1,120 @@
-#define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_main.h>
 #include <SDL3_image/SDL_image.h>
-#include <SDL3_ttf/SDL_ttf.h>
+#include <iostream>
+#include <memory> // For std::unique_ptr
 
-#include "TextureManager.hpp"
+// The original file included this, so we'll keep it.
+#include "TextureManager.h"
 
-/* We will use this renderer to draw into this window every frame. */
-struct AppState {
-    int windowWidth = 1280;
-    int windowHeight= 720;
-
-    SDL_Window* window = nullptr;
-    SDL_Renderer* renderer = nullptr;
+// Custom deleters for SDL resources
+struct SDL_Window_Deleter {
+    void operator()(SDL_Window* window) const {
+        SDL_DestroyWindow(window);
+    }
 };
-static AppState* appState = new AppState; /*allocate AppState */
 
+struct SDL_Renderer_Deleter {
+    void operator()(SDL_Renderer* renderer) const {
+        SDL_DestroyRenderer(renderer);
+    }
+};
 
-// TextureManager* TextureManager1 = nullptr; // Remove or comment out this line if not needed yet, or construct with correct arguments when needed
-TextureManager* textureManager = new TextureManager;
+// Use unique_ptr with custom deleters for automatic resource management
+using UniqueSDL_Window = std::unique_ptr<SDL_Window, SDL_Window_Deleter>;
+using UniqueSDL_Renderer = std::unique_ptr<SDL_Renderer, SDL_Renderer_Deleter>;
 
-/* This function runs once at startup. */
-SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]){
-    
-    if (!appState) {
-        return SDL_APP_FAILURE;
+class Application {
+public:
+    Application() = default; // Default constructor
+
+    // Initialize SDL, window, and renderer
+    int init() {
+        std::cout << "Initializing application..." << std::endl;
+
+        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+            std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
+            return -1;
+        }
+
+        m_window = UniqueSDL_Window(SDL_CreateWindow("C++23 Lambda with SDL_RunApp", 800, 600, 0));
+        if (!m_window) {
+            std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
+            SDL_Quit();
+            return -1;
+        }
+
+        m_renderer = UniqueSDL_Renderer(SDL_CreateRenderer(m_window.get(), nullptr, SDL_RENDERER_ACCELERATED));
+        if (!m_renderer) {
+            std::cerr << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
+            SDL_Quit();
+            return -1;
+        }
+        return 0; // Success
     }
 
-    if (!SDL_CreateWindowAndRenderer("example", appState->windowWidth, appState->windowHeight, SDL_WINDOW_RESIZABLE, &appState->window, &appState->renderer)) {  //create a window and render
-        SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
-        return SDL_APP_FAILURE;
+    // Cleanup SDL resources
+    void quit() {
+        std::cout << "Cleaning up and quitting..." << std::endl;
+        m_renderer.reset(); // Destroys renderer
+        m_window.reset();   // Destroys window
+        IMG_Quit();
+        SDL_Quit();
     }
 
-    textureManager->initialize(appState->renderer);
-    textureManager->loadTexture("example_png.png", 0, 0, 1, 1);
+    // Accessors for renderer and window
+    SDL_Renderer* getRenderer() const { return m_renderer.get(); }
+    SDL_Window* getWindow() const { return m_window.get(); }
 
-     return SDL_APP_CONTINUE; 
-}    
+private:
+    UniqueSDL_Window m_window;
+    UniqueSDL_Renderer m_renderer;
+};
 
-/* This function runs once per frame, and is the heart of the program. */
-SDL_AppResult SDL_AppIterate(void *appstate){
-    SDL_RenderClear(appState->renderer); /*screen refrash*/
+int main(int argc, char* argv[]) {
+    Application app;
 
+    const int result = SDL_RunApp(argc, argv, &app,
+        // app_init: Called once at the beginning.
+        [](void* app_state, int, char*[]) -> int {
+            auto* app_instance = static_cast<Application*>(app_state);
+            return app_instance->init();
+        },
+        // app_event: Called for each event.
+        [](void* app_state, const SDL_Event* event) -> int {
+            // The app_state is not used in this simple event handler, but is available.
+            // auto* app_instance = static_cast<Application*>(app_state);
+            if (event->type == SDL_EVENT_QUIT) {
+                return 1; // Signal to quit the application
+            }
+            return 0; // Event handled, continue
+        },
+        // app_iterate: Called once per frame.
+        [](void* app_state) -> int {
+            auto* app_instance = static_cast<Application*>(app_state);
 
-    textureManager->renderTexture("example_png.png");
+            // Set background color (dark blue)
+            SDL_SetRenderDrawColor(app_instance->getRenderer(), 20, 20, 40, 255);
+            SDL_RenderClear(app_instance->getRenderer());
 
+            // --- Rendering happens here ---
 
-    SDL_RenderPresent(appState->renderer); /*screen update*/
-    return SDL_APP_CONTINUE;
-}    
+            // Present the new frame
+            SDL_RenderPresent(app_instance->getRenderer());
 
-/* This function runs when a new event (mouse input, keypresses, etc) occurs. */
-SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event){
-    
-    switch(event->type){
-        case SDL_EVENT_QUIT:
-            return SDL_APP_SUCCESS;
-            break;
-        case SDL_EVENT_KEY_DOWN:
-            if(event->key.key == SDLK_ESCAPE){ return SDL_APP_SUCCESS; }
-            if(event->key.key == SDLK_1) { textureManager->moveTexture("example_png.png", 100.0f, 0.0f); }
-            if(event->key.key == SDLK_2) { textureManager->moveTexture("example_png.png", -100.0f, 0.0f); }
+            return 0; // Continue running
+        },
+        // app_quit: Called once at the end.
+        [](void* app_state) -> void {
+            auto* app_instance = static_cast<Application*>(app_state);
+            app_instance->quit();
+        }
+    );
+
+    if (result != 0) {
+        std::cerr << "Application exited with an error." << std::endl;
+    } else {
+        std::cout << "Application exited successfully." << std::endl;
     }
 
-    return SDL_APP_CONTINUE; 
-}    
-
-/* This function runs once at shutdown. */
-void SDL_AppQuit(void *appstate, SDL_AppResult result){
-    delete appState;
+    return result;
 }

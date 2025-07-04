@@ -11,3 +11,7 @@
     #ifndef IMAGE_ASSET_ROOT_PATH
     #define IMAGE_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/image/"
     #endif
+
+    #ifndef SOUND_ASSET_ROOT_PATH
+    #define SOUND_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/sound/"
+    #endif

@@ -16,11 +16,10 @@ set(SDL3_image_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image/x86_64-w64-mingw3
 set(SDL3_ttf_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_ttf/x86_64-w64-mingw32/lib/cmake/SDL3_ttf")
 
 # config.h 생성
-#configure_file(${CMAKE_SOURCE_DIR}/include/config.h ${CMAKE_BINARY_DIR}/config.h @ONLY)
+#configure_file(${CMAKE_SOURCE_DIR}/include/config.h ${CMAKE_BINARY_DIR}/config.h @ONLY) -> 오류.
 configure_file(${CMAKE_SOURCE_DIR}/include/config.h.in ${CMAKE_BINARY_DIR}/config.h @ONLY)
 include_directories(${CMAKE_BINARY_DIR})
 
-# src 디렉토리만 add_subdirectory
 add_subdirectory(src)
 
 # SDL 패키지 찾기

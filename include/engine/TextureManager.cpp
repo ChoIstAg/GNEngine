@@ -1,4 +1,4 @@
-#include "TextureManager.hpp"
+#include "TextureManager.h"
 #include <iostream>
 
 /*The Texture object.
