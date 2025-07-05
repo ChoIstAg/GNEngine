@@ -1,9 +1,11 @@
-file(GLOB ENGINE_SOURCES "../include/engine/*.cpp")
+file(GLOB ENGINE_SOURCES "../include/engine/*.cpp") # for engine의 모든 헤더 링크
 
 add_executable(Noma-s_home 
-    #main.cpp
+    main.cpp
+
+    # Temporary files
     #test.cpp
-    TestSound.cpp
+    #TestSound.cpp 
 
     # ${ENGINE_SOURCES} <- 주석처리 사유: 이것을 활성화시키면 engine의 모든 헤더가 다 링크되고, 모든 파일에서 에러가 발생하지 않아야만 컴파일 오류가 발생하지 않아 실행 가능.
     ../include/engine/Texture.cpp
