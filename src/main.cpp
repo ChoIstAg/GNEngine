@@ -2,7 +2,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <iostream>
-#include <memory> // For std::unique_ptr
+#include <memory>
 
 // The original file included this, so we'll keep it.
 #include "TextureManager.h"
@@ -25,6 +25,7 @@ using UniqueSDL_Renderer = std::unique_ptr<SDL_Renderer, SDL_Renderer_Deleter>;
 
 class Application {
 public:
+    /* Construct Managers*/
     TextureManager textureManager;
     
     Application() = default; /* Default constructor */
@@ -50,7 +51,9 @@ public:
             return -1;
         }
 
+        /* Initialize Managers*/
         textureManager.initialize(m_renderer.get());
+        textureManager.loadTexture("example_png.png", 0, 0, 1, 1);
 
         return 0; /* Success */
     }
@@ -92,6 +95,8 @@ static int SDLCALL AppMain(int argc, char *argv[]) {
             } else if (event.type == SDL_EVENT_KEY_DOWN) {
                 /* Log the key that was pressed */
                 std::cout << "Key pressed: " << SDL_GetKeyName(event.key.key) << std::endl;
+
+                app.textureManager.setVisible("example_png.png", true);
             }
         }
 
@@ -103,11 +108,13 @@ static int SDLCALL AppMain(int argc, char *argv[]) {
             SDL_Log("W and A are pressed!");
         }
 
-        /* Set background color (dark blue) */
+
+
         SDL_SetRenderDrawColor(app.getRenderer(), 255, 255, 255, 255);
-        SDL_RenderClear(app.getRenderer());
+        app.textureManager.renderTextureAll();
 
         /* Present the new frame */
+        SDL_RenderClear(app.getRenderer());
         SDL_RenderPresent(app.getRenderer());
     }
 

@@ -26,9 +26,12 @@ public:
     SDL_FRect& getDstRect() { return m_dstRect; } // Return by reference to allow modification
     float getScaleX() const { return m_scaleX; }
     float getScaleY() const { return m_scaleY; }
+    bool setVisible(bool enable);
+    bool getVisible() { return m_visible; }
 
 private:
     UniqueSDL_Texture m_sdlTexture;
     SDL_FRect m_dstRect;
     float m_scaleX, m_scaleY;
+    bool m_visible = false;
 };  

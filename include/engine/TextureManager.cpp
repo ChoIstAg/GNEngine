@@ -58,26 +58,45 @@ bool TextureManager::loadTexture(const std::string& filePath, float x, float y, 
 
     // Create a new Texture object and move the SDL_Texture into it
     SDL_FRect dstRect = {x, y, (float)tmpSurface->w * scaleX, (float)tmpSurface->h * scaleY};
-    textureMap_[filePath] = std::make_unique<Texture>(sdlTexture, dstRect, scaleX, scaleY);
+    textureMap_[filePath] = std::make_unique<Texture>(sdlTexture, dstRect, scaleX, scaleY); /* */
 
     count_++; /* Increase num of the texture*/
     return true;
 }
 
+/* Rendering a Texture */
 bool TextureManager::renderTexture(const std::string& filePath){
     auto it = textureMap_.find(filePath);
     if (it == textureMap_.end()) {
         SDL_Log("TextureManager [%p] : Texture not found for rendering: %s", this, filePath.c_str());
         return false;
     }
+
+    if(!it->second->getVisible()){
+        return false;
+    }
     if(!SDL_RenderTexture(rawRenderer_, it->second->getSDLTexture(), NULL, &it->second->getDstRect())){
         SDL_Log("TextureManager [%p] : Error is occured in SDL_RenderTexture: %s", this, SDL_GetError());
         return false;
     }
+
+    return true;
+}
+bool TextureManager::renderTextureAll(){
+    for (auto& pair : textureMap_) { 
+        // pair.second is a std::unique_ptr<Texture>
+        Texture* tex = pair.second.get();
+        if (tex && tex->getVisible()) { /* 텍스쳐의 값이 존재하고, 활성화 되었을때*/
+            if(!SDL_RenderTexture(rawRenderer_, tex->getSDLTexture(), NULL, &tex->getDstRect())){
+                SDL_Log("TextureManager [%p] : Errors occured in SDL_RenderTextureAll: %s" , this, SDL_GetError());
+                //return false; /* comment for rendering rest of texture*/
+            }
+        }
+    }
     return true;
 }
 
-
+/* return Texture. If texture are not found, it will return nullptr.*/
 Texture* TextureManager::getTexture(const std::string& filePath){
     auto it = textureMap_.find(filePath);
     if (it == textureMap_.end()) {
@@ -110,6 +129,27 @@ float TextureManager::getPosition(const std::string& fileName, char position){
 
 void TextureManager::rotateTexture(const std::string& fileName, float angle){
     //SDL_RenderTextureRotated(rawRenderer_, texture, NULL, &dstRect, {float(dstRect.x/2), float(dstRect.y/2)}, angle, 0);  
+}
+
+bool TextureManager::getVisible(const std::string& fileName){
+    auto it = textureMap_.find(fileName);
+    if(it != textureMap_.end()){
+        return it->second->getVisible();
+    }
+
+    return false;
+}
+bool TextureManager::setVisible(const std::string& fileName, bool enable){
+    auto it = textureMap_.find(fileName);
+    if(it != textureMap_.end()){ /* IF Texture value is exist in map*/
+
+        if(!it->second->setVisible(&enable)){ /* set */
+            SDL_Log("TextureManager [%p] : Error occured in setVisiable() : %s", this, SDL_GetError());
+            return false;
+        }
+        return true;
+    }
+    return false;
 }
 
 bool TextureManager::loadBackground(const std::string& filePath, int windowWidth, int windowHeight, float scaleX, float scaleY) { 
