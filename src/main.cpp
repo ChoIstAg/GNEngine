@@ -61,6 +61,7 @@ public:
     /* Cleanup SDL resources */
     void quit() {
         std::cout << "Cleaning up and quitting..." << std::endl;
+        
         m_renderer.reset(); /* Destroys renderer */
         m_window.reset();   /* Destroys window */
 
@@ -79,24 +80,25 @@ private:
 /* Main application entry point for SDL_RunApp */
 static int SDLCALL AppMain(int argc, char *argv[]) {
     Application app;
-
+    
     if (app.init() != 0) {
         std::cerr << "Application initialization failed." << std::endl;
         return -1;
     }
-
+     
     SDL_Event event;
     bool quit = false;
-    while (!quit) { /* Processing Events */
-        while (SDL_PollEvent(&event)) {
+
+    /* Main loop */
+    while (!quit) { 
+
+        while (SDL_PollEvent(&event)) { /* Processing Events */
             if (event.type == SDL_EVENT_QUIT) {
                 quit = true;
-
+                
             } else if (event.type == SDL_EVENT_KEY_DOWN) {
                 /* Log the key that was pressed */
                 std::cout << "Key pressed: " << SDL_GetKeyName(event.key.key) << std::endl;
-
-                app.textureManager.setVisible("example_png.png", true);
             }
         }
 
@@ -108,23 +110,24 @@ static int SDLCALL AppMain(int argc, char *argv[]) {
             SDL_Log("W and A are pressed!");
         }
 
-
-
+        /* Clear the previous frame*/
+        SDL_RenderClear(app.getRenderer());
+                
+        
         SDL_SetRenderDrawColor(app.getRenderer(), 255, 255, 255, 255);
         app.textureManager.renderTextureAll();
-
-        /* Present the new frame */
-        SDL_RenderClear(app.getRenderer());
+        
+        /* Render the current frame on screen */
         SDL_RenderPresent(app.getRenderer());
     }
-
+    
     app.quit();
     return 0;
 }
 
 int main(int argc, char* argv[]) {
     const int result = SDL_RunApp(argc, argv, AppMain, nullptr);
-
+    
     if (result != 0) {
         std::cerr << "Application exited with an error." << std::endl;
     } else {

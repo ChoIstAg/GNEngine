@@ -143,12 +143,15 @@ bool TextureManager::setVisible(const std::string& fileName, bool enable){
     auto it = textureMap_.find(fileName);
     if(it != textureMap_.end()){ /* IF Texture value is exist in map*/
 
-        if(!it->second->setVisible(&enable)){ /* set */
+        if(!it->second->setVisible(enable)){ /* set */
             SDL_Log("TextureManager [%p] : Error occured in setVisiable() : %s", this, SDL_GetError());
-            return false;
+            return false; 
         }
         return true;
     }
+
+    // If the texture is not found
+    SDL_Log("TextureManager [%p] : Texture not found for setVisible: %s", this, fileName.c_str());
     return false;
 }
 
