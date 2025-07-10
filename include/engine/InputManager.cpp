@@ -29,9 +29,11 @@ void InputManager::updateKeys() {
 bool InputManager::isKeyPressed(SDL_Scancode key) const { /* Return if the key is pressed just now */
     return currentKeyStates[key];
 }
-bool InputManager::isKeyDown(SDL_Scancode key) const { /* Return if the key is pressed in a current frame */
+
+bool InputManager::isKeyDown(SDL_Scancode key) const { /* Return if the key is pressed during the current frame */
     return currentKeyStates[key] && !previousKeyStates[key];
 }
-bool InputManager::isKeyUp(SDL_Scancode key) const {
+
+bool InputManager::isKeyUp(SDL_Scancode key) const { /* Return if the key is */
     return !currentKeyStates[key] && previousKeyStates[key];
 }
