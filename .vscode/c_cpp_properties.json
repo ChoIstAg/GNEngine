@@ -4,9 +4,9 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/lib/SDL3/x86_64-w64-mingw32/include/SDL3",
-                "${workspaceFolder}/lib/SDL3_image/x86_64-w64-mingw32/include/SDL3_image",
-                "${workspaceFolder}/lib/SDL3_ttf/x86_64-w64-mingw32/include/SDL3_ttf"
+                "${workspaceFolder}/include/lib/SDL3/x86_64-w64-mingw32/include/SDL3",
+                "${workspaceFolder}/include/lib/SDL3_image/x86_64-w64-mingw32/include/SDL3_image",
+                "${workspaceFolder}/include/lib/SDL3_ttf/x86_64-w64-mingw32/include/SDL3_ttf"
             ],
             "defines": [
                 "_DEBUG",

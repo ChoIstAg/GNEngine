@@ -1,4 +1,4 @@
-#include "TextManager.hpp"
+#include "TextManager.h"
 
 /* constructor*/
 TextManager::TextManager(SDL_Renderer* renderer){

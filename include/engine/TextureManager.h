@@ -6,7 +6,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Texture.hpp"
+#include "Texture.h"
 #include "config.h"
 
 /*The Texture object.
@@ -24,16 +24,17 @@ public:
     TextureManager();
     ~TextureManager();
 
-    bool initialize(SDL_Renderer* rawRenderer);
+    bool initialize(SDL_Renderer* renderer);
     bool loadTexture(std::string filePath, float x, float y, float scaleX, float scaleY); 
-    //bool setPosition(float x, float y);
+    
+    bool loadBackground(std::string filePath, int windowWidth, int windowHeight, float scaleX, float scaleY);
+    bool renderBackground(std::string filePath);
 
     bool renderTexture(std::string filePath); /* render a static texture to use rawRenderer*/
     void moveTexture(std::string filePath, float x, float y);
     void rotateTexture(std::string filePath, float angle); /* rotate clockwise */
     Texture* getTexture(std::string filePath);
+    
     float getPosition(std::string filePath, char position); /* ex: ('x') -> return x. (x,y,w,h)*/
-
-    bool loadBackground(std::string filePath, int windowWidth, int windowHeight, float scaleX, float scaleY);
-    bool renderBackground(std::string filePath);
+    bool setPosition(std::string filePath, float x, float y);
 };

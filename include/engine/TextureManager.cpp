@@ -1,4 +1,4 @@
-#include "TextureManager.hpp"
+#include "TextureManager.h"
 #include <iostream>
 
 /*The Texture object.
@@ -25,10 +25,14 @@ bool TextureManager::initialize(SDL_Renderer* rawRenderer){
     return true;
 }   
 
-/* Loating texture(bmp, png) or animation(gif, png(sprite sheet).*/
+/* Loating texture(bmp, png)*/
 bool TextureManager::loadTexture(std::string filePath, float x, float y, float scaleX, float scaleY){
     SDL_Surface* tmpSurface;
     std::string fileExtention = filePath.substr(filePath.size()-4, filePath.size());
+
+    if (textureMap_[filePath]) { /* IF Texture to load has already been loaded, return true. */
+        return true;
+    }
 
     /* Check if the file extension is ".bmp" or ".png" and create SDL_Surface*/
     if(fileExtention == ".bmp"){
@@ -78,21 +82,24 @@ Texture* TextureManager::getTexture(std::string filePath){
     return textureMap_[filePath];
 }
 
-void TextureManager::moveTexture(std::string fileName, float x, float y) {
-    textureMap_[fileName]->dstRect.x += x;
-    textureMap_[fileName]->dstRect.y += y;
+void TextureManager::moveTexture(std::string filePath, float x, float y) {
+    textureMap_[filePath]->dstRect.x += x;
+    textureMap_[filePath]->dstRect.y += y;
 }
 
 /* return position. if position is 'x' -> return x or 'y' -> return y or 'w' -> return width or 'h' -> return height.*/
-float TextureManager::getPosition(std::string fileName, char position){
-    if(position == 'x') {return textureMap_[fileName]->dstRect.x;}
-    else if(position == 'y') {return textureMap_[fileName]->dstRect.y;}
-    else if(position == 'w') {return textureMap_[fileName]->dstRect.w;}
-    else if(position == 'h') {return textureMap_[fileName]->dstRect.h;}
+float TextureManager::getPosition(std::string filePath, char position){
+    if(position == 'x') {return textureMap_[filePath]->dstRect.x;}
+    else if(position == 'y') {return textureMap_[filePath]->dstRect.y;}
+    else if(position == 'w') {return textureMap_[filePath]->dstRect.w;}
+    else if(position == 'h') {return textureMap_[filePath]->dstRect.h;}
     return false;
 }
+bool TextureManager::setPosition(std::string filePath, float x, float y){
+    return 1;
+}
 
-void TextureManager::rotateTexture(std::string fileName, float angle){
+void TextureManager::rotateTexture(std::string filePath, float angle){
     //SDL_RenderTextureRotated(rawRenderer_, texture, NULL, &dstRect, {float(dstRect.x/2), float(dstRect.y/2)}, angle, 0);  
 }
 
@@ -100,7 +107,7 @@ bool TextureManager::loadBackground(std::string filePath, int windowWidth, int w
     loadTexture(filePath, int(windowWidth), int(windowHeight), scaleX, scaleY);
     return true;
 }
-bool TextureManager::renderBackground(std::string fileName){
-    SDL_RenderTexture(rawRenderer_, backgroundMap_[fileName]->texture, NULL, &backgroundMap_[fileName]->dstRect);
+bool TextureManager::renderBackground(std::string filePath){
+    SDL_RenderTexture(rawRenderer_, backgroundMap_[filePath]->texture, NULL, &backgroundMap_[filePath]->dstRect);
     return true;
 }

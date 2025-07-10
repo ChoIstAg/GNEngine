@@ -1,4 +1,4 @@
-#include "Texture.hpp"
+#include "Texture.h"
 
 /* Destructor of Texture to freeing texture*/
 Texture::~Texture(){
