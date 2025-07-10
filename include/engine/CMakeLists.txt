@@ -1,4 +1,4 @@
-add_executable(Noma-s_home
+add_executable(GNEngine
     Texture.cpp
     TextureManager.cpp
     Animation.cpp
@@ -14,7 +14,7 @@ add_executable(Noma-s_home
     #SceneManager.cpp
 )
 
-add_library(Noma-s_home
+add_library(GNEngine
     Texture.cpp
     TextureManager.cpp
     Animation.cpp

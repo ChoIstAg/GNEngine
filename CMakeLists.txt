@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(Noma_s_home VERSION 0.1.0 LANGUAGES C CXX)
+project(GNEngine VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -29,7 +29,7 @@ find_package(SDL3_image CONFIG REQUIRED)
 find_package(SDL3_ttf CONFIG REQUIRED)
 
 # target_include_directories
-target_include_directories(Noma-s_home
+target_include_directories(GNEngine
 PUBLIC
     #includ engine lib
     "${CMAKE_SOURCE_DIR}/include/engine"
@@ -40,7 +40,7 @@ PUBLIC
 )
 
 # target_link_libraries
-target_link_libraries(Noma-s_home 
+target_link_libraries(GNEngine 
 PUBLIC 
     SDL3::SDL3
     SDL3_image::SDL3_image
@@ -48,7 +48,7 @@ PUBLIC
 )
 
 # target_compile_definitions
-target_compile_definitions(Noma-s_home
+target_compile_definitions(GNEngine
 PUBLIC
     PROJECT_ROOT_PATH="${CMAKE_SOURCE_DIR}"
 )
