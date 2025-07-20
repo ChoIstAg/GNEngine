@@ -6,7 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
-#include "Texture.hpp"
+#include "Texture.h"
 
 class AnimationManager{
 public:

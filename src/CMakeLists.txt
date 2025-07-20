@@ -1,15 +1,38 @@
-file(GLOB ENGINE_SOURCES "../include/engine/*.cpp")
+# engine 디렉토리와 그 하위의 모든 .cpp 파일들을 찾아서 ENGINE_SOURCES 변수에 저장
+file(GLOB_RECURSE ENGINE_SOURCES ${CMAKE_SOURCE_DIR}/include/engine/*.cpp)
 
 add_executable(GNEngine 
     main.cpp
 
     MainCallback.cpp
+    Application.cpp
 
-    # ${ENGINE_SOURCES} <- 주석처리 사유: 이것을 활성화시키면 engine의 모든 것이 다 링크되므로 모든 파일에서 에러가 발생하지 않아야만 컴파일 오류가 발생 안함.
-    ../include/engine/Application.cpp
-    ../include/engine/Texture.cpp
-    ../include/engine/TextureManager.cpp
-    ../include/engine/InputManager.cpp
+    # engine의 모든 소스 파일 추가
+    #${ENGINE_SOURCES} 주석화 사유: 오류가 해결 안된 소스 파일 때문에 컴파일 에러 발생함.
+    ../include/engine/event/InputManager.cpp
+    #../include/engine/event/RenderManager.cpp
+    
+    ../include/engine/object/BlankObject.cpp
+
+    ../include/engine/resource/Texture.cpp
+    ../include/engine/resource/TextureManager.cpp
+
+    #../include/engine/scene/SceneManager.cpp
+)
+
+# GNEngine 타겟에 필요한 include 경로를 설정합니다.
+target_include_directories(GNEngine PRIVATE 
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${SDL3_INCLUDE_DIR}
+    # SDL_image와 SDL_ttf의 include 경로는 find_package를 통해 자동으로 처리될 수 있으나, 명시적으로 추가해 줄 수도 있습니다.
+)
+
+# GNEngine 타겟이 링크해야 할 라이브러리들을 설정합니다.
+target_link_libraries(GNEngine PRIVATE
+    SDL3::SDL3
+    SDL3_image::SDL3_image
+    SDL3_ttf::SDL3_ttf
 )
 
 # Copy SDL3.dll to the output directory after building the target

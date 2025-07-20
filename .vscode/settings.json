@@ -63,6 +63,10 @@
         "map": "cpp",
         "codecvt": "cpp",
         "iomanip": "cpp",
-        "*.in": "cpp"
+        "*.in": "cpp",
+        "list": "cpp",
+        "any": "cpp",
+        "cstring": "cpp",
+        "typeindex": "cpp"
     }
 }

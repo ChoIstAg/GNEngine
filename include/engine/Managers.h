@@ -1,4 +1,4 @@
 #pragma once
 
-#include "TextureManager.h"
-#include "InputManager.h"
+#include "engine/resource/TextureManager.h"
+#include "engine/event/InputManager.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "Scene.hpp"
+#include "Scene.h"
 #include <SDL3/SDL.h>
 #include <iostream>
 

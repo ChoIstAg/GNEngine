@@ -24,7 +24,7 @@ public:
     TextureManager();
     ~TextureManager();
 
-    bool initialize(SDL_Renderer* renderer);
+    bool init(SDL_Renderer* renderer);
     bool loadTexture(std::string filePath, float x, float y, float scaleX, float scaleY); 
     
     bool loadBackground(std::string filePath, int windowWidth, int windowHeight, float scaleX, float scaleY);

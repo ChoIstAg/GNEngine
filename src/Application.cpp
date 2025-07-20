@@ -1,15 +1,15 @@
 #include "Application.h"
 #include <iostream>
 
-Application::Application() = default;
+Application::Application() : inputManager_(eventManager_) {};
 
 int Application::init(){
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0) {
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0) { /* Initialize SDL Systems*/
         SDL_Log("SDL_Init Error: %s", SDL_GetError());
         return -1;
     }
 
-    window_ = SDL_CreateWindow("Text main callback", windowWidth, windowHeight, 0);
+    window_ = SDL_CreateWindow("Text main callback", windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
     renderer_ = SDL_CreateRenderer(window_, nullptr);
     if(!window_ || !renderer_){
         SDL_Log("Error occured in SDL_CreateWindow : %s", SDL_GetError());
@@ -17,7 +17,10 @@ int Application::init(){
         return -1;
     }
 
-    textureManager.initialize(renderer_);
+    eventManager_.init();
+    inputManager_.init();
+    textureManager_.init(renderer_);
+
     return 0;
 }
 

@@ -15,24 +15,26 @@ set(SDL3_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3/x86_64-w64-mingw32/in
 set(SDL3_image_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image/x86_64-w64-mingw32/lib/cmake/SDL3_image")
 set(SDL3_ttf_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_ttf/x86_64-w64-mingw32/lib/cmake/SDL3_ttf")
 
-# config.h 생성
+# config.h 생성 #프로젝트 경로 지정용. (소스에서 사용) 
 #configure_file(${CMAKE_SOURCE_DIR}/include/config.h ${CMAKE_BINARY_DIR}/config.h @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/include/config.h.in ${CMAKE_BINARY_DIR}/config.h @ONLY)
 include_directories(${CMAKE_BINARY_DIR})
-
-# src 디렉토리만 add_subdirectory
-add_subdirectory(src)
 
 # SDL 패키지 찾기
 find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image CONFIG REQUIRED)
 find_package(SDL3_ttf CONFIG REQUIRED)
 
+add_subdirectory(
+    src
+    include
+)
+
 # target_include_directories
 target_include_directories(GNEngine
 PUBLIC
     #includ engine lib
-    "${CMAKE_SOURCE_DIR}/include/engine"
+    "${CMAKE_SOURCE_DIR}/include"
 
     "${SDL3_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image/x86_64-w64-mingw32/include"

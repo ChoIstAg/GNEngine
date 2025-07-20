@@ -2,7 +2,7 @@
 #include <memory>
 #include <unordered_map>
 #include <string>
-#include "Scene.hpp"
+#include "Scene.h"
 
 class SceneManager {
     std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;

@@ -1,7 +1,9 @@
 #include <iostream>
-#include "Maincallback.h"
+#include "MainCallback.h"
 
 #include "Application.h"
+#include "engine/object/BlankObject.h"
+#include "engine/event/eventManager.h"
 
 int SDLCALL mainCallback(int argc, char* argv[]){
     Application application;
@@ -11,19 +13,28 @@ int SDLCALL mainCallback(int argc, char* argv[]){
         return -1;
     }
     
-    bool quit;
+    BlankObject blankObject(application.eventManager_);
+
+    bool quit = false;
 
     /* Main loop. */
     while (!quit) {
         SDL_RenderClear(application.getRenderer());
 
-        application.inputManager.updateKeys();
-        if(application.inputManager.isKeyDown(SDL_SCANCODE_1)) {
+        application.inputManager_.updateKeyStates();
+        application.inputManager_.eventProcessing();
+
+
+        // testing..
+        if(application.inputManager_.isKeyDown(SDL_SCANCODE_1)) {
             std::cout << "Key pressed 1" << std::endl;
         }
-        if(application.inputManager.isKeyUp(SDL_SCANCODE_1)) {
+        if(application.inputManager_.isKeyUp(SDL_SCANCODE_1)) {
             std::cout << "Key Up 1" << std::endl;
         }
+        if(application.inputManager_.isKeyDown(SDL_SCANCODE_SPACE)) {
+        }
+        
 
         SDL_RenderPresent(application.getRenderer());
     }

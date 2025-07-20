@@ -13,7 +13,7 @@ TextureManager::~TextureManager() {
 }
 
 /* Initialize Texture and load texture if preLoad is True */
-bool TextureManager::initialize(SDL_Renderer* rawRenderer){
+bool TextureManager::init(SDL_Renderer* rawRenderer){
     textureMap_.clear();
 
     if(!rawRenderer){ 

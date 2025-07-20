@@ -1,8 +1,9 @@
 #pragma once
 #include <SDL3/SDL.h>
 
-#include "TextureManager.h"
-#include "InputManager.h"
+#include "engine/resource/TextureManager.h"
+#include "engine/event/InputManager.h"
+#include "engine/event/EventManager.h"
 //#include "Managers.h"
 
 class Application{
@@ -21,8 +22,8 @@ public:
     SDL_Renderer* getRenderer() const { return renderer_; }
     SDL_Window* getWindow() const { return window_; }
 
-
     /* Managers */
-    TextureManager textureManager;
-    InputManager inputManager;
+    EventManager eventManager_;
+    InputManager inputManager_;
+    TextureManager textureManager_;
 };
