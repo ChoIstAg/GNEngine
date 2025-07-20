@@ -10,10 +10,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
 # SDL 경로 설정
-set(SDL3_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3/x86_64-w64-mingw32/lib/cmake/SDL3")
-set(SDL3_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3/x86_64-w64-mingw32/include")
-set(SDL3_image_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image/x86_64-w64-mingw32/lib/cmake/SDL3_image")
-set(SDL3_ttf_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_ttf/x86_64-w64-mingw32/lib/cmake/SDL3_ttf")
+set(SDL3_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3-3.2.18/x86_64-w64-mingw32/lib/cmake/SDL3")
+set(SDL3_DLL_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3-3.2.18/x86_64-w64-mingw32/bin")
+set(SDL3_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3-3.2.18/x86_64-w64-mingw32/include")
+set(SDL3_image_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image-3.2.4/x86_64-w64-mingw32/lib/cmake/SDL3_image")
+set(SDL3_image_DLL_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image-3.2.4/x86_64-w64-mingw32/bin")
+set(SDL3_image_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image-3.2.4/x86_64-w64-mingw32/include")
+set(SDL3_ttf_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_ttf-3.2.2/x86_64-w64-mingw32/lib/cmake/SDL3_ttf")
+set(SDL3_ttf_DLL_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_ttf-3.2.2/x86_64-w64-mingw32/bin")
+set(SDL3_ttf_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/lib/SDL3_ttf-3.2.2/x86_64-w64-mingw32/include")
+
 
 # config.h 생성 #프로젝트 경로 지정용. (소스에서 사용) 
 #configure_file(${CMAKE_SOURCE_DIR}/include/config.h ${CMAKE_BINARY_DIR}/config.h @ONLY)
@@ -37,8 +43,8 @@ PUBLIC
     "${CMAKE_SOURCE_DIR}/include"
 
     "${SDL3_INCLUDE_DIR}"
-    "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image/x86_64-w64-mingw32/include"
-    "${CMAKE_SOURCE_DIR}/include/lib/SDL3_ttf/x86_64-w64-mingw32/include"
+    "${SDL3_image_INCLUDE_DIR}"
+    "${SDL3_ttf_INCLUDE_DIR}"
 )
 
 # target_link_libraries

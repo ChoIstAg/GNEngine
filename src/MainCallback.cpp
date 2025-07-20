@@ -21,19 +21,8 @@ int SDLCALL mainCallback(int argc, char* argv[]){
     while (!quit) {
         SDL_RenderClear(application.getRenderer());
 
-        application.inputManager_.updateKeyStates();
         application.inputManager_.eventProcessing();
-
-
-        // testing..
-        if(application.inputManager_.isKeyDown(SDL_SCANCODE_1)) {
-            std::cout << "Key pressed 1" << std::endl;
-        }
-        if(application.inputManager_.isKeyUp(SDL_SCANCODE_1)) {
-            std::cout << "Key Up 1" << std::endl;
-        }
-        if(application.inputManager_.isKeyDown(SDL_SCANCODE_SPACE)) {
-        }
+        application.inputManager_.updateKeyStates();
         
 
         SDL_RenderPresent(application.getRenderer());

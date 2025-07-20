@@ -14,9 +14,9 @@ public:
     explicit InputManager(EventManager& eventManager);
     bool init();
 
-    void updateKeyStates();
-
     bool eventProcessing();
+    
+    void updateKeyStates();
 
     bool isKeyPressed(SDL_Scancode key) const;
     bool isKeyDown(SDL_Scancode key) const;

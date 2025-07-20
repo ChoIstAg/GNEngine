@@ -9,6 +9,7 @@ add_executable(GNEngine
 
     # engine의 모든 소스 파일 추가
     #${ENGINE_SOURCES} 주석화 사유: 오류가 해결 안된 소스 파일 때문에 컴파일 에러 발생함.
+
     ../include/engine/event/InputManager.cpp
     #../include/engine/event/RenderManager.cpp
     
@@ -40,9 +41,9 @@ target_link_libraries(GNEngine PRIVATE
 add_custom_command(TARGET GNEngine POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
 
-    "${CMAKE_SOURCE_DIR}/include/lib/SDL3/x86_64-w64-mingw32/bin/SDL3.dll"
-    "${CMAKE_SOURCE_DIR}/include/lib/SDL3_image/x86_64-w64-mingw32/bin/SDL3_image.dll"
-    "${CMAKE_SOURCE_DIR}/include/lib/SDL3_ttf/x86_64-w64-mingw32/bin/SDL3_ttf.dll"
+    ${SDL3_DLL_DIR}/SDL3.dll
+    ${SDL3_image_DLL_DIR}/SDL3_image.dll
+    ${SDL3_ttf_DLL_DIR}/SDL3_ttf.dll
 
     $<TARGET_FILE_DIR:GNEngine>
 )

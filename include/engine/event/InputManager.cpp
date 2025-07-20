@@ -29,6 +29,7 @@ void InputManager::updateKeyStates() {
     // SDL 이벤트 펌프를 호출하여 currentKeyStates_ 배열을 최신 상태로 업데이트
     // SDL_PollEvent 내부에서 자동으로 호출되지만, 명시적으로 호출하여 상태를 정확히 유지
     //SDL_PumpEvents();
+    /* 만약 풀링을 eventProcessing에서 진행할 경우 반드시 eventProcessing 뒤에 updateKeyStates를 실행하기 */
 }
 
 bool InputManager::eventProcessing() {
@@ -42,16 +43,6 @@ bool InputManager::eventProcessing() {
             case SDL_EVENT_WINDOW_RESIZED:
                 std::cout << "Window resized to " << event.window.data1 << "x" << event.window.data2 << std::endl;
                 eventManager_.dispatch(WindowResizeEvent(event.window.data1, event.window.data2));
-                break;
-
-            case SDL_EVENT_KEY_DOWN:
-                std::cout << "Key pressed: " << event.key.scancode << std::endl;
-                eventManager_.dispatch(KeyPressedEvent(event.key.scancode));
-                break;
-
-            case SDL_EVENT_KEY_UP:
-                std::cout << "Key released: " << event.key.scancode << std::endl;
-                eventManager_.dispatch(KeyReleasedEvent(event.key.scancode));
                 break;
 
 
