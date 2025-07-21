@@ -34,7 +34,7 @@ struct WindowResizeEvent : public Event {
     unsigned int width, height;
 
     WindowResizeEvent(unsigned int newWidth, unsigned int newHeight)
-        : width(newWidth), height(newHeight) {}
+        : width(newWidth), height(newHeight) {} 
 };
 
 
@@ -51,8 +51,13 @@ protected:
 };
 
 /**
- * @brief 키가 눌렸을 때 발생하는 이벤트입니다.
+ * @brief 모든 키의 현재 상태를 반환하는 이벤트.
  */
+struct ActiveKeyEvent : public KeyEvent {
+    ActiveKeyEvent(bool& keystate)
+        : KeyEvent() {}
+};
+
 struct KeyPressedEvent : public KeyEvent {
 
     KeyPressedEvent(int keycode)

@@ -5,7 +5,7 @@
 #include "engine/object/BlankObject.h"
 #include "engine/event/eventManager.h"
 
-int SDLCALL mainCallback(int argc, char* argv[]){
+int SDLCALL mainCallback(int argc, char* argv[]) {
     Application application;
 
     if(application.init() != 0){
@@ -15,13 +15,10 @@ int SDLCALL mainCallback(int argc, char* argv[]){
     
     BlankObject blankObject(application.eventManager_);
 
-    bool quit = false;
-
     /* Main loop. */
-    while (!quit) {
+    while (application.inputManager_.eventProcessing()) {
         SDL_RenderClear(application.getRenderer());
 
-        application.inputManager_.eventProcessing();
         application.inputManager_.updateKeyStates();
         
 

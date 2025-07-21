@@ -3,7 +3,7 @@
 #include <SDL3/SDL.h>
 #include "EventManager.h"
 
-class InputManager{
+class InputManager {
 private: 
     const bool* currentKeyStates_;
     bool previousKeyStates_[SDL_SCANCODE_COUNT];

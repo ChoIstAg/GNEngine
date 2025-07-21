@@ -25,6 +25,7 @@ bool InputManager::init() {
 void InputManager::updateKeyStates() {
     // 현재 키보드 상태 배열을 이전 상태로 복사
     std::memcpy(previousKeyStates_, currentKeyStates_, SDL_SCANCODE_COUNT);
+    eventManager_.dispatch()
     
     // SDL 이벤트 펌프를 호출하여 currentKeyStates_ 배열을 최신 상태로 업데이트
     // SDL_PollEvent 내부에서 자동으로 호출되지만, 명시적으로 호출하여 상태를 정확히 유지
@@ -39,30 +40,35 @@ bool InputManager::eventProcessing() {
             case SDL_EVENT_QUIT:
                 eventManager_.dispatch(WindowCloseEvent());
                 return false; // 종료 신호 반환
+                break;
+
+            case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+                eventManager_.dispatch(WindowCloseEvent());
+                return false; // 종료 신호 반환
+                break;
 
             case SDL_EVENT_WINDOW_RESIZED:
-                std::cout << "Window resized to " << event.window.data1 << "x" << event.window.data2 << std::endl;
+                //std::cout << "Window resized to " << event.window.data1 << "x" << event.window.data2 << std::endl;
                 eventManager_.dispatch(WindowResizeEvent(event.window.data1, event.window.data2));
                 break;
 
-
             case SDL_EVENT_MOUSE_MOTION:
-                std::cout << "Mouse moved to (" << event.motion.x << ", " << event.motion.y << ")" << std::endl;
+                //std::cout << "Mouse moved to (" << event.motion.x << ", " << event.motion.y << ")" << std::endl;
                 eventManager_.dispatch(MouseMovedEvent(static_cast<float>(event.motion.x), static_cast<float>(event.motion.y)));
                 break;
 
             case SDL_EVENT_MOUSE_WHEEL:
-                std::cout << "Mouse scrolled: " << event.wheel.x << ", " << event.wheel.y << std::endl;
+                //std::cout << "Mouse scrolled: " << event.wheel.x << ", " << event.wheel.y << std::endl;
                 eventManager_.dispatch(MouseScrolledEvent(event.wheel.x, event.wheel.y));
                 break;
 
             case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                std::cout << "Mouse button pressed: " << event.button.button << std::endl;
+                //std::cout << "Mouse button pressed: " << event.button.button << std::endl;
                 eventManager_.dispatch(MouseButtonPressedEvent(event.button.button));
                 break;
 
             case SDL_EVENT_MOUSE_BUTTON_UP:
-                std::cout << "Mouse button released: " << event.button.button << std::endl;
+                //std::cout << "Mouse button released: " << event.button.button << std::endl;
                 eventManager_.dispatch(MouseButtonReleasedEvent(event.button.button));
                 break;
 

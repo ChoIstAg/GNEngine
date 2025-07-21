@@ -9,7 +9,7 @@ public:
     explicit BlankObject(EventManager& eventManager);
 
     void onPressEvent(const KeyPressedEvent& event);
-
+    
 private:
     EventListenerComponent eventListener_;
 };

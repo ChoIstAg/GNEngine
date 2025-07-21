@@ -2,14 +2,11 @@
 #include <iostream>
 
 BlankObject::BlankObject(EventManager& eventManager)
-    : eventListener_(eventManager)
-{
+    : eventListener_(eventManager) { 
 
-    eventListener_.addListener<KeyPressedEvent>([this](const KeyPressedEvent& event) {
-        onPressEvent(event);
-    });
+    eventListener_.addListener<TestEvent>( [this](const TestEvent& event) { std::cout << "TestEvent received: " << event.message << std::endl; } );
 }
 
 void BlankObject::onPressEvent(const KeyPressedEvent& event) {
-    std::cout << "TestEvent received: " << event.keyCode << std::endl;
+    std::cout << "Key pressed: " << event.keyCode << std::endl;
 }

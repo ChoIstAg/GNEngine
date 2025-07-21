@@ -9,9 +9,7 @@
 #include "Texture.h"
 #include "config.h"
 
-/*The Texture object.
-Argument: 
-*/
+
 class TextureManager {
 private:    
     SDL_Renderer* rawRenderer_; /* Raw renderer actually used in main */
@@ -25,14 +23,8 @@ public:
     ~TextureManager();
 
     bool init(SDL_Renderer* renderer);
-    bool loadTexture(std::string filePath, float x, float y, float scaleX, float scaleY); 
+    bool loadTexture(std::string filePath, float scaleX, float scaleY); 
     
-    bool loadBackground(std::string filePath, int windowWidth, int windowHeight, float scaleX, float scaleY);
-    bool renderBackground(std::string filePath);
-
-    bool renderTexture(std::string filePath); /* render a static texture to use rawRenderer*/
-    void moveTexture(std::string filePath, float x, float y);
-    void rotateTexture(std::string filePath, float angle); /* rotate clockwise */
     Texture* getTexture(std::string filePath);
     
     float getPosition(std::string filePath, char position); /* ex: ('x') -> return x. (x,y,w,h)*/

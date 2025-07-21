@@ -53,10 +53,8 @@ public:
     void unsubscribe(const std::type_index& eventType, SubscriptionId id) {
         if (subscribers_.count(eventType)) { /* 만약 이벤트를 구독한 리스너가 존재한다면 */
             auto& subscribers = subscribers_.at(eventType); 
-            /* 현재 이벤트 id와 구독자 이벤트 id가 일치하면 구독자를 목록에서 제거*/
-            subscribers.remove_if([id](const auto& subscriber) {
-                return subscriber.id == id;
-            });
+            /* 현재 이벤트 id와 구독자의 이벤트 id가 일치하면 구독자를 목록에서 제거*/
+            subscribers.remove_if( [&id](const auto& subscriber) { return (subscriber.id == id); });
         }
     }
 
@@ -65,7 +63,7 @@ public:
     void dispatch(const T_Event& event) {
         std::type_index eventType = typeid(T_Event);
         if (subscribers_.count(eventType)) { /* 해당 이벤트를 구독한 리스너가 존재한다면 */
-            auto subscribers = subscribers_.at(eventType); /* 구독자 list 자체를 참조 */
+            auto& subscribers = subscribers_.at(eventType); /* 구독자 list 자체를 참조 */
             for (const auto& sub : subscribers) {
                 sub.callback(event); /* 리스너가 콜백 함수 실행 */
             }

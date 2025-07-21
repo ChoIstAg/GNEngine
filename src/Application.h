@@ -6,7 +6,7 @@
 #include "engine/event/EventManager.h"
 //#include "Managers.h"
 
-class Application{
+class Application {
 private:
     SDL_Renderer* renderer_;
     SDL_Window* window_;

@@ -17,6 +17,7 @@ int Application::init(){
         return -1;
     }
 
+    /* 매니저 초기화*/
     eventManager_.init();
     inputManager_.init();
     textureManager_.init(renderer_);

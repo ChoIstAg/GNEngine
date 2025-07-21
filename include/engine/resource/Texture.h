@@ -10,5 +10,5 @@ public:
     float scaleX, scaleY;
 
     ~Texture();
-    bool loadTexture( std::string filePath_, float x_, float y_, float scaleX_, float scaleY_ );
+    bool loadTexture( std::string filePath_, float scaleX_, float scaleY_ );
 };

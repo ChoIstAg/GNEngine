@@ -67,6 +67,8 @@
         "list": "cpp",
         "any": "cpp",
         "cstring": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp"
     }
 }

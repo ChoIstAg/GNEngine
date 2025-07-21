@@ -1,31 +1,26 @@
 {
     "version": "0.2.0",
     "configurations": [
-      {
-        "name": "C/C++ Runner: Debug Session",
-        "type": "cppdbg",
-        "request": "launch",
-        "args": [],
-        "environment": [
-          {
-            "name": "PATH",
-            "value": "${env:PATH};C:\\Development\\code\\project\\GNEngine\\lib\\SDL3\\bin;C:\\Development\\code\\project\\GNEngine\\lib\\SDL3_image\\bin;C:\\Development\\code\\project\\GNEngine\\lib\\SDL3_ttf\\bin"
-          }
-        ],
-        "stopAtEntry": false,
-        "externalConsole": false,
-        "cwd": "${fileDirname}",
-        "program": "c:/Development/code/project/GNEngine/build/Debug/GNEngine.exe",
-        "MIMode": "gdb",
-        "miDebuggerPath": "C:/Development_Environment/code/msys64/ucrt64/bin/gdb.exe",
-        "setupCommands": [
-          {
-            "description": "Enable pretty-printing for gdb",
-            "text": "-enable-pretty-printing",
-            "ignoreFailures": true
-          },
-        ],
-        "preLaunchTask": "CMake: build",
-      }
+        {
+            "name": "(gdb) Launch GNEngine",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${command:cmake.launchTargetDirectory}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/Development_Environment/code/MSYS2/ucrt64/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "CMake: build"
+        }
     ]
-  }
+}
