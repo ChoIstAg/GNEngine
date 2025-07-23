@@ -4,18 +4,16 @@ file(GLOB_RECURSE ENGINE_SOURCES ${CMAKE_SOURCE_DIR}/include/engine/*.cpp)
 add_executable(GNEngine 
     main.cpp
 
-    MainCallback.cpp
     Application.cpp
 
     # engine의 모든 소스 파일 추가
     #${ENGINE_SOURCES} 주석화 사유: 오류가 해결 안된 소스 파일 때문에 컴파일 에러 발생함.
 
     ../include/engine/event/InputManager.cpp
-    #../include/engine/event/RenderManager.cpp
+    ../include/engine/event/RenderManager.cpp
     
     ../include/engine/object/BlankObject.cpp
 
-    ../include/engine/resource/Texture.cpp
     ../include/engine/resource/TextureManager.cpp
 
     #../include/engine/scene/SceneManager.cpp

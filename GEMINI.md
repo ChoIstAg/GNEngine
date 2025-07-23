@@ -3,7 +3,7 @@
 ## 1. 프로젝트 개요 (Project Overview)
 
 - **프로젝트명:** GNEngine
-- **목표:** Modern C++과 SDL3를 이용한 2D 게임 엔진 개발
+- **목표:** Modern C++과 SDL3를 이용한 2D 게임 엔진 개발.
 - **주요 기술:** Modern C++, CMake, SDL3, SDL3_image, SDL3_ttf
 
 ## 2. 빌드 및 실행 (Build & Run)
@@ -55,10 +55,15 @@
   (예: `ctest --preset <preset-name>`) 
 - 없음. -->
 
-## 5. 파일 구조
+## 5. 소스 파일들의 역할과 구조
 - src/main.cpp: 어플리케이션의 진입점. 단지 메인 콜백을 실행하기 위한 시발점으로 사용됨.
 - src/MainCallback.cpp: Application 정의 및 메인 이벤트 루프.
 - src/Application.cpp: 어플리케이션에서 필요한 각 매니저와 부가 요소들을 멤버 변수로 정의함.
+
+
+- 
+
+
 
 ## 6. 코딩 스타일 및 규칙 (Coding Style & Conventions)
 
@@ -74,6 +79,7 @@
 
 ### 그 외 코드 스타일 규칙
 - 주석 표기는 대부분 /* */를 사용합니다.
+- 한글 주석을 사용할 때에는 "입니다." 대신 "~임." "~함."를 사용해줘
 - lambda 객체는 간단하게 한 줄로 작성할 수 있다고 판단될 때(대부분의 경우)에는 아래의 형식대로 작성합니다. (람다 전후로 띄어쓰기에 집중해줘!!)
     function( []() { return 1; } )
 

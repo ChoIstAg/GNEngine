@@ -1,5 +1,7 @@
 #pragma once
+#include <SDL3/SDL.h>
 #include <string>
+#include <vector>
 
 /**
  * @brief 모든 이벤트의 기반이 되는 기본 구조체입니다.
@@ -13,7 +15,6 @@ struct Event {
     bool handled = false;
 };
 
-// --- 테스트 ---
 struct TestEvent : public Event {
     std::string message;
     TestEvent(const std::string_view message) : message(message) {}
@@ -53,9 +54,9 @@ protected:
 /**
  * @brief 모든 키의 현재 상태를 반환하는 이벤트.
  */
-struct ActiveKeyEvent : public KeyEvent {
-    ActiveKeyEvent(bool& keystate)
-        : KeyEvent() {}
+struct ActiveKeyEvent {
+    bool& keyState;
+    ActiveKeyEvent(bool& state) : keyState(state) {}
 };
 
 struct KeyPressedEvent : public KeyEvent {
@@ -68,10 +69,10 @@ struct KeyPressedEvent : public KeyEvent {
  * @brief 키가 계속 눌려있는 상태일 때 발생하는 이벤트입니다.
  */
 struct KeyRepeatEvent : public KeyEvent {
-    int repeatCount; // 키가 계속 눌리고 있을 경우 반복 횟수
+    int repeatTime; // 반복 시간 (밀리초 단위)
 
-    KeyRepeatEvent(int keycode, int repeat)
-        : KeyEvent(keycode), repeatCount(repeat) {}
+    KeyRepeatEvent(int keycode, int time)
+        : KeyEvent(keycode), repeatTime(time) {}
 };
 
 /**
@@ -80,6 +81,25 @@ struct KeyRepeatEvent : public KeyEvent {
 struct KeyReleasedEvent : public KeyEvent {
     KeyReleasedEvent(int keycode) : KeyEvent(keycode) {}
 };
+
+/**
+ * @brief 눌려있는 단일 키에 대한 정보를 담는 구조체입니다.
+ */
+struct KeyHeldInfo {
+    SDL_Scancode scancode;
+    uint32_t durationMs; // 키가 눌린 시간 (밀리초)
+};
+
+/**
+ * @brief 현재 프레임에서 눌려있는 모든 키들의 목록과 눌린 시간을 전달하는 이벤트입니다.
+ * 동시 입력을 이벤트 기반으로 처리하기 위해 사용됩니다.
+ */
+struct KeysHeldEvent : public Event {
+    std::vector<KeyHeldInfo> heldKeys;
+
+    KeysHeldEvent(const std::vector<KeyHeldInfo>& keys) : heldKeys(keys) {}
+};
+
 
 
 // --- 마우스 관련 이벤트 ---
@@ -125,3 +145,4 @@ struct MouseButtonPressedEvent : public MouseButtonEvent {
 struct MouseButtonReleasedEvent : public MouseButtonEvent {
     MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
 };
+
