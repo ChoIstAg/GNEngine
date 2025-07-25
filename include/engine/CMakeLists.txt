@@ -1,6 +1,8 @@
 add_subdirectory(
+    component
     event
-    object
+    manager
     resource
     scene
+    _legacy
 )

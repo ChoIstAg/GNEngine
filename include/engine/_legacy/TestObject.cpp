@@ -1,12 +1,12 @@
-#include "BlankObject.h"
+#include "TestObject.h"
 #include <iostream>
 #include <SDL3/SDL.h>
 
-BlankObject::BlankObject(EventManager& eventManager, TextureManager& textureManager, RenderManager& renderManager)
+TestObject::TestObject(EventManager& eventManager, TextureManager& textureManager, RenderManager& renderManager)
     : eventListener_(eventManager),
       textureManager_(textureManager),
       renderManager_(renderManager),
-      myTexture_(nullptr) // 초기화
+      texture_(nullptr) // 초기화
 {
     eventListener_.addListener<KeyPressedEvent>([this](const KeyPressedEvent& event) { this->onPressEvent(event); });
     eventListener_.addListener<KeyReleasedEvent>([this](const KeyReleasedEvent& event) { this->onReleaseEvent(event); });
@@ -14,27 +14,27 @@ BlankObject::BlankObject(EventManager& eventManager, TextureManager& textureMana
   
     // 텍스처 로드 예시
     if (textureManager_.loadTexture("example_png.png")) {
-        myTexture_ = textureManager_.getTexture("example_png.png");
+        texture_ = textureManager_.getTexture("example_png.png");
     } else {
         SDL_Log("Failed to load texture for BlankObject.");
     }
 }
 
-void BlankObject::onPressEvent(const KeyPressedEvent& event) {
+void TestObject::onPressEvent(const KeyPressedEvent& event) {
     const char* keyName = SDL_GetScancodeName(static_cast<SDL_Scancode>(event.keyCode));
     std::cout << "Key Pressed: " << keyName << " (Scancode: " << event.keyCode << ")" << std::endl;
 }
 
-void BlankObject::onReleaseEvent(const KeyReleasedEvent& event) {
+void TestObject::onReleaseEvent(const KeyReleasedEvent& event) {
     const char* keyName = SDL_GetScancodeName(static_cast<SDL_Scancode>(event.keyCode));
     std::cout << "Key Released: " << keyName << " (Scancode: " << event.keyCode << ")" << std::endl;
 }
 
-void BlankObject::onKeysHeldEvent(const KeysHeldEvent& event) {
+void TestObject::onKeysHeldEvent(const KeysHeldEvent& event) {
     if (event.heldKeys.empty()) return;
 
     // 키 입력에 따라 오브젝트 이동
-    float moveSpeed = 0.5f; // 픽셀/프레임
+    float moveSpeed = 5.0f; // 픽셀/프레임
     for (const auto& keyInfo : event.heldKeys) {
         switch (keyInfo.scancode) {
             case SDL_SCANCODE_W:
@@ -64,9 +64,9 @@ void BlankObject::onKeysHeldEvent(const KeysHeldEvent& event) {
     // std::cout << std::endl;
 }
 
-void BlankObject::update() {
-    if (myTexture_) {
-        renderManager_.renderTexture(myTexture_, x_, y_);
-        std::cout << "BlankObject position: " << x_ << ", " << y_ << std::endl;
+void TestObject::update() {
+    if (texture_) {
+        renderManager_.renderTexture(texture_, x_, y_);
+        //std::cout << "BlankObject position: " << x_ << ", " << y_ << std::endl; 위치 확인
     }
 }

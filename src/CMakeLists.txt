@@ -1,6 +1,4 @@
 # engine 디렉토리와 그 하위의 모든 .cpp 파일들을 찾아서 ENGINE_SOURCES 변수에 저장
-file(GLOB_RECURSE ENGINE_SOURCES ${CMAKE_SOURCE_DIR}/include/engine/*.cpp)
-
 add_executable(GNEngine 
     main.cpp
 
@@ -8,15 +6,18 @@ add_executable(GNEngine
 
     # engine의 모든 소스 파일 추가
     #${ENGINE_SOURCES} 주석화 사유: 오류가 해결 안된 소스 파일 때문에 컴파일 에러 발생함.
-
-    ../include/engine/event/InputManager.cpp
-    ../include/engine/event/RenderManager.cpp
+    ../include/engine/manager/event/InputManager.cpp
+    ../include/engine/manager/render/RenderManager.cpp
     
-    ../include/engine/object/BlankObject.cpp
+    ../include/engine/manager/resource/TextureManager.cpp
+    ../include/engine/manager/resource/TextManager.cpp
+    ../include/engine/resource/text/Text.cpp
+    
+    ../include/engine/_legacy/BlankObject.cpp
+    ../include/engine/_legacy/TextObject.cpp
+    ../include/engine/_legacy/TestObject.cpp
 
-    ../include/engine/resource/TextureManager.cpp
-
-    #../include/engine/scene/SceneManager.cpp
+    ../include/engine/manager/scene/SceneManager.cpp
 )
 
 # GNEngine 타겟에 필요한 include 경로를 설정합니다.

@@ -1,4 +1,1 @@
-target_sources(GNEngine
-PRIVATE
-    #SceneManager.cpp
-)
+# No source files in this directory anymore

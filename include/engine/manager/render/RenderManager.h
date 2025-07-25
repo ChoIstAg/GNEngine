@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL3/SDL.h>
-#include "../resource/Texture.h"
+#include "engine/resource/texture/Texture.h"
 
 class RenderManager {
 private:

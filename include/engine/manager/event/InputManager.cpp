@@ -1,5 +1,5 @@
 #include "InputManager.h"
-#include "EventInterface.h"
+#include "../../event/EventInterface.h"
 #include <SDL3/SDL.h>
 #include <iostream>
 #include <cstring>

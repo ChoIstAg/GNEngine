@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <memory> // For std::unique_ptr
 
-#include "Texture.h"
+#include "engine/resource/texture/Texture.h"
 #include "config.h"
 
 

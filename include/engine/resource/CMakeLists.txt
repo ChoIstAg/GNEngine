@@ -1,9 +1,0 @@
-target_sources(GNEngine
-PRIVATE
-    #Animation.cpp
-    #AnimationManager.cpp
-    #Text.cpp
-    #TextManager.cpp
-    Texture.cpp
-    TextureManager.cpp
-)

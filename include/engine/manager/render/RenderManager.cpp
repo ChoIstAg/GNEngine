@@ -36,7 +36,11 @@ void RenderManager::present() {
     }
 }
 
-/* 텍스처를 렌더링하기. */
+/* 텍스처 렌더링. 
+ * @brief 텍스처를 지정된 위치에 렌더링함.
+ * @param texture 렌더링할 텍스처 객체
+ * @param w, h 텍스처의 너비와 높이. 0이면 텍스처의 원본 크기를 사용함.
+*/
 void RenderManager::renderTexture(Texture* texture, float x, float y, float w, float h) {
     if (!renderer_) {
         SDL_Log("RenderManager::renderTexture - Renderer is null.");
@@ -65,8 +69,7 @@ void RenderManager::renderTexture(Texture* texture, float x, float y, float w, f
     dstRect.x = x;
     dstRect.y = y;
 
-    // SDL_RenderTexture 함수를 사용하여 텍스처를 그립니다.
-    // srcRect는 NULL로 설정하여 텍스처 전체를 사용합니다.
+    /* 텍스처 전체 렌더링 */
     if (SDL_RenderTexture(renderer_, texture->sdlTexture_, nullptr, &dstRect) == 0) {
         SDL_Log("RenderManager::renderTexture - Failed to render texture: %s", SDL_GetError());
     }

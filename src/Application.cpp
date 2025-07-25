@@ -14,6 +14,7 @@ int Application::init(){
     
     window_ = SDL_CreateWindow("Text main callback", windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
     renderer_ = SDL_CreateRenderer(window_, nullptr);
+    
     if (renderer_) {
         SDL_SetRenderVSync(renderer_, true);
     }
@@ -31,18 +32,26 @@ int Application::init(){
     eventManager_.init();
     inputManager_.init();
 
-    // BlankObject를 init()에서 초기화
-    blankObject_ = std::make_unique<BlankObject>(eventManager_, textureManager_, renderManager_);
+    textManager_ = std::make_unique<TextManager>(renderer_);
+
+    std::string fontPath = std::string(FONT_ASSET_ROOT_PATH) + "CookieRun Regular.ttf";
+    textManager_->loadFont("cookie-run", fontPath, 24);
+
+    testText_ = std::make_unique<TextObject>(
+        textManager_->createText("cookie-run", "Hello, GNEngine!", {255, 255, 255, 255}),
+        100.0f, 100.0f
+    );
+
+    testObject_ = std::make_unique<TestObject>(eventManager_, textureManager_, renderManager_);
     
     return 0;
 }
 
 void Application::quit() {
     std::cout << "cleaning up and quitting... " << std::endl;
-    // textureManager_와 renderManager_는 멤버 변수로 자동 소멸됩니다.
-    // blankObject_도 unique_ptr이므로 자동으로 소멸됩니다.
     SDL_DestroyRenderer(renderer_);
     SDL_DestroyWindow(window_);
+    /* Manager들은 모두 자동으로 소멸함. */
 
     SDL_Quit();
 }
@@ -62,8 +71,12 @@ void Application::run() {
         /* Render */
         renderManager_.clear();
 
-        if (blankObject_) {
-            blankObject_->update(); // unique_ptr이므로 -> 연산자 사용
+        if (testObject_) {
+            testObject_->update(); // unique_ptr이므로 -> 연산자 사용
+        }
+
+        if (testText_) {
+            testText_->render();
         }
 
         renderManager_.present();

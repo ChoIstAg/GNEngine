@@ -1,10 +1,10 @@
 #pragma once
 
-#include "engine/event/EventManager.h"
-#include "engine/event/EventListnerComponent.h"
+#include "engine/manager/event/EventManager.h"
+#include "engine/component/event/EventListenerComponent.h"
 #include "engine/event/EventInterface.h"
-#include "engine/resource/TextureManager.h"
-#include "engine/event/RenderManager.h"
+#include "engine/manager/resource/TextureManager.h"
+#include "engine/manager/render/RenderManager.h"
 
 class BlankObject {
 public:
