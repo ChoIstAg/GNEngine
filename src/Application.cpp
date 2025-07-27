@@ -1,9 +1,7 @@
 #include "Application.h"
 #include <iostream>
 
-Application::Application() 
-    : inputManager_(eventManager_)
-{};
+Application::Application() {};
 
 int Application::init(){
     
@@ -25,11 +23,11 @@ int Application::init(){
     }
     
     /* 매니저 초기화*/
-    renderManager_.init(renderer_, window_);
-    textureManager_.init(renderer_);
+    renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
+    textureManager_ = std::make_unique<TextureManager>(renderer_);
     
-    eventManager_.init();
-    inputManager_.init();
+    eventManager_ = std::make_unique<EventManager>();
+    inputManager_ = std::make_unique<InputManager>(*eventManager_);
 
     textManager_ = std::make_unique<TextManager>(renderer_);
 
@@ -43,7 +41,7 @@ int Application::init(){
     testText_ = std::make_unique<TextObject>(
         textManager_->createText("cookie-run", content, {255, 255, 255, 255}), 100.0f, 100.0f);
 
-    testObject_ = std::make_unique<TestObject>(eventManager_, textureManager_, renderManager_);
+    testObject_ = std::make_unique<TestObject>(*eventManager_, *textureManager_, *renderManager_);
     
     return 0;
 }
@@ -61,25 +59,25 @@ void Application::run() {
     isRunning_ = true;
     while(isRunning_){
         /* Process Input */
-        if(!inputManager_.eventProcessing()){
+        if(!inputManager_->eventProcessing()){
             isRunning_ = false;
             break;
         }
 
         /* Update */
-        inputManager_.updateKeyStates();
+        inputManager_->updateKeyStates();
 
         /* Render */
-        renderManager_.clear();
+        renderManager_->clear();
 
         if (testObject_) {
-            testObject_->update(); // unique_ptr이므로 -> 연산자 사용
+            testObject_->update();
         }
 
         if (testText_) {
             testText_->render();
         }
 
-        renderManager_.present();
+        renderManager_->present();
     }
 }

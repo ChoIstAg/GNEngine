@@ -9,9 +9,9 @@ private:
     SDL_Window* window_;
 
 public:
-    RenderManager();
+    RenderManager(SDL_Renderer* renderer, SDL_Window* window);
     ~RenderManager();
-    bool init(SDL_Renderer* renderer, SDL_Window* window);
+    //bool init(); // 초기화 함수는 필요 없음.
 
     void clear();
     void present();

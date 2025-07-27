@@ -2,21 +2,16 @@
 #include <iostream>
 #include <SDL3_image/SDL_image.h>
 
-TextureManager::TextureManager() : renderer_(nullptr) {}
+TextureManager::TextureManager(SDL_Renderer* renderer) 
+    : renderer_(renderer) {
+        if(!renderer){ 
+            SDL_Log("TextureManager::init - rawRenderer is null: %s", SDL_GetError());
+        }
+    }
 
 TextureManager::~TextureManager() {
     textureMap_.clear();
     std::cerr << "TextureManager " << this << " is successfully destroyed" << std::endl;
-}
-
-bool TextureManager::init(SDL_Renderer* renderer){
-    if(!renderer){ 
-        SDL_Log("TextureManager::init - rawRenderer is null: %s", SDL_GetError());
-        return false;
-    }
-    renderer_ = renderer;
-
-    return true;
 }
 
 bool TextureManager::loadTexture(const std::string& filePath){

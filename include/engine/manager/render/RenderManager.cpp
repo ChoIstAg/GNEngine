@@ -1,24 +1,22 @@
 #include "RenderManager.h"
 #include <iostream>
 
-RenderManager::RenderManager() {}
-
 /* 
- * @brief RenderManager를 초기화 하는 함수.
+ * @brief RenderManager의 생성자.
  * @param renderer SDL_CreateRenderer로 초기화가 끝난 SDL_Renderer 객체
  * @param window SDL_CreateWindow로 초기화가 끝난 SDL_Window 객체
  * @return 초기화 성공 여부 (true: 성공, false: 실패)
  */
-bool RenderManager::init(SDL_Renderer* renderer, SDL_Window* window) {
-    if (!renderer || !window) {
+RenderManager::RenderManager(SDL_Renderer* renderer, SDL_Window* window)
+    : renderer_(renderer), window_(window) {
+    if (!renderer_ || !window_) {
         SDL_Log("RenderManager::init - Renderer or Window is null: %s", SDL_GetError());
-        return false;
     }
-    renderer_ = renderer;
-    window_ = window;
-
-    return true;
 }
+
+// bool RenderManager::init() {
+//     return true;
+// }
 
 RenderManager::~RenderManager() {
     // Renderer와 Window는 Application 클래스에서 소유하고 파괴하므로, 여기서는 파괴하지 않음.

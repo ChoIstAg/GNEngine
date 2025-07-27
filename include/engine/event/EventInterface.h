@@ -33,7 +33,7 @@ struct WindowCloseEvent : public Event {};
  * @brief 창 크기가 조절될 때 발생하는 이벤트입니다.
  */
 struct WindowResizeEvent : public Event {
-    unsigned int width, height;
+    unsigned int width, height; /* 바뀐 너비, 높이*/
 
     WindowResizeEvent(unsigned int newWidth, unsigned int newHeight)
         : width(newWidth), height(newHeight) {} 

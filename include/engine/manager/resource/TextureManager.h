@@ -16,10 +16,9 @@ private:
     std::unordered_map<std::string, std::unique_ptr<Texture>> textureMap_; /* Normal texture name : texture value*/
 
 public:
-    TextureManager();
+    TextureManager(SDL_Renderer* renderer);
     ~TextureManager();
 
-    bool init(SDL_Renderer* renderer);
     bool loadTexture(const std::string& filePath); 
     
     Texture* getTexture(const std::string& filePath) const;

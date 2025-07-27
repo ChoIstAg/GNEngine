@@ -27,16 +27,18 @@ public:
     Application();
     int init();
     void quit();
+
+    /* 메인 콜백 */
     void run();
 
     SDL_Renderer* getRenderer() const { return renderer_; }
     SDL_Window* getWindow() const { return window_; }
 
     /* Managers */
-    EventManager eventManager_;
-    InputManager inputManager_;
-    TextureManager textureManager_;
-    RenderManager renderManager_;
+    std::unique_ptr<EventManager> eventManager_;
+    std::unique_ptr<InputManager> inputManager_;
+    std::unique_ptr<TextureManager> textureManager_;
+    std::unique_ptr<RenderManager> renderManager_;
     std::unique_ptr<TextManager> textManager_;
     std::unique_ptr<TextObject> testText_;
     std::unique_ptr<TestObject> testObject_; 

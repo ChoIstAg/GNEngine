@@ -26,16 +26,17 @@ private:
     SubscriptionId nextId_ = 0; /* For allocation of a next subscripttion id. */
 
 public:
-    EventManager() = default;
-    
-    void init() {
+    EventManager() 
+        : nextId_(0) {
         subscribers_.clear();
-        nextId_ = 0;
-    }
+    };
+    
+    // void init() {
+    // }
 
     /* 구독하기 */
     template<typename T_Event>
-    SubscriptionId subscribe(std::function<void(const T_Event&)> callback) {
+    SubscriptionId subscribe (std::function<void(const T_Event&)> callback) {
         /* 래퍼 람다 객체로 타입을 소거함. ->  하나의 컨테이너(list)에 저장, 유연성 증가. */
         auto wrapper = [cb = std::move(callback)](const std::any& eventData) {
             if (const T_Event* event = std::any_cast<T_Event>(&eventData)) {
@@ -50,7 +51,7 @@ public:
     }
 
     /* 구독 해지하기*/
-    void unsubscribe(const std::type_index& eventType, SubscriptionId id) {
+    void unsubscribe (const std::type_index& eventType, SubscriptionId id) {
         if (subscribers_.count(eventType)) { /* 만약 이벤트를 구독한 리스너가 존재한다면 */
             auto& subscribers = subscribers_.at(eventType); 
             /* 현재 이벤트 id와 구독자의 이벤트 id가 일치하면 구독자를 목록에서 제거*/
@@ -60,7 +61,7 @@ public:
 
     /* 이벤트 발생시 각 리스너의 함수 호출 */
     template<typename T_Event>
-    void dispatch(const T_Event& event) {
+    void dispatch (const T_Event& event) {
         std::type_index eventType = typeid(T_Event);
         if (subscribers_.count(eventType)) { /* 해당 이벤트를 구독한 리스너가 존재한다면 */
             auto& subscribers = subscribers_.at(eventType); /* 구독자 list 자체를 참조 */

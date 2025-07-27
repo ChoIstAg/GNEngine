@@ -6,18 +6,27 @@
 #include <vector>
 
 InputManager::InputManager(EventManager& eventManager)
-    : eventManager_(eventManager) {}
+    : eventManager_(eventManager) {
 
-/* Initialize key states. */
-bool InputManager::init() {
-    currentKeyStates_ = SDL_GetKeyboardState(nullptr);
-    std::memcpy(previousKeyStates_, currentKeyStates_, SDL_SCANCODE_COUNT);
-    return true;
-}
+        /* Initialize Key states */
+        currentKeyStates_ = SDL_GetKeyboardState(nullptr);
+
+        /* Initialize previous key states */
+        for (int i = 0; i < SDL_SCANCODE_COUNT; ++i) {
+            previousKeyStates_.set(i); /* Set true */
+        }
+    }
 
 void InputManager::updateKeyStates() {
     /* Copy previous key state to current. */
-    std::memcpy(previousKeyStates_, currentKeyStates_, SDL_SCANCODE_COUNT);
+    
+    for (int i = 0; i < SDL_SCANCODE_COUNT; ++i) {
+        if (currentKeyStates_[i]) {
+            previousKeyStates_.set(i);
+        } else {
+            previousKeyStates_.reset(i);
+        }
+    }
 
     if (!currentlyPressedKeys_.empty()) {
         std::vector<KeyHeldInfo> heldKeysInfo;
