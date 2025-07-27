@@ -5,16 +5,21 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <format>
+
 #include "engine/resource/text/Text.h"
 
 /*
- * @brief 폰트를 로드하고 Text 객체를 생성 및 관리하는 클래스임.
+ * @brief 폰트를 로드하고 Text 객체를 생성 및 관리하는 클래스.
 */
 class TextManager {
 public:
     /*
      * @brief TextManager를 초기화함.
-     * @param renderer 렌더링에 사용될 SDL_Renderer 포인터
+     * @param renderer 이미 SDL_CreateRenderer()로 생성을 마친 SDL_Renderer의 포인터 주소값.
      */
     TextManager(SDL_Renderer* renderer);
 
@@ -41,7 +46,14 @@ public:
      */
     std::unique_ptr<Text> createText(const std::string& fontId, const std::string& text, SDL_Color color);
 
+    /**
+     * @brief 파일 경로로부터 텍스트를 불러옴.
+     * @param filePath 텍스트 파일의 경로.
+     * @return 파일의 내용을 담은 std::string. 파일이 존재하지 않거나 읽을 수 없는 경우 예외를 발생시킴.
+    */
+    std::string loadTextFromFile(const std::filesystem::path& filePath);
+
 private:
-    SDL_Renderer* renderer;
-    std::map<std::string, TTF_Font*> fontMap;
+    SDL_Renderer* renderer_;
+    std::map<std::string, TTF_Font*> fontMap_;
 };

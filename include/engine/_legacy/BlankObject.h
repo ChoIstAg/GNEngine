@@ -1,7 +1,7 @@
 #pragma once
 
 #include "engine/manager/event/EventManager.h"
-#include "engine/component/event/EventListenerComponent.h"
+#include "engine/component/EventListenerComponent.h"
 #include "engine/event/EventInterface.h"
 #include "engine/manager/resource/TextureManager.h"
 #include "engine/manager/render/RenderManager.h"

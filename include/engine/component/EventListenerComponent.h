@@ -3,8 +3,8 @@
 #include <map>
 #include <typeindex>
 #include <functional>
-#include "../../event/EventInterface.h"
-#include "../../manager/event/EventManager.h"
+#include "../event/EventInterface.h"
+#include "../manager/event/EventManager.h"
 
 class EventListenerComponent {
 private:

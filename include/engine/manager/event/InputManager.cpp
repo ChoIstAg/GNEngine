@@ -16,6 +16,7 @@ bool InputManager::init() {
 }
 
 void InputManager::updateKeyStates() {
+    /* Copy previous key state to current. */
     std::memcpy(previousKeyStates_, currentKeyStates_, SDL_SCANCODE_COUNT);
 
     if (!currentlyPressedKeys_.empty()) {
@@ -48,7 +49,7 @@ bool InputManager::eventProcessing() {
             
             case SDL_EVENT_KEY_DOWN: {
                 SDL_Scancode scancode = event.key.scancode;
-                if (keyPressTimes_.find(scancode) == keyPressTimes_.end()) { // Check if it's a new press
+                if (keyPressTimes_.find(scancode) == keyPressTimes_.end()) { // Check if it is a new press
                     eventManager_.dispatch(KeyPressedEvent(scancode));
                     keyPressTimes_[scancode] = SDL_GetTicks();
                     currentlyPressedKeys_.insert(scancode);

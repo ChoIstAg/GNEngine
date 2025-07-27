@@ -18,7 +18,7 @@ public:
     Texture(const Texture&) = delete; /* 복사 방지 */
     Texture& operator=(const Texture&) = delete; /* 복사 대입 방지 */
 
-    // 이동 생성 및 할당 허용
+    /* 이동 생성 및 할당만 허용 */
     Texture(Texture&& other) noexcept
         : sdlTexture_(other.sdlTexture_),
           width_(other.width_),
@@ -29,6 +29,7 @@ public:
         other.height_ = 0;
     }
 
+    /* 대입시 소유권을 이동함. */
     Texture& operator=(Texture&& other) noexcept {
         if (this != &other) {
             if (sdlTexture_) {

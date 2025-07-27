@@ -15,7 +15,7 @@ public:
      * @param renderer 렌더링에 사용될 SDL_Renderer 포인터
      * @param font 텍스트 렌더링에 사용될 TTF_Font 포인터
      * @param text 표시할 텍스트 내용
-     * @param color 텍스트 색상
+     * @param color 텍스트 색상(Uint8 R, G, B, A)
      */
     Text(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, SDL_Color color);
 
@@ -30,7 +30,7 @@ public:
 
     /*
      * @brief 텍스트 내용을 변경함.
-     * @param newText 새로운 텍스트 내용
+     * @param newText 덮어씌울 새로운 텍스트 내용
      */
     void setText(const std::string& newText);
 
@@ -61,8 +61,8 @@ private:
 
     SDL_Renderer* renderer_;
     TTF_Font* font_;
-    SDL_Texture* texture_;
+    SDL_Texture* texture_; /* 렌더링할 텍스처 */
     std::string text_;
-    SDL_FRect dstRect_;
+    SDL_FRect dstRect_; /* 렌더링할 위치 */
     SDL_Color color_;
 };

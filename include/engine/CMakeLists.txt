@@ -1,8 +1,7 @@
-add_subdirectory(
-    component
-    event
-    manager
-    resource
-    scene
-    _legacy
-)
+add_subdirectory(component)
+add_subdirectory(event)
+add_subdirectory(manager)
+add_subdirectory(resource)
+add_subdirectory(scene)
+add_subdirectory(_legacy)
+

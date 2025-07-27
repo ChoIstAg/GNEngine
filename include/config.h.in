@@ -8,10 +8,10 @@
     #define TEXT_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/text/"
     #endif
 
-    #ifndef IMAGE_ASSET_ROOT_PATH
-    #define IMAGE_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/image/"
-    #endif
-
     #ifndef FONT_ASSET_ROOT_PATH
     #define FONT_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/font/"
+    #endif
+
+    #ifndef IMAGE_ASSET_ROOT_PATH
+    #define IMAGE_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/image/"
     #endif

@@ -1,24 +1,16 @@
 #pragma once
 
 #include "engine/resource/text/Text.h"
+#include "engine/component/TransformComponent.h"
 #include <memory>
 
 /*
- * @brief 텍스트를 게임 월드에 표시하기 위한 게임 오브젝트 클래스임.
+ * @brief 텍스트를 화면에 표시하기 위한 객체.
 */
 class TextObject {
 public:
-    /*
-     * @brief TextObject를 생성함.
-     * @param text 렌더링할 Text 객체에 대한 소유권을 가진 포인터
-     * @param x 화면에 표시될 x 좌표
-     * @param y 화면에 표시될 y 좌표
-     */
-    TextObject(std::unique_ptr<Text> text, float x, float y);
 
-    /*
-     * @brief TextObject를 파괴함.
-    */
+    TextObject(std::unique_ptr<Text> text, float x, float y);
     ~TextObject();
 
     /*

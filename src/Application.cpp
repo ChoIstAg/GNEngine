@@ -24,23 +24,24 @@ int Application::init(){
         return -1;
     }
     
-    // RenderManager와 TextureManager 초기화
+    /* 매니저 초기화*/
     renderManager_.init(renderer_, window_);
     textureManager_.init(renderer_);
     
-    /* 매니저 초기화*/
     eventManager_.init();
     inputManager_.init();
 
     textManager_ = std::make_unique<TextManager>(renderer_);
 
-    std::string fontPath = std::string(FONT_ASSET_ROOT_PATH) + "CookieRun Regular.ttf";
+    /* 폰트 로드 */
+    std::string fontPath = static_cast<std::string>(FONT_ASSET_ROOT_PATH) + "CookieRun Regular.ttf";
     textManager_->loadFont("cookie-run", fontPath, 24);
 
+    /* 텍스트 불러오기 */
+    std::string content = textManager_->loadTextFromFile(static_cast<std::string>(TEXT_ASSET_ROOT_PATH) + "test.txt");
+    
     testText_ = std::make_unique<TextObject>(
-        textManager_->createText("cookie-run", "Hello, GNEngine!", {255, 255, 255, 255}),
-        100.0f, 100.0f
-    );
+        textManager_->createText("cookie-run", content, {255, 255, 255, 255}), 100.0f, 100.0f);
 
     testObject_ = std::make_unique<TestObject>(eventManager_, textureManager_, renderManager_);
     

@@ -1,10 +1,14 @@
 #include "RenderManager.h"
 #include <iostream>
 
-RenderManager::RenderManager() {
-    std::cerr << "RenderManager " << this << " is successfully created" << std::endl;
-}
+RenderManager::RenderManager() {}
 
+/* 
+ * @brief RenderManager를 초기화 하는 함수.
+ * @param renderer SDL_CreateRenderer로 초기화가 끝난 SDL_Renderer 객체
+ * @param window SDL_CreateWindow로 초기화가 끝난 SDL_Window 객체
+ * @return 초기화 성공 여부 (true: 성공, false: 실패)
+ */
 bool RenderManager::init(SDL_Renderer* renderer, SDL_Window* window) {
     if (!renderer || !window) {
         SDL_Log("RenderManager::init - Renderer or Window is null: %s", SDL_GetError());
@@ -17,7 +21,7 @@ bool RenderManager::init(SDL_Renderer* renderer, SDL_Window* window) {
 }
 
 RenderManager::~RenderManager() {
-    // Renderer와 Window는 Application 클래스에서 소유하고 파괴하므로, 여기서는 파괴하지 않습니다.
+    // Renderer와 Window는 Application 클래스에서 소유하고 파괴하므로, 여기서는 파괴하지 않음.
     std::cerr << "RenderManager " << this << " is successfully destroyed" << std::endl;
 }
 
@@ -43,15 +47,15 @@ void RenderManager::present() {
 */
 void RenderManager::renderTexture(Texture* texture, float x, float y, float w, float h) {
     if (!renderer_) {
-        SDL_Log("RenderManager::renderTexture - Renderer is null.");
+        SDL_Log("RenderManager::renderTexture - Renderer is null. : %s", SDL_GetError());
         return;
     }
     if (!texture) {
-        SDL_Log("RenderManager::renderTexture - Texture object is null.");
+        SDL_Log("RenderManager::renderTexture - Texture object is null. : %s", SDL_GetError());
         return;
     }
     if (!texture->sdlTexture_) {
-        SDL_Log("RenderManager::renderTexture - SDL_Texture* inside Texture object is null.");
+        SDL_Log("RenderManager::renderTexture - SDL_Texture* inside Texture object is null. : %s", SDL_GetError());
         return;
     }
 

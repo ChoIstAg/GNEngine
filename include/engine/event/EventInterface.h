@@ -4,12 +4,13 @@
 #include <vector>
 
 /**
- * @brief 모든 이벤트의 기반이 되는 기본 구조체입니다.
+ * @brief 모든 이벤트의 기반이 되는 기본 구조체.
  * 
- * 'handled' 플래그를 포함합니다. 리스너는 이벤트를 처리한 후 이 값을 true로 설정하여,
- * 동일한 이벤트를 구독하는 다른 리스너들이 해당 이벤트를 더 이상 처리하지 않도록 할 수 있습니다.
+ * 'handled' 플래그를 포함함.
+ * 리스너는 이벤트를 처리한 후 이 값을 true로 설정하면 동일한 이벤트를 구독하는 다른 리스너들이 해당 이벤트를 더 이상 처리하지 않도록 하게 할 수 있음.
  * @note 이 'handled' 플래그가 올바르게 동작하려면 EventManager와 EventListenerComponent가
- * 이벤트를 수정 가능한 참조(non-const reference)로 전달해야 합니다.
+ * 이벤트를 수정 가능한 참조(non-const reference)로 전달해야함.
+ *
  */
 struct Event {
     bool handled = false;
@@ -83,7 +84,7 @@ struct KeyReleasedEvent : public KeyEvent {
 };
 
 /**
- * @brief 눌려있는 단일 키에 대한 정보를 담는 구조체입니다.
+ * @brief 단일 키에 대한 정보(scancode, 눌린 시간)를 포함하는 구조체.
  */
 struct KeyHeldInfo {
     SDL_Scancode scancode;
