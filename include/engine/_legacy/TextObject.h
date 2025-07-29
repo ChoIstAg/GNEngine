@@ -10,6 +10,12 @@
 class TextObject {
 public:
 
+    /*
+     * @brief TextObject의 생성자.
+     * @param text Text 객체에 대한 std::unique_ptr
+     * @param x 초기 x 좌표
+     * @param y 초기 y 좌표
+     */
     TextObject(std::unique_ptr<Text> text, float x, float y);
     ~TextObject();
 

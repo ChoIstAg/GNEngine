@@ -1,25 +1,24 @@
 #include "InputManager.h"
-#include "../../event/EventInterface.h"
-#include <SDL3/SDL.h>
 #include <iostream>
-#include <cstring>
-#include <vector>
 
 InputManager::InputManager(EventManager& eventManager)
     : eventManager_(eventManager) {
 
-        /* Initialize Key states */
-        currentKeyStates_ = SDL_GetKeyboardState(nullptr);
+    /* Initialize Key states */
+    currentKeyStates_ = SDL_GetKeyboardState(nullptr);
 
-        /* Initialize previous key states */
-        for (int i = 0; i < SDL_SCANCODE_COUNT; ++i) {
-            previousKeyStates_.set(i); /* Set true */
-        }
+    /* Initialize previous key states */
+    for (int i = 0; i < SDL_SCANCODE_COUNT; ++i) {
+        previousKeyStates_.reset(i); /* Set false */
     }
+}
+
+InputManager::~InputManager() {
+    std::cerr << "InputManager " << this << " is successfully destroyed" << std::endl;
+}
 
 void InputManager::updateKeyStates() {
     /* Copy previous key state to current. */
-    
     for (int i = 0; i < SDL_SCANCODE_COUNT; ++i) {
         if (currentKeyStates_[i]) {
             previousKeyStates_.set(i);
@@ -58,8 +57,8 @@ bool InputManager::eventProcessing() {
             
             case SDL_EVENT_KEY_DOWN: {
                 SDL_Scancode scancode = event.key.scancode;
-                if (keyPressTimes_.find(scancode) == keyPressTimes_.end()) { // Check if it is a new press
-                    eventManager_.dispatch(KeyPressedEvent(scancode));
+                if (keyPressTimes_.find(scancode) == keyPressTimes_.end()) { // 새로 눌린 키인지 확인
+                    eventManager_.dispatch(KeyPressedEvent(scancode)); /* 이벤트 발생 */
                     keyPressTimes_[scancode] = SDL_GetTicks();
                     currentlyPressedKeys_.insert(scancode);
                 }
@@ -68,7 +67,7 @@ bool InputManager::eventProcessing() {
 
             case SDL_EVENT_KEY_UP: {
                 SDL_Scancode scancode = event.key.scancode;
-                eventManager_.dispatch(KeyReleasedEvent(scancode));
+                eventManager_.dispatch(KeyReleasedEvent(scancode)); /* 이벤트 발생 */
                 currentlyPressedKeys_.erase(scancode);
                 keyPressTimes_.erase(scancode);
                 break;

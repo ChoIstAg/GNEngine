@@ -5,11 +5,12 @@
 #include "engine/event/EventInterface.h"
 #include "engine/manager/resource/TextureManager.h"
 #include "engine/manager/render/RenderManager.h"
+#include "engine/manager/sound/SoundManager.h"
 
 class TestObject {
 public:
     TestObject() = delete;
-    explicit TestObject(EventManager& eventManager, TextureManager& textureManager, RenderManager& renderManager);
+    explicit TestObject(EventManager& eventManager, TextureManager& textureManager, RenderManager& renderManager, SoundManager& soundManager);
 
     void onPressEvent(const KeyPressedEvent& event);
     void onReleaseEvent(const KeyReleasedEvent& event);
@@ -18,9 +19,12 @@ public:
     void update();
     
 private:
-    EventListenerComponent eventListener_;
     TextureManager& textureManager_;
     RenderManager& renderManager_;
+    SoundManager& soundManager_;
+
+    EventListenerComponent eventListener_;
+
     Texture* texture_;
     float x_ = 100.0f;
     float y_ = 100.0f;

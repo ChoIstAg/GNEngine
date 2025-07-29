@@ -59,7 +59,7 @@ void RenderManager::renderTexture(Texture* texture, float x, float y, float w, f
 
     SDL_FRect dstRect;
     
-    // 너비와 높이가 지정되지 않았다면 텍스처의 원본 크기를 사용
+    /* 너비와 높이가 0이면 텍스처의 원본 크기를 사용 */
     if (w == 0 || h == 0) {
         dstRect.w = static_cast<float>(texture->width_);
         dstRect.h = static_cast<float>(texture->height_);

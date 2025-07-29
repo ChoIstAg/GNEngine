@@ -3,8 +3,11 @@
 #include <SDL3/SDL.h>
 #include <set>
 #include <unordered_map>
-#include <bitset> // Add for std::bitset
+#include <vector>
+#include <bitset>
+
 #include "EventManager.h"
+#include "../../event/EventInterface.h"
 
 class InputManager {
 private: 
@@ -17,9 +20,10 @@ private:
 
 public:
     explicit InputManager(EventManager& eventManager);
-    bool eventProcessing();
-    
-    void updateKeyStates();
+    ~InputManager();
+
+    bool eventProcessing(); /* 모든 SDL 이벤트를 폴링하고 처리함*/
+    void updateKeyStates(); /* 모든 키 상태를 업데이트함*/
 
     bool isKeyPressed(SDL_Scancode key) const;
     bool isKeyDown(SDL_Scancode key) const;

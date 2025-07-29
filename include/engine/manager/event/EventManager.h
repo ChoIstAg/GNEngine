@@ -31,8 +31,10 @@ public:
         subscribers_.clear();
     };
     
-    // void init() {
-    // }
+    ~EventManager() {
+        subscribers_.clear(); /* 모든 구독자 목록을 비움. */
+        std::cerr << "EventManager destroyed and all subscriptions cleared." << std::endl;
+    }
 
     /* 구독하기 */
     template<typename T_Event>

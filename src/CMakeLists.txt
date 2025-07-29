@@ -11,6 +11,7 @@ add_executable(GNEngine
     
     ../include/engine/manager/resource/TextureManager.cpp
     ../include/engine/manager/resource/TextManager.cpp
+    ../include/engine/manager/sound/SoundManager.cpp
     ../include/engine/resource/text/Text.cpp
     
     ../include/engine/_legacy/BlankObject.cpp
@@ -44,5 +45,17 @@ add_custom_command(TARGET GNEngine POST_BUILD
     ${SDL3_image_DLL_DIR}/SDL3_image.dll
     ${SDL3_ttf_DLL_DIR}/SDL3_ttf.dll
 
+    $<TARGET_FILE_DIR:GNEngine>
+)
+
+# 빌드 후 OpenAL DLL과 구현 DLL을 실행 파일 디렉토리로 복사합니다.
+add_custom_command(TARGET GNEngine POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${OPENAL_DIR}/router/Win64/OpenAL32.dll"
+    $<TARGET_FILE_DIR:GNEngine>
+)
+add_custom_command(TARGET GNEngine POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${OPENAL_DIR}/bin/Win64/soft_oal.dll"
     $<TARGET_FILE_DIR:GNEngine>
 )

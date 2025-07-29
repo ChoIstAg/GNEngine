@@ -25,12 +25,12 @@ struct TestEvent : public Event {
 // --- 창 관련 이벤트 ---
 
 /**
- * @brief 창이 닫힐 때 발생하는 이벤트입니다.
+ * @brief 창이 닫힐 때 발생하는 이벤트.
  */
 struct WindowCloseEvent : public Event {};
 
 /**
- * @brief 창 크기가 조절될 때 발생하는 이벤트입니다.
+ * @brief 창 크기가 조절될 때 발생하는 이벤트.
  */
 struct WindowResizeEvent : public Event {
     unsigned int width, height; /* 바뀐 너비, 높이*/
@@ -43,13 +43,12 @@ struct WindowResizeEvent : public Event {
 // --- 키보드 관련 이벤트 ---
 
 /**
- * @brief 키보드 이벤트의 기반이 되는 구조체입니다.
+ * @brief 키보드 이벤트의 기반이 되는 구조체.
  */
 struct KeyEvent : public Event {
-    int keyCode; // 엔진 고유의 키 코드를 사용합니다.
-
+    SDL_Scancode keyCode;
 protected:
-    KeyEvent(int keycode) : keyCode(keycode) {}
+    KeyEvent(SDL_Scancode keycode) : keyCode(keycode) {}
 };
 
 /**
@@ -62,25 +61,25 @@ struct ActiveKeyEvent {
 
 struct KeyPressedEvent : public KeyEvent {
 
-    KeyPressedEvent(int keycode)
+    KeyPressedEvent(SDL_Scancode keycode)
         : KeyEvent(keycode) {}
 };
 
 /**
- * @brief 키가 계속 눌려있는 상태일 때 발생하는 이벤트입니다.
+ * @brief 키가 계속 눌려있는 상태일 때 발생하는 이벤트.
  */
 struct KeyRepeatEvent : public KeyEvent {
-    int repeatTime; // 반복 시간 (밀리초 단위)
+    int repeatTime; // 반복 시간 (ms 단위)
 
-    KeyRepeatEvent(int keycode, int time)
+    KeyRepeatEvent(SDL_Scancode keycode, int time)
         : KeyEvent(keycode), repeatTime(time) {}
 };
 
 /**
- * @brief 키에서 손을 뗐을 때 발생하는 이벤트입니다.
+ * @brief 키에서 손을 뗐을 때 발생하는 이벤트.
  */
 struct KeyReleasedEvent : public KeyEvent {
-    KeyReleasedEvent(int keycode) : KeyEvent(keycode) {}
+    KeyReleasedEvent(SDL_Scancode keycode) : KeyEvent(keycode) {}
 };
 
 /**
@@ -92,8 +91,8 @@ struct KeyHeldInfo {
 };
 
 /**
- * @brief 현재 프레임에서 눌려있는 모든 키들의 목록과 눌린 시간을 전달하는 이벤트입니다.
- * 동시 입력을 이벤트 기반으로 처리하기 위해 사용됩니다.
+ * @brief 현재 프레임에서 눌려있는 모든 키들의 목록과 눌린 시간을 전달하는 이벤트.
+ * 동시 입력을 이벤트 기반으로 처리하기 위해 사용됨.
  */
 struct KeysHeldEvent : public Event {
     std::vector<KeyHeldInfo> heldKeys;
@@ -106,7 +105,7 @@ struct KeysHeldEvent : public Event {
 // --- 마우스 관련 이벤트 ---
 
 /**
- * @brief 마우스 커서가 움직일 때 발생하는 이벤트입니다.
+ * @brief 마우스 커서가 움직일 때 발생하는 이벤트.
  */
 struct MouseMovedEvent : public Event {
     float mouseX, mouseY;
@@ -115,7 +114,7 @@ struct MouseMovedEvent : public Event {
 };
 
 /**
- * @brief 마우스 휠을 스크롤할 때 발생하는 이벤트입니다.
+ * @brief 마우스 휠을 스크롤할 때 발생하는 이벤트.
  */
 struct MouseScrolledEvent : public Event {
     float xOffset, yOffset;
@@ -124,7 +123,7 @@ struct MouseScrolledEvent : public Event {
 };
 
 /**
- * @brief 마우스 버튼 이벤트의 기반이 되는 구조체입니다.
+ * @brief 마우스 버튼 이벤트의 기반이 되는 구조체.
  */
 struct MouseButtonEvent : public Event {
     int button;
@@ -134,14 +133,14 @@ protected:
 };
 
 /**
- * @brief 마우스 버튼이 눌렸을 때 발생하는 이벤트입니다.
+ * @brief 마우스 버튼이 눌렸을 때 발생하는 이벤트.
  */
 struct MouseButtonPressedEvent : public MouseButtonEvent {
     MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
 };
 
 /**
- * @brief 마우스 버튼에서 손을 뗐을 때 발생하는 이벤트입니다.
+ * @brief 마우스 버튼에서 손을 뗐을 때 발생하는 이벤트.
  */
 struct MouseButtonReleasedEvent : public MouseButtonEvent {
     MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
