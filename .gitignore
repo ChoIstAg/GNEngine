@@ -2,7 +2,8 @@
 lib/
 out/
 
-GEMINI.md
+#file
+/GEMINI.md
 
 # Prerequisites
 *.d
