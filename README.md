@@ -20,11 +20,15 @@ GNEngine is a 2D game engine developed using Modern C++23 and SDL3.
 
 - Modern C++23
 - CMake (v4.0.3)
-- SDL3 (v3.2.18)
-- SDL3_image (v3.2.4)
-- SDL3_ttf (v3.2.2)
-- OpenAL Soft (v1.24.3)
-    (with dr_wav(v0.14.0) and dr_mp3(v0.7.1) and stb_vorbis(v1.22) for file decoding)
+- SDL3 (v3.2.18): [https://github.com/libsdl-org/SDL](https://github.com/libsdl-org/SDL)
+- SDL3_image (v3.2.4): [https://github.com/libsdl-org/SDL_image](https://github.com/libsdl-org/SDL_image)
+- SDL3_ttf (v3.2.2): [https://github.com/libsdl-org/SDL_ttf](https://github.com/libsdl-org/SDL_ttf)
+- OpenAL Soft (v1.24.3): [https://github.com/kcat/openal-soft](https://github.com/kcat/openal-soft)
+- for decoding sound files :
+    - dr_wav(v0.14.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs) 
+    - dr_mp3(v0.7.1): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
+    - dr_flac(v0.13.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
+    - stb_vorbis(v1.22): [https://github.com/nothings/stb](https://github.com/nothings/stb) for file decoding
 
 ## Build & Run
 This project use GNU g++(v15.1.0) and ninja(v1.13.0).
