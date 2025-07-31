@@ -18,10 +18,11 @@ add_executable(GNEngine
     ../include/engine/resource/text/Text.cpp
 
     ../include/engine/component/SoundComponent.cpp
-    
-    ../include/engine/_legacy/BlankObject.cpp
-    ../include/engine/_legacy/TextObject.cpp
-    ../include/engine/_legacy/TestObject.cpp
+    ../include/engine/component/RenderComponent.cpp
+    ../include/engine/component/TextComponent.cpp
+
+    ../include/engine/object/TestObject.cpp
+    ../include/engine/object/TextObject.cpp
 
     ../include/engine/manager/scene/SceneManager.cpp
 )

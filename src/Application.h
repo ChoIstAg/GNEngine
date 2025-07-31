@@ -13,8 +13,6 @@
 #include "engine/manager/sound/SoundManager.h"
 #include "engine/manager/scene/SceneManager.h"
 #include "scene/MainMenuScene.h"
-#include "engine/_legacy/TestObject.h"
-#include "engine/_legacy/TextObject.h"
 
 class Application {
 private:
@@ -43,6 +41,4 @@ public:
     std::unique_ptr<TextManager> textManager_;
     std::unique_ptr<SoundManager> soundManager_;
     std::unique_ptr<SceneManager> sceneManager_;
-
-     
 };

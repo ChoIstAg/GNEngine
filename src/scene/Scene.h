@@ -15,16 +15,18 @@ class SoundManager;
 class Scene {
 protected:
     // 각 씬이 매니저에 접근할 수 있도록 참조를 저장
-    EventManager* eventManager_ = nullptr;
-    RenderManager* renderManager_ = nullptr;
-    TextureManager* textureManager_ = nullptr;
-    SoundManager* soundManager_ = nullptr;
+    EventManager& eventManager_;
+    RenderManager& renderManager_;
+    TextureManager& textureManager_;
+    SoundManager& soundManager_;
 
 public:
+    Scene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager)
+        : eventManager_(eventManager), renderManager_(renderManager), textureManager_(textureManager), soundManager_(soundManager) {}
     virtual ~Scene() = default;
     
-    // 씬 진입 시 호출. 필요한 매니저 참조를 받아서 저장함.
-    virtual void onEnter(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager) = 0;
+    // 씬 진입 시 호출.
+    virtual void onEnter() = 0;
     virtual void onExit() = 0;       // 씬 종료 시 호출
     virtual void handleEvent(const SDL_Event& e) = 0; // 입력 처리
     virtual void update(float deltaTime) = 0;         // 논리 업데이트

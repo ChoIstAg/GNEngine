@@ -28,13 +28,11 @@ int Application::init(){
     /* 매니저 초기화*/
     eventManager_ = std::make_unique<EventManager>();
     renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
-    
     inputManager_ = std::make_unique<InputManager>(*eventManager_);
-    
     textureManager_ = std::make_unique<TextureManager>(renderer_);
     textManager_ = std::make_unique<TextManager>(renderer_);
     soundManager_ = std::make_unique<SoundManager>();
-
+    
     sceneManager_ = std::make_unique<SceneManager>(
         eventManager_.get(),
         renderManager_.get(),
@@ -43,16 +41,16 @@ int Application::init(){
     );
 
     // // TestMp3.mp3 파일 로드 및 재생
-    // std::string mp3Path = static_cast<std::string>(PROJECT_ROOT_PATH) + "/asset/sound/TestMp3.mp3";
-    // if (soundManager_->loadSound(mp3Path)) {
-    //     soundManager_->playSound(mp3Path, SoundPriority::CRITICAL, 1.0f, 1.0f, true);
-    //     std::cout << "TestMp3.mp3 loaded and playing." << std::endl;
-    // } else {
-    //     std::cerr << "Failed to load TestMp3.mp3." << std::endl;
-    // }
+    std::string mp3Path = static_cast<std::string>(SOUND_ASSET_ROOT_PATH) + "TestMp3.mp3";
+    if (soundManager_->loadSound(mp3Path)) {
+        soundManager_->playSound(mp3Path, SoundPriority::CRITICAL, 1.0f, 1.0f, true);
+        std::cout << "TestMp3.mp3 loaded and playing." << std::endl;
+    } else {
+        std::cerr << "Failed to load TestMp3.mp3." << std::endl;
+    }
 
     // TestScene 등록 및 전환
-    sceneManager_->addScene("TestScene", std::make_unique<TestScene>());
+    sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_));
     sceneManager_->changeScene("TestScene");
 
     return 0;

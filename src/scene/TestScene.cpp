@@ -2,9 +2,9 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 
-void TestScene::onEnter(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager) {
+void TestScene::onEnter() {
     std::cout << "TestScene: Entering..." << std::endl;
-    testObject_ = std::make_unique<TestObject>(eventManager, textureManager, renderManager, soundManager);
+    testObject_ = std::make_unique<TestObject>(eventManager_, textureManager_, renderManager_, soundManager_);
 }
 
 void TestScene::onExit() {
@@ -19,7 +19,7 @@ void TestScene::handleEvent(const SDL_Event& e) {
 void TestScene::update(float deltaTime) {
     // std::cout << "TestScene: Updating..." << std::endl;
     if (testObject_) {
-        testObject_->update();
+        testObject_->update(deltaTime);
     }
 }
 

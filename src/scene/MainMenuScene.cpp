@@ -1,7 +1,7 @@
 #include "MainMenuScene.h"
 #include <iostream>
 
-void MainMenuScene::onEnter(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager) {
+void MainMenuScene::onEnter() {
     std::cout << "MainMenuScene: Entering..." << std::endl;
     // 여기에 씬 진입 시 필요한 초기화 로직 (예: UI 요소 로드, 배경 음악 재생)을 추가합니다.
 }

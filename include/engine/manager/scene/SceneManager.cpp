@@ -35,8 +35,8 @@ void SceneManager::changeScene(const std::string& name) {
     auto it = scenes_.find(name);
     if (it != scenes_.end()) {
         currentScene_ = it->second.get(); // unique_ptr에서 원시 포인터 얻기
-        // 새로운 씬 진입 시 매니저 참조 전달
-        currentScene_->onEnter(*eventManager_, *renderManager_, *textureManager_, *soundManager_);
+        // 새로운 씬 진입
+        currentScene_->onEnter();
     } else {
         // 씬을 찾을 수 없는 경우 오류 처리 또는 로그
         // 예: std::cerr << "Error: Scene '" << name << "' not found." << std::endl;
