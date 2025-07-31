@@ -16,10 +16,8 @@ GNEngine is a 2D game engine developed using Modern C++23 and SDL3.
 - **Scene Management:** Easily switch and manage game scenes with a `SceneManager`.
 
 
-## Key Technologies
+## Used libraries
 
-- Modern C++23
-- CMake (v4.0.3)
 - SDL3 (v3.2.18): [https://github.com/libsdl-org/SDL](https://github.com/libsdl-org/SDL)
 - SDL3_image (v3.2.4): [https://github.com/libsdl-org/SDL_image](https://github.com/libsdl-org/SDL_image)
 - SDL3_ttf (v3.2.2): [https://github.com/libsdl-org/SDL_ttf](https://github.com/libsdl-org/SDL_ttf)
