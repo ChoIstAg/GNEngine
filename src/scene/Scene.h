@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 
-// 순환참조를 방지하기 위해 전방 선언함.. 
+// 순환참조를 방지하기 위해 전방 선언함.
 class EventManager;
 class RenderManager;
 class TextureManager;

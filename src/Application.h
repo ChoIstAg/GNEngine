@@ -11,7 +11,7 @@
 #include "engine/manager/resource/TextureManager.h"
 #include "engine/manager/resource/TextManager.h"
 #include "engine/manager/sound/SoundManager.h"
-#include "engine/manager/scene/SceneManager.h" // SceneManager 헤더 포함
+#include "engine/manager/scene/SceneManager.h"
 #include "scene/MainMenuScene.h"
 #include "engine/_legacy/TestObject.h"
 #include "engine/_legacy/TextObject.h"
@@ -42,7 +42,7 @@ public:
     std::unique_ptr<RenderManager> renderManager_;
     std::unique_ptr<TextManager> textManager_;
     std::unique_ptr<SoundManager> soundManager_;
-    std::unique_ptr<SceneManager> sceneManager_; // SceneManager 인스턴스 추가
+    std::unique_ptr<SceneManager> sceneManager_;
 
      
 };

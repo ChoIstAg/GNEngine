@@ -35,7 +35,6 @@ int Application::init(){
     textManager_ = std::make_unique<TextManager>(renderer_);
     soundManager_ = std::make_unique<SoundManager>();
 
-    // SceneManager 초기화 및 다른 매니저들 주입
     sceneManager_ = std::make_unique<SceneManager>(
         eventManager_.get(),
         renderManager_.get(),
@@ -52,10 +51,7 @@ int Application::init(){
     //     std::cerr << "Failed to load TestMp3.mp3." << std::endl;
     // }
 
-    
-    
-
-// TestScene 등록 및 전환
+    // TestScene 등록 및 전환
     sceneManager_->addScene("TestScene", std::make_unique<TestScene>());
     sceneManager_->changeScene("TestScene");
 

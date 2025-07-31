@@ -13,7 +13,7 @@ int SDLCALL myAppCallback(int argc, char* argv[]) {
         return -1;
     }
     
-    application.run();
+    application.run(); /* main loop */
 
     application.quit();
     
