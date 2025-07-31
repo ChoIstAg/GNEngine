@@ -16,6 +16,10 @@ public:
     void clear();
     void present();
 
+    SDL_Renderer* getRenderer() const { return renderer_; }
+    SDL_Window* getWindow() const { return window_; }
+    
+
     /* 텍스처를 화면에 그리는 함수 */
     void renderTexture(Texture* texture, float x, float y, float w = 0, float h = 0);
 };

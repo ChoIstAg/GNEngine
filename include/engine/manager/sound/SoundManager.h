@@ -7,107 +7,102 @@
 #include <vector>
 #include <memory>
 
-
 // 매크로를 사용하여 오류 체크를 간소화
 #define AL_CHECK_ERROR() checkAlErrors(__FILE__, __LINE__)
 
 /*
+ * @brief 사운드 재생 우선순위.
+ * @note 모든 소스가 사용중일 때 우선순위가 높은 것이 추가될 경우 우선순위가 가장 낮은 것의 재생을 중지함.
+ */
+enum class SoundPriority {
+    LOW, /* 0 : (예: 중요하지 않은 멀리서 들리는 효과음) */
+    NORMAL, /* 1 (예: 일반 효과음)*/
+    HIGH, /* 2 (예: 피격음, 중요한 효과음)*/
+    CRITICAL /* 3 (예: 메인 배경음악, UI 효과음 등 매우 중요한 효과음.)*/
+};
+
+/*
  * @brief 사운드를 로드하고 재생 및 관리하는 클래스.
- * OpenAL을 사용하여 2D/3D 사운드를 처리함.
+ * 보이스 관리(고정된 수의 소스 풀, 우선순위 기반 보이스 훔치기) 기능을 포함함.
 */
 class SoundManager {
 public:
     SoundManager();
     ~SoundManager();
 
-    // OpenAL 초기화
     bool initAL();
-    // OpenAL 종료
     void quitAL();
 
-    /*
-     * @brief 사운드 파일을 로드하고 filePath로 map에 등록함.
-     * @param filePath 사운드 파일 경로.
-     * @return 성공 시 true, 실패 시 false.
-    */
     bool loadSound(const std::string& filePath);
 
     /*
      * @brief 등록된 사운드를 재생함.
      * @param filePath 재생할 사운드의 파일 경로.
+     * @param priority 사운드 우선순위.
      * @param volume 볼륨 (0.0f ~ 1.0f).
      * @param pitch 피치 (0.xxf ~ 2.0f).
      * @param loop 반복 재생 여부.
-     * @return 재생 중인 사운드의 OpenAL 소스 ID. 실패 시 0 반환.
+     * @return 재생에 성공한 경우 OpenAL 소스 ID, 실패 시 0 반환.
     */
-    ALuint playSound(const std::string& filePath, float volume = 1.0f, float pitch = 1.0f, bool loop = false);
+    ALuint playSound(const std::string& filePath, SoundPriority priority = SoundPriority::NORMAL, float volume = 1.0f, float pitch = 1.0f, bool loop = false);
 
-    /*
-     * @brief 특정 소스 ID의 사운드를 중지함.
-     * @param sourceId 중지할 사운드의 OpenAL 소스 ID.
-    */
     void stopSound(ALuint sourceId);
-
-    /*
-     * @brief 모든 사운드를 중지함.
-    */
+    void pauseSound(ALuint sourceId);
+    void resumeSound(ALuint sourceId);
+    void togglePauseSound(ALuint sourceId);
     void stopAllSounds();
 
-    /*
-     * @brief 리스너(청취자)의 위치를 설정함.
-     * @param x, y, z 리스너의 3D 좌표.
-    */
     void setListenerPosition(float x, float y, float z);
-
-    /*
-     * @brief 리스너의 방향을 설정함.
-     * @param atX, atY, atZ 리스너가 바라보는 방향 벡터.
-     * @param upX, upY, upY 리스너의 상향 벡터.
-    */
     void setListenerOrientation(float atX, float atY, float atZ, float upX, float upY, float upZ);
 
-    /*
-     * @brief 특정 소스 ID의 위치를 설정함 (3D 사운드).
-     * @param sourceId 소스 ID.
-     * @param x, y, z 소스의 3D 좌표.
-    */
     void setSourcePosition(ALuint sourceId, float x, float y, float z);
-
-    /*
-     * @brief 특정 소스 ID의 볼륨을 설정함.
-     * @param sourceId 소스 ID.
-     * @param volume 볼륨 (0.0f ~ 1.0f).
-    */
     void setSourceVolume(ALuint sourceId, float volume);
-
-    /*
-     * @brief 특정 소스 ID의 피치를 설정함.
-     * @param sourceId 소스 ID.
-     * @param pitch 피치 (0.5f ~ 2.0f).
-    */
     void setSourcePitch(ALuint sourceId, float pitch);
 
+    // 3D 사운드 파라미터 설정
+    void setSourceRolloffFactor(ALuint sourceId, float factor);
+    void setSourceReferenceDistance(ALuint sourceId, float distance);
+    void setSourceMaxDistance(ALuint sourceId, float distance);
+
+    // 스테레오 사운드 재생 시 오른쪽 채널의 소스 ID를 가져옴
+    ALuint getSourceIdRight(ALuint sourceIdLeft);
+
 private:
+    /*
+     * @brief 현재 재생 중인 소스(보이스)의 정보를 담는 구조체.
+     */
+    struct Voice {
+        ALuint sourceIdLeft = 0; // 모노 사운드 또는 스테레오 사운드의 왼쪽 채널 소스
+        ALuint sourceIdRight = 0; // 스테레오 사운드의 오른쪽 채널 소스 (스테레오 사운드인 경우에만 사용)
+        std::string soundPath;
+        SoundPriority priority = SoundPriority::NORMAL;
+        bool isPlaying = false;
+        bool isStereo = false; // 이 보이스가 스테레오 사운드를 재생 중인지 여부
+    };
+
+    struct SoundBufferInfo {
+        ALuint monoBuffer = 0; // 모노 사운드 또는 스테레오 사운드의 왼쪽 채널
+        ALuint stereoBufferRight = 0; // 스테레오 사운드의 오른쪽 채널 (스테레오 사운드인 경우에만 사용)
+        bool isStereo = false;
+    };
+
+    static constexpr int MAX_VOICES = 64; // 동시 재생 가능한 최대 소스 수
+
     ALCdevice* device_ = nullptr;
     ALCcontext* context_ = nullptr;
 
-    // 로드된 사운드 버퍼들을 관리 (filePath -> ALuint 버퍼 ID)
-    std::unordered_map<std::string, ALuint> soundBuffers_;
+    std::unordered_map<std::string, SoundBufferInfo> soundBuffers_;
+    std::vector<Voice> voicePool_; // 미리 할당된 보이스(소스) 풀
+    
+    // 사용 가능한 보이스를 찾거나, 우선순위가 낮은 보이스를 훔침
+    Voice* findAvailableVoice(SoundPriority priority, bool forStereo = false); // 스테레오 사운드용 보이스를 찾을 때 사용
+    void releaseVoice(ALuint sourceId); // 보이스를 풀로 반환하는 대신 상태를 '사용 가능'으로 변경
+    void releaseVoice(Voice* voice); // Voice 객체를 직접 받아 해제
 
-    // 사용 가능한 소스(스피커)들을 관리 (소스 풀링)
-    std::vector<ALuint> availableSources_;
-    // 재생 중인 소스들을 관리 (소스 Id -> 사운드 ID)
-    std::unordered_map<ALuint, std::string> playingSources_;
-
-    // 소스 풀에서 사용 가능한 소스를 가져옴
-    ALuint getFreeSource();
-    // 소스를 풀로 반환
-    void returnSource(ALuint source);
-    // OpenAL 오류 체크
     void checkAlErrors(const std::string& filename, int line);
 
-    // 사운드 파일 로딩 헬퍼 함수 (내부적으로 사용)
-    bool loadWav(const std::string& filePath, ALuint buffer);
-    bool loadMp3(const std::string& filePath, ALuint buffer);
-    bool loadOgg(const std::string& filePath, ALuint buffer);
+    bool loadWav(const std::string& filePath, SoundBufferInfo& bufferInfo);
+    bool loadMp3(const std::string& filePath, SoundBufferInfo& bufferInfo);
+    bool loadFlac(const std::string& filePath, SoundBufferInfo& bufferInfo);
+    bool loadOgg(const std::string& filePath, SoundBufferInfo& bufferInfo);
 };

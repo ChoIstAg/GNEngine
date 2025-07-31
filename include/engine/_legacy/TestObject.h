@@ -1,11 +1,14 @@
 #pragma once
 
+#include <memory>
 #include "engine/manager/event/EventManager.h"
-#include "engine/component/EventListenerComponent.h"
 #include "engine/event/EventInterface.h"
 #include "engine/manager/resource/TextureManager.h"
 #include "engine/manager/render/RenderManager.h"
 #include "engine/manager/sound/SoundManager.h"
+
+#include "engine/component/EventListenerComponent.h"
+#include "engine/component/SoundComponent.h"
 
 class TestObject {
 public:
@@ -17,6 +20,7 @@ public:
     void onKeysHeldEvent(const KeysHeldEvent& event);
 
     void update();
+    void render();
     
 private:
     TextureManager& textureManager_;
@@ -24,6 +28,7 @@ private:
     SoundManager& soundManager_;
 
     EventListenerComponent eventListener_;
+    std::unique_ptr<SoundComponent> hitSound_;
 
     Texture* texture_;
     float x_ = 100.0f;

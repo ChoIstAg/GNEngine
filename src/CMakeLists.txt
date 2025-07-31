@@ -1,8 +1,11 @@
 # engine 디렉토리와 그 하위의 모든 .cpp 파일들을 찾아서 ENGINE_SOURCES 변수에 저장
 add_executable(GNEngine 
     main.cpp
-
     Application.cpp
+    
+    # 모든 Scene 추가
+    scene/TestScene.cpp
+
 
     # engine의 모든 소스 파일 추가
     #${ENGINE_SOURCES} 주석화 사유: 오류가 해결 안된 소스 파일 때문에 컴파일 에러 발생함.
@@ -13,6 +16,8 @@ add_executable(GNEngine
     ../include/engine/manager/resource/TextManager.cpp
     ../include/engine/manager/sound/SoundManager.cpp
     ../include/engine/resource/text/Text.cpp
+
+    ../include/engine/component/SoundComponent.cpp
     
     ../include/engine/_legacy/BlankObject.cpp
     ../include/engine/_legacy/TextObject.cpp
@@ -21,12 +26,15 @@ add_executable(GNEngine
     ../include/engine/manager/scene/SceneManager.cpp
 )
 
+add_subdirectory(scene)
+
 # GNEngine 타겟에 필요한 include 경로를 설정합니다.
 target_include_directories(GNEngine PRIVATE 
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
     ${SDL3_INCLUDE_DIR}
-    # SDL_image와 SDL_ttf의 include 경로는 find_package를 통해 자동으로 처리될 수 있으나, 명시적으로 추가해 줄 수도 있습니다.
+    ${SDL3_image_INCLUDE_DIR}
+    ${SDL3_ttf_INCLUDE_DIR}
 )
 
 # GNEngine 타겟이 링크해야 할 라이브러리들을 설정합니다.

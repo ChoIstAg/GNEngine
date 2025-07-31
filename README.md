@@ -19,7 +19,7 @@ GNEngine is a 2D game engine developed using Modern C++23 and SDL3.
 ## Key Technologies
 
 - Modern C++23
-- CMake
+- CMake (v4.0.3)
 - SDL3 (v3.2.18)
 - SDL3_image (v3.2.4)
 - SDL3_ttf (v3.2.2)
@@ -27,6 +27,7 @@ GNEngine is a 2D game engine developed using Modern C++23 and SDL3.
     (with dr_wav(v0.14.0) and dr_mp3(v0.7.1) and stb_vorbis(v1.22) for file decoding)
 
 ## Build & Run
+This project use GNU g++(v15.1.0) and ninja(v1.13.0).
 
 This project is built using CMake and `CMakePresets.json`.
 

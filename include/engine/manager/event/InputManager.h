@@ -22,7 +22,7 @@ public:
     explicit InputManager(EventManager& eventManager);
     ~InputManager();
 
-    bool eventProcessing(); /* 모든 SDL 이벤트를 폴링하고 처리함*/
+    bool processEvents(); /* 모든 SDL 이벤트를 폴링하고 처리함*/
     void updateKeyStates(); /* 모든 키 상태를 업데이트함*/
 
     bool isKeyPressed(SDL_Scancode key) const;

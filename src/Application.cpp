@@ -1,6 +1,8 @@
 #include "Application.h"
 #include <iostream>
 
+#include "scene/TestScene.h" 
+
 Application::Application() {};
 
 int Application::init(){
@@ -13,14 +15,15 @@ int Application::init(){
     window_ = SDL_CreateWindow("Text main callback", windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
     renderer_ = SDL_CreateRenderer(window_, nullptr);
     
-    if (renderer_) {
-        SDL_SetRenderVSync(renderer_, true); /* Enable VSync */
-    }
+    
     if(!window_ || !renderer_){
         SDL_Log("Error occured in SDL_CreateWindow : %s", SDL_GetError());
         SDL_Quit();
         return -1;
     }
+
+    /* Set additional settings */
+    SDL_SetRenderVSync(renderer_, true); /* Enable VSync */
     
     /* 매니저 초기화*/
     eventManager_ = std::make_unique<EventManager>();
@@ -32,25 +35,30 @@ int Application::init(){
     textManager_ = std::make_unique<TextManager>(renderer_);
     soundManager_ = std::make_unique<SoundManager>();
 
-    // TestMp3.mp3 파일 로드 및 재생
-    std::string mp3Path = static_cast<std::string>(PROJECT_ROOT_PATH) + "/asset/sound/TestMp3.mp3";
-    if (soundManager_->loadSound(mp3Path)) {
-        soundManager_->playSound(mp3Path, 1.0f, 1.0f, true);
-        std::cout << "TestMp3.mp3 loaded and playing." << std::endl;
-    } else {
-        std::cerr << "Failed to load TestMp3.mp3." << std::endl;
-    }
+    // SceneManager 초기화 및 다른 매니저들 주입
+    sceneManager_ = std::make_unique<SceneManager>(
+        eventManager_.get(),
+        renderManager_.get(),
+        textureManager_.get(),
+        soundManager_.get()
+    );
 
-    /* 폰트 로드 */
-    std::string fontPath = static_cast<std::string>(FONT_ASSET_ROOT_PATH) + "CookieRun Regular.ttf";
-    textManager_->loadFont(fontPath, 11);
+    // // TestMp3.mp3 파일 로드 및 재생
+    // std::string mp3Path = static_cast<std::string>(PROJECT_ROOT_PATH) + "/asset/sound/TestMp3.mp3";
+    // if (soundManager_->loadSound(mp3Path)) {
+    //     soundManager_->playSound(mp3Path, SoundPriority::CRITICAL, 1.0f, 1.0f, true);
+    //     std::cout << "TestMp3.mp3 loaded and playing." << std::endl;
+    // } else {
+    //     std::cerr << "Failed to load TestMp3.mp3." << std::endl;
+    // }
 
-    /* 텍스트 불러오기 */
-    std::string content = textManager_->loadTextFromFile(static_cast<std::string>(TEXT_ASSET_ROOT_PATH) + "test.txt");
-    testText_ = std::make_unique<TextObject>(textManager_->createText(fontPath, content, {255, 255, 255, 255}, true, true, 0, 40), 100.0f, 100.0f);
-
-    testObject_ = std::make_unique<TestObject>(*eventManager_, *textureManager_, *renderManager_, *soundManager_);
     
+    
+
+// TestScene 등록 및 전환
+    sceneManager_->addScene("TestScene", std::make_unique<TestScene>());
+    sceneManager_->changeScene("TestScene");
+
     return 0;
 }
 
@@ -64,29 +72,27 @@ void Application::quit() {
     SDL_Quit();
 }
 
+/**
+ * @brief 애플리케이션의 메인 루프.
+ * 이벤트 처리, 업데이트, 렌더링을 반복함.
+ */
 void Application::run() {
     isRunning_ = true;
     while(isRunning_){
+
         /* Process Input */
-        if(!inputManager_->eventProcessing()){
+        if(!inputManager_->processEvents()){
             isRunning_ = false;
             break;
         }
 
         /* Update */
         inputManager_->updateKeyStates();
+        sceneManager_->update(0.016f); // deltaTime은 나중에 정확하게 계산하도록 수정 필요
 
         /* Render */
         renderManager_->clear();
-
-        if (testObject_) {
-            testObject_->update();
-        }
-
-        if (testText_) {
-            testText_->render();
-        }
-
+        sceneManager_->render(renderer_);
         renderManager_->present();
     }
 }

@@ -2,7 +2,7 @@
 lib/
 out/
 
-
+GEMINI.md
 
 # Prerequisites
 *.d
@@ -40,10 +40,7 @@ out/
 
 # Executables
 *.exe
-*.out
+*.o
 *.app
 
-# debug information files
-*.dwo
-
-GEMINI.md
+# debug information fi

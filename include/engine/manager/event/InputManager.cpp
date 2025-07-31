@@ -43,7 +43,7 @@ void InputManager::updateKeyStates() {
     }
 }
 
-bool InputManager::eventProcessing() {
+bool InputManager::processEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {

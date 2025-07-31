@@ -1,5 +1,6 @@
 #include "TextureManager.h"
 #include <iostream>
+#include <filesystem>
 #include <SDL3_image/SDL_image.h>
 
 TextureManager::TextureManager(SDL_Renderer* renderer) 
@@ -17,34 +18,39 @@ TextureManager::~TextureManager() {
 bool TextureManager::loadTexture(const std::string& filePath){
     // 이미 로드된 텍스처인지 확인
     if (textureMap_.count(filePath)) {
-        std::cerr << "TextureManager::loadTexture - Texture already loaded: " << filePath << std::endl;
         return true; // 이미 로드되어 있다면 true 반환
     }
 
     SDL_Surface* tmpSurface = nullptr;
-    std::string fullPath = IMAGE_ASSET_ROOT_PATH + filePath; /* 파일 절대 경로 */
-    std::string fileExtension = filePath.substr(filePath.find_last_of('.') + 1); /* 파일 확장자 추출 */
+    
+    // std::filesystem을 사용하여 확장자 추출
+    std::filesystem::path path(filePath);
+    std::string extension = path.has_extension() ? path.extension().string() : "";
 
-    if (fileExtension == "bmp") {
-        tmpSurface = SDL_LoadBMP(fullPath.c_str());
+    // 확장자를 소문자로 변환하여 비교 (예: .PNG, .JPG 등 처리)
+    std::transform(extension.begin(), extension.end(), extension.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+
+    if (extension == ".bmp") {
+        tmpSurface = SDL_LoadBMP(filePath.c_str());
     } 
-    else if (fileExtension == "png" || fileExtension == "jpg" || fileExtension == "jpeg" || fileExtension == "gif") {
-        tmpSurface = IMG_Load(fullPath.c_str());
+    else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" || extension == ".gif") {
+        tmpSurface = IMG_Load(filePath.c_str());
     } 
     else {
-        SDL_Log("TextureManager::loadTexture - Unsupported file format for %s", fullPath.c_str());
+        SDL_Log("TextureManager::loadTexture - Unsupported file format for %s", filePath.c_str());
         return false;
     }
 
     if (tmpSurface == nullptr) {
-        SDL_Log("TextureManager::loadTexture - Failed to load surface %s: %s", fullPath.c_str(), SDL_GetError());
+        SDL_Log("TextureManager::loadTexture - Failed to load surface %s: %s", filePath.c_str(), SDL_GetError());
         return false;
     }
 
     
     SDL_Texture* sdlTexture = SDL_CreateTextureFromSurface(renderer_, tmpSurface);
     if (sdlTexture == nullptr) {
-        SDL_Log("TextureManager::loadTexture - Failed to create texture from surface %s: %s", fullPath.c_str(), SDL_GetError());
+        SDL_Log("TextureManager::loadTexture - Failed to create texture from surface %s: %s", filePath.c_str(), SDL_GetError());
         return false;
     }
     
