@@ -28,7 +28,7 @@ GNEngine is a 2D game engine developed using Modern C++23 and SDL3.
     - dr_wav(v0.14.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs) 
     - dr_mp3(v0.7.1): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
     - dr_flac(v0.13.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
-    - stb_vorbis(v1.22): [https://github.com/nothings/stb](https://github.com/nothings/stb) for file decoding
+    - stb_vorbis(v1.22): [https://github.com/nothings/stb](https://github.com/nothings/stb)
 
 ## Build & Run
 This project use GNU g++(v15.1.0) and ninja(v1.13.0).
