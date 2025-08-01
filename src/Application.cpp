@@ -40,14 +40,14 @@ int Application::init(){
         soundManager_.get()
     );
 
-    //     // TestMp3.mp3 파일 로드 및 재생
-    std::filesystem::path mp3Path = std::filesystem::path(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3"; // Use std::filesystem::path
-    if (soundManager_->loadSound(mp3Path)) {
-        soundManager_->playSound(mp3Path, SoundPriority::CRITICAL, 1.0f, 1.0f, true);
-        std::cout << "TestMp3.mp3 loaded and playing." << std::endl;
-    } else {
-        std::cerr << "Failed to load " << mp3Path.string() << "." << std::endl; // Use mp3Path.string()
-    }
+    // //     // TestMp3.mp3 파일 로드 및 재생
+    // std::filesystem::path mp3Path = std::filesystem::path(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3"; // Use std::filesystem::path
+    // if (soundManager_->loadSound(mp3Path)) {
+    //     soundManager_->playSound(mp3Path, SoundPriority::CRITICAL, 1.0f, 1.0f, true);
+    //     std::cout << "TestMp3.mp3 loaded and playing." << std::endl;
+    // } else {
+    //     std::cerr << "Failed to load " << mp3Path.string() << "." << std::endl; // Use mp3Path.string()
+    // }
 
     // TestScene 등록 및 전환
     sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_));

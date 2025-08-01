@@ -15,9 +15,8 @@ TestObject::TestObject(EventManager& eventManager, TextureManager& textureManage
     sound_ = &addComponent<SoundComponent>(soundManager, soundPath);
     
     /* 감쇠 효과 조절 */
-    // sound_->setRolloffFactor(0.5f); // 감쇠 속도를 절반으로 줄임 (소리가 더 멀리까지 들림)
-    // sound_->setReferenceDistance(5.0f); // 5.0 단위 거리까지 최대 볼륨 유지
-    // sound_->setMaxDistance(50.0f); // 50.0 단위 거리 이후에는 소리가 들리지 않음
+    sound_->setRolloffFactor(0.5f); // 감쇠 속도를 절반으로 줄임 (소리가 더 멀리까지 들림)
+    sound_->setReferenceDistance(5.0f); // 5.0 단위 거리까지 최대 볼륨 유지
 
     eventListener_ = &addComponent<EventListenerComponent>(eventManager);
     eventListener_->addListener<KeyPressedEvent>([this](const KeyPressedEvent& event) { this->onPressEvent(event); });
@@ -34,8 +33,10 @@ void TestObject::render() {
 void TestObject::onPressEvent(const KeyPressedEvent& event) {
     if (event.keyCode == SDL_SCANCODE_H) {
         std::cout << "'h' key pressed. Playing hit sound." << std::endl;
-        sound_->play(SoundPriority::HIGH, 1.0f, 1.0f, false, false); // spatialized를 false로 설정
-
+        // sound_->setSpatialized(false); // 3D 공간 음향 비활성화
+        // sound_->setSplitChannels(false); // 스테레오 채널을 모노로 처리
+        // sound_->setAttenuation(false); // 거리 감쇠 비활성화
+        sound_->play(SoundPriority::HIGH, 1.0f, 1.0f, false);
     }
 }
 
@@ -59,5 +60,5 @@ void TestObject::onKeysHeldEvent(const KeysHeldEvent& event) {
                 break;
         }
     }
-    sound_->setPosition(transform_->positionX_, transform_->positionX_, 0.0f);
+    sound_->setPosition(transform_->positionX_, transform_->positionY_, 0.0f);
 }

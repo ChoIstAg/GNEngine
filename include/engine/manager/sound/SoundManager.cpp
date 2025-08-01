@@ -68,8 +68,7 @@ bool SoundManager::initAL() {
 
     // OpenAL 거리 모델 설정
     // AL_INVERSE_DISTANCE_CLAMPED: 거리에 따라 볼륨이 감소하지만, 특정 거리 이하로 내려가지 않음.
-    // None: 3D 감쇠 효과 비활성화
-    alDistanceModel(AL_NONE);
+    alDistanceModel(AL_INVERSE_DISTANCE);
     AL_CHECK_ERROR();
 
     // 리스너 기본 설정 (위치: 0,0,0), (정면, 상향 Y축)
@@ -105,10 +104,10 @@ bool SoundManager::initAL() {
 
         // 각 소스의 기본 감쇠 설정 (선택 사항, 개별 소스에 적용 가능)
         alSourcef(voicePool_[i].sourceIdLeft, AL_REFERENCE_DISTANCE, 1.0f); // 1.0 단위 거리에서 최대 볼륨
-        alSourcef(voicePool_[i].sourceIdLeft, AL_MAX_DISTANCE, 100.0f); // 100.0 단위 거리에서 더 이상 감쇠하지 않음
+        //alSourcef(voicePool_[i].sourceIdLeft, AL_MAX_DISTANCE, 100.0f); // 100.0 단위 거리에서 더 이상 감쇠하지 않음
         alSourcef(voicePool_[i].sourceIdLeft, AL_ROLLOFF_FACTOR, 1.0f); // 감쇠율 (기본값 1.0)
         alSourcef(voicePool_[i].sourceIdRight, AL_REFERENCE_DISTANCE, 1.0f); // 1.0 단위 거리에서 최대 볼륨
-        alSourcef(voicePool_[i].sourceIdRight, AL_MAX_DISTANCE, 100.0f); // 100.0 단위 거리에서 더 이상 감쇠하지 않음
+        //alSourcef(voicePool_[i].sourceIdRight, AL_MAX_DISTANCE, 100.0f); // 100.0 단위 거리에서 더 이상 감쇠하지 않음
         alSourcef(voicePool_[i].sourceIdRight, AL_ROLLOFF_FACTOR, 1.0f); // 감쇠율 (기본값 1.0)
         AL_CHECK_ERROR();
     }
@@ -197,53 +196,69 @@ bool SoundManager::loadSound(const std::filesystem::path& filePath) {
     }
 }
 
-ALuint SoundManager::playSound(const std::filesystem::path& filePath, SoundPriority priority, float volume, float pitch, bool loop) {
+ALuint SoundManager::playSound(const std::filesystem::path& filePath, SoundPriority priority, float volume, float pitch, bool loop, bool spatialized, bool attenuation, bool splitChannels, float rolloffFactor, float referenceDistance, float maxDistance) {
     auto it = soundBuffers_.find(filePath);
     if (it == soundBuffers_.end()) {
         std::cerr << "Sound with ID '" << filePath.string() << "' not found." << std::endl;
         return 0;
     }
 
-    Voice* voice = findAvailableVoice(priority, it->second.isStereo);
+    bool isStereo = it->second.isStereo && splitChannels;
+    Voice* voice = findAvailableVoice(priority, isStereo);
     if (!voice) {
-        // 재생할 보이스가 없음. (요청한 우선순위가 사용중인 소스에 비해 낮음.)
         return 0;
     }
 
     voice->soundPath = filePath;
     voice->priority = priority;
     voice->isPlaying = true;
-    voice->isStereo = it->second.isStereo;
+    voice->isStereo = isStereo;
 
     ALuint sourceLeft = voice->sourceIdLeft;
     ALuint sourceRight = voice->sourceIdRight;
 
-    if (voice->isStereo) {
-        alSourcei(sourceLeft, AL_BUFFER, it->second.monoBuffer); // Left channel
-        alSourcef(sourceLeft, AL_GAIN, volume); // Apply volume to left channel
-        alSourcef(sourceLeft, AL_PITCH, pitch); // Apply pitch to left channel
-        alSourcei(sourceLeft, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
-        alSourcei(sourceLeft, AL_SOURCE_RELATIVE, AL_TRUE); // 공간화 비활성화
-        AL_CHECK_ERROR();
+    // 감쇠 설정
+    if (attenuation) {
+        alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+        alSourcef(sourceLeft, AL_ROLLOFF_FACTOR, rolloffFactor);
+        alSourcef(sourceLeft, AL_REFERENCE_DISTANCE, referenceDistance);
+        alSourcef(sourceLeft, AL_MAX_DISTANCE, maxDistance);
+        if (isStereo) {
+            alSourcef(sourceRight, AL_ROLLOFF_FACTOR, rolloffFactor);
+            alSourcef(sourceRight, AL_REFERENCE_DISTANCE, referenceDistance);
+            alSourcef(sourceRight, AL_MAX_DISTANCE, maxDistance);
+        }
+    } else {
+        alDistanceModel(AL_NONE);
+    }
+    AL_CHECK_ERROR();
 
-        alSourcei(sourceRight, AL_BUFFER, it->second.stereoBufferRight); // Right channel
-        alSourcef(sourceRight, AL_GAIN, volume); // Apply volume to right channel
-        alSourcef(sourceRight, AL_PITCH, pitch); // Apply pitch to right channel
+    // 공통 소스 설정
+    alSourcei(sourceLeft, AL_BUFFER, it->second.monoBuffer);
+    alSourcef(sourceLeft, AL_GAIN, volume);
+    alSourcef(sourceLeft, AL_PITCH, pitch);
+    alSourcei(sourceLeft, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
+    alSourcei(sourceLeft, AL_SOURCE_RELATIVE, !spatialized);
+    if (!spatialized) {
+        alSource3f(sourceLeft, AL_POSITION, 0.0f, 0.0f, 0.0f); // 2D 사운드는 위치를 (0,0,0)으로 고정
+    }
+    AL_CHECK_ERROR();
+
+    if (isStereo) {
+        alSourcei(sourceRight, AL_BUFFER, it->second.stereoBufferRight);
+        alSourcef(sourceRight, AL_GAIN, volume);
+        alSourcef(sourceRight, AL_PITCH, pitch);
         alSourcei(sourceRight, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
-        alSourcei(sourceRight, AL_SOURCE_RELATIVE, AL_TRUE); // 공간화 비활성화
+        alSourcei(sourceRight, AL_SOURCE_RELATIVE, !spatialized);
+        if (!spatialized) {
+            alSource3f(sourceRight, AL_POSITION, 0.0f, 0.0f, 0.0f); // 2D 사운드는 위치를 (0,0,0)으로 고정
+        }
         AL_CHECK_ERROR();
 
         alSourcePlay(sourceLeft);
         alSourcePlay(sourceRight);
         AL_CHECK_ERROR();
     } else {
-        alSourcei(sourceLeft, AL_BUFFER, it->second.monoBuffer);
-        alSourcef(sourceLeft, AL_GAIN, volume);
-        alSourcef(sourceLeft, AL_PITCH, pitch);
-        alSourcei(sourceLeft, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
-        alSourcei(sourceLeft, AL_SOURCE_RELATIVE, AL_TRUE); // 공간화 비활성화
-        AL_CHECK_ERROR();
-
         alSourcePlay(sourceLeft);
         AL_CHECK_ERROR();
     }

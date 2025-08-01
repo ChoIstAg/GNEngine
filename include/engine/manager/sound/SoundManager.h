@@ -46,7 +46,17 @@ public:
      * @param loop 반복 재생 여부.
      * @return 재생에 성공한 경우 OpenAL 소스 ID, 실패 시 0 반환.
     */
-    ALuint playSound(const std::filesystem::path& filePath, SoundPriority priority = SoundPriority::NORMAL, float volume = 1.0f, float pitch = 1.0f, bool loop = false);
+    ALuint playSound(const std::filesystem::path& filePath, 
+                     SoundPriority priority = SoundPriority::NORMAL, 
+                     float volume = 1.0f, 
+                     float pitch = 1.0f, 
+                     bool loop = false, 
+                     bool spatialized = true, 
+                     bool attenuation = true, 
+                     bool splitChannels = true,
+                     float rolloffFactor = 1.0f,
+                     float referenceDistance = 1.0f,
+                     float maxDistance = 100.0f);
 
     void stopSound(ALuint sourceId);
     void pauseSound(ALuint sourceId);
