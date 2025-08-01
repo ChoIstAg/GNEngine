@@ -3,9 +3,11 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <string>
+#include <filesystem>
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include <functional> // For std::hash<std::filesystem::path>
 
 // 매크로를 사용하여 오류 체크를 간소화
 #define AL_CHECK_ERROR() checkAlErrors(__FILE__, __LINE__)
@@ -33,7 +35,7 @@ public:
     bool initAL();
     void quitAL();
 
-    bool loadSound(const std::string& filePath);
+    bool loadSound(const std::filesystem::path& filePath);
 
     /*
      * @brief 등록된 사운드를 재생함.
@@ -44,7 +46,7 @@ public:
      * @param loop 반복 재생 여부.
      * @return 재생에 성공한 경우 OpenAL 소스 ID, 실패 시 0 반환.
     */
-    ALuint playSound(const std::string& filePath, SoundPriority priority = SoundPriority::NORMAL, float volume = 1.0f, float pitch = 1.0f, bool loop = false);
+    ALuint playSound(const std::filesystem::path& filePath, SoundPriority priority = SoundPriority::NORMAL, float volume = 1.0f, float pitch = 1.0f, bool loop = false);
 
     void stopSound(ALuint sourceId);
     void pauseSound(ALuint sourceId);
@@ -74,7 +76,7 @@ private:
     struct Voice {
         ALuint sourceIdLeft = 0; // 모노 사운드 또는 스테레오 사운드의 왼쪽 채널 소스
         ALuint sourceIdRight = 0; // 스테레오 사운드의 오른쪽 채널 소스 (스테레오 사운드인 경우에만 사용)
-        std::string soundPath;
+        std::filesystem::path soundPath;
         SoundPriority priority = SoundPriority::NORMAL;
         bool isPlaying = false;
         bool isStereo = false; // 이 보이스가 스테레오 사운드를 재생 중인지 여부
@@ -91,7 +93,7 @@ private:
     ALCdevice* device_ = nullptr;
     ALCcontext* context_ = nullptr;
 
-    std::unordered_map<std::string, SoundBufferInfo> soundBuffers_;
+    std::unordered_map<std::filesystem::path, SoundBufferInfo> soundBuffers_;
     std::vector<Voice> voicePool_; // 미리 할당된 보이스(소스) 풀
     
     // 사용 가능한 보이스를 찾거나, 우선순위가 낮은 보이스를 훔침
@@ -101,8 +103,8 @@ private:
 
     void checkAlErrors(const std::string& filename, int line);
 
-    bool loadWav(const std::string& filePath, SoundBufferInfo& bufferInfo);
-    bool loadMp3(const std::string& filePath, SoundBufferInfo& bufferInfo);
-    bool loadFlac(const std::string& filePath, SoundBufferInfo& bufferInfo);
-    bool loadOgg(const std::string& filePath, SoundBufferInfo& bufferInfo);
+    bool loadWav(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo);
+    bool loadMp3(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo);
+    bool loadFlac(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo);
+    bool loadOgg(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo);
 };

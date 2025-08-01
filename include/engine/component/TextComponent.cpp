@@ -1,11 +1,11 @@
 #include "TextComponent.h"
 
-TextComponent::TextComponent(std::unique_ptr<Text> text)
-    : text_(std::move(text)), transform_(nullptr) {}
+TextComponent::TextComponent(std::unique_ptr<Text> text, TransformComponent& transform)
+    : text_(std::move(text)), transform_(&transform) {}
 
 void TextComponent::render() {
     if (text_ && transform_) {
-        text_->render(transform_->positionX, transform_->positionY);
+        text_->render(transform_->positionX_, transform_->positionY_);
     }
 }
 

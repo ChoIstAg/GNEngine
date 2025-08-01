@@ -15,7 +15,7 @@ TextureManager::~TextureManager() {
     std::cerr << "TextureManager " << this << " is successfully destroyed" << std::endl;
 }
 
-bool TextureManager::loadTexture(const std::string& filePath){
+bool TextureManager::loadTexture(const std::filesystem::path& filePath){
     // 이미 로드된 텍스처인지 확인
     if (textureMap_.count(filePath)) {
         return true; // 이미 로드되어 있다면 true 반환
@@ -24,33 +24,33 @@ bool TextureManager::loadTexture(const std::string& filePath){
     SDL_Surface* tmpSurface = nullptr;
     
     // std::filesystem을 사용하여 확장자 추출
-    std::filesystem::path path(filePath);
-    std::string extension = path.has_extension() ? path.extension().string() : "";
+    // std::filesystem::path path(filePath); // filePath is already a path
+    std::string extension = filePath.has_extension() ? filePath.extension().string() : "";
 
     // 확장자를 소문자로 변환하여 비교 (예: .PNG, .JPG 등 처리)
     std::transform(extension.begin(), extension.end(), extension.begin(),
                    [](unsigned char c){ return std::tolower(c); });
 
     if (extension == ".bmp") {
-        tmpSurface = SDL_LoadBMP(filePath.c_str());
+        tmpSurface = SDL_LoadBMP(filePath.string().c_str());
     } 
     else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" || extension == ".gif") {
-        tmpSurface = IMG_Load(filePath.c_str());
+        tmpSurface = IMG_Load(filePath.string().c_str());
     } 
     else {
-        SDL_Log("TextureManager::loadTexture - Unsupported file format for %s", filePath.c_str());
+        SDL_Log("TextureManager::loadTexture - Unsupported file format for %s", filePath.string().c_str());
         return false;
     }
 
     if (tmpSurface == nullptr) {
-        SDL_Log("TextureManager::loadTexture - Failed to load surface %s: %s", filePath.c_str(), SDL_GetError());
+        SDL_Log("TextureManager::loadTexture - Failed to load surface %s: %s", filePath.string().c_str(), SDL_GetError());
         return false;
     }
 
     
     SDL_Texture* sdlTexture = SDL_CreateTextureFromSurface(renderer_, tmpSurface);
     if (sdlTexture == nullptr) {
-        SDL_Log("TextureManager::loadTexture - Failed to create texture from surface %s: %s", filePath.c_str(), SDL_GetError());
+        SDL_Log("TextureManager::loadTexture - Failed to create texture from surface %s: %s", filePath.string().c_str(), SDL_GetError());
         return false;
     }
     
@@ -62,11 +62,11 @@ bool TextureManager::loadTexture(const std::string& filePath){
     return true;
 }
 
-Texture* TextureManager::getTexture(const std::string& filePath) const {
+Texture* TextureManager::getTexture(const std::filesystem::path& filePath) const {
     auto it = textureMap_.find(filePath);
     if (it != textureMap_.end()) {
         return it->second.get(); // unique_ptr에서 raw 포인터 반환
     }
-    SDL_Log("TextureManager::getTexture - Texture not found: %s", filePath.c_str());
+    SDL_Log("TextureManager::getTexture - Texture not found: %s", filePath.string().c_str());
     return nullptr;
 }

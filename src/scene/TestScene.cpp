@@ -25,7 +25,7 @@ void TestScene::update(float deltaTime) {
 
 void TestScene::render(SDL_Renderer* renderer) {
     // std::cout << "TestScene: Rendering..." << std::endl;
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // 녹색 배경
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // 검은색 배경
     SDL_RenderClear(renderer);
 
     if (testObject_) {

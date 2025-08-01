@@ -1,13 +1,13 @@
 #include "RenderComponent.h"
+#include <iostream>
 
-RenderComponent::RenderComponent(RenderManager& renderManager, Texture& texture)
-    : renderManager_(renderManager), texture_(texture), transform_(nullptr) {}
+RenderComponent::RenderComponent(RenderManager& renderManager, Texture& texture, TransformComponent& transform)
+    : renderManager_(renderManager), texture_(texture), transform_(&transform) {}
 
 void RenderComponent::render() {
     if (!transform_) {
-        // For simplicity, this component assumes the parent Object has a TransformComponent.
-        // A more robust implementation would handle this case more gracefully.
+        std::cerr << "transform_ is errornous\n";
         return;
     }
-    renderManager_.renderTexture(&texture_, transform_->positionX, transform_->positionY);
+    renderManager_.renderTexture(&texture_, transform_->positionX_, transform_->positionY_);
 }

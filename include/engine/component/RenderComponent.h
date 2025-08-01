@@ -7,9 +7,10 @@
 
 class RenderComponent : public Component {
 public:
-    RenderComponent(RenderManager& renderManager, Texture& texture);
+    RenderComponent(RenderManager& renderManager, Texture& texture, TransformComponent& transform);
 
     void render();
+    SDL_Renderer* getRenderer() { return renderManager_.getRenderer(); }
 
 private:
     RenderManager& renderManager_;

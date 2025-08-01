@@ -5,19 +5,9 @@
  * @param manager 사운드 관리를 위한 SoundManager의 참조.
  * @param path 재생할 사운드 파일의 경로.
  */
-SoundComponent::SoundComponent(SoundManager& manager, const std::string& path)
-    : soundManager(manager), soundPath(path), sourceIdLeft(0), sourceIdRight(0) {
-    soundManager.loadSound(soundPath);
-
-    // 3D 사운드 파라미터 기본값 설정
-    // 이 값들은 OpenAL의 거리 모델(AL_INVERSE_DISTANCE_CLAMPED)에 따라 소리 감쇠에 영향을 줍니다.
-    // AL_REFERENCE_DISTANCE: 이 거리에서 소리의 볼륨이 최대가 됩니다. 이 거리보다 가까워도 볼륨은 더 커지지 않습니다.
-    // AL_MAX_DISTANCE: 이 거리 이후로는 소리가 더 이상 감쇠하지 않습니다. (AL_INVERSE_DISTANCE_CLAMPED 모델에서)
-    // AL_ROLLOFF_FACTOR: 소리 감쇠율을 조절합니다. 값이 클수록 소리가 더 빨리 작아집니다.
-    // 이 값들은 SoundManager에서 소스를 생성할 때 기본적으로 설정되지만,
-    // SoundComponent에서 개별적으로 재정의할 수 있도록 합니다.
-    // 여기서는 TestObject의 움직임에 따라 공간감을 더 잘 느끼도록 초기값을 설정합니다.
-    // sourceIdLeft와 sourceIdRight는 play() 호출 시 SoundManager에서 할당되므로, 여기서는 설정하지 않습니다.
+SoundComponent::SoundComponent(SoundManager& soundManager, const std::filesystem::path& path)
+    : soundManager_(soundManager), soundPath_(path), currentSourceId_(0) {
+    soundManager_.loadSound(soundPath_);
 }
 
 /*
@@ -38,17 +28,22 @@ SoundComponent::~SoundComponent() {
  * @param pitch 피치 (0.xxf ~ 2.0f).
  * @param loop 반복 재생 여부.
  */
-void SoundComponent::play(SoundPriority priority, float volume, float pitch, bool loop) {
+void SoundComponent::play(SoundPriority priority, float volume, float pitch, bool loop, bool spatialized) {
     if (isPlaying()) {
         stop(); // 이미 재생 중이면 정지하고 다시 재생
     }
     // playSound는 이제 왼쪽 채널의 sourceId를 반환합니다.
-    sourceIdLeft = soundManager.playSound(soundPath, priority, volume, pitch, loop);
-    if (sourceIdLeft != 0) {
-        // 스테레오 사운드인 경우 오른쪽 채널의 소스 ID를 가져옴
-        sourceIdRight = soundManager.getSourceIdRight(sourceIdLeft);
-        // 재생에 성공했다면, 저장된 위치를 즉시 적용
-        soundManager.setSourcePosition(sourceIdLeft, x_, y_, z_);
+    currentSourceId_ = soundManager_.playSound(soundPath_, priority, volume, pitch, loop);
+    if (currentSourceId_ != 0) {
+        if (spatialized) {
+            // 공간화가 필요한 경우, 저장된 위치를 적용
+            soundManager_.setSourcePosition(currentSourceId_, x_, y_, z_);
+            alSourcei(currentSourceId_, AL_SOURCE_RELATIVE, AL_FALSE); // 공간화 활성화
+        } else {
+            // 공간화가 필요 없는 경우, 소스를 리스너에 상대적으로 고정하고 위치를 (0,0,0)으로 설정
+            alSourcei(currentSourceId_, AL_SOURCE_RELATIVE, AL_TRUE); // 공간화 비활성화
+            alSource3f(currentSourceId_, AL_POSITION, 0.0f, 0.0f, 0.0f); // 리스너에 고정
+        }
     }
 }
 
@@ -56,37 +51,27 @@ void SoundComponent::play(SoundPriority priority, float volume, float pitch, boo
  * @brief 사운드 재생을 정지함.
  */
 void SoundComponent::stop() {
-    if (sourceIdLeft != 0) {
-        soundManager.stopSound(sourceIdLeft);
-        sourceIdLeft = 0;
-        sourceIdRight = 0; // 오른쪽 채널 소스도 함께 초기화
+    if (currentSourceId_ != 0) {
+        soundManager_.stopSound(currentSourceId_);
+        currentSourceId_ = 0;
     }
 }
 
 void SoundComponent::pause() {
-    if (sourceIdLeft != 0) {
-        soundManager.pauseSound(sourceIdLeft);
-        if (sourceIdRight != 0) {
-            soundManager.pauseSound(sourceIdRight);
-        }
+    if (currentSourceId_ != 0) {
+        soundManager_.pauseSound(currentSourceId_);
     }
 }
 
 void SoundComponent::resume() {
-    if (sourceIdLeft != 0) {
-        soundManager.resumeSound(sourceIdLeft);
-        if (sourceIdRight != 0) {
-            soundManager.resumeSound(sourceIdRight);
-        }
+    if (currentSourceId_ != 0) {
+        soundManager_.resumeSound(currentSourceId_);
     }
 }
 
 void SoundComponent::togglePause() {
-    if (sourceIdLeft != 0) {
-        soundManager.togglePauseSound(sourceIdLeft);
-        if (sourceIdRight != 0) {
-            soundManager.togglePauseSound(sourceIdRight);
-        }
+    if (currentSourceId_ != 0) {
+        soundManager_.togglePauseSound(currentSourceId_);
     }
 }
 
@@ -95,24 +80,18 @@ void SoundComponent::togglePause() {
  * @param volume 설정할 볼륨 값 (0.0f ~ 1.0f).
  */
 void SoundComponent::setVolume(float volume) {
-    if (sourceIdLeft != 0) {
-        soundManager.setSourceVolume(sourceIdLeft, volume);
-        if (sourceIdRight != 0) {
-            soundManager.setSourceVolume(sourceIdRight, volume);
-        }
+    if (currentSourceId_ != 0) {
+        soundManager_.setSourceVolume(currentSourceId_, volume);
     }
 }
 
 /*
  * @brief 사운드의 피치를 조절함.
- * @param pitch 설정할 피치 값 (0.5f ~ 2.0f).
+ * @param pitch 설정할 피치 값 (0.xxf ~ 10.0f).
  */
 void SoundComponent::setPitch(float pitch) {
-    if (sourceIdLeft != 0) {
-        soundManager.setSourcePitch(sourceIdLeft, pitch);
-        if (sourceIdRight != 0) {
-            soundManager.setSourcePitch(sourceIdRight, pitch);
-        }
+    if (currentSourceId_ != 0) {
+        soundManager_.setSourcePitch(currentSourceId_, pitch);
     }
 }
 
@@ -126,10 +105,8 @@ void SoundComponent::setPosition(float x, float y, float z) {
     y_ = y;
     z_ = z;
     // 만약 이미 재생 중이라면, 위치를 즉시 업데이트
-    if (sourceIdLeft != 0) {
-        soundManager.setSourcePosition(sourceIdLeft, x_, y_, z_);
-        // SoundManager::setSourcePosition에서 스테레오 분리 로직을 처리하므로,
-        // sourceIdRight는 자동으로 처리됩니다.
+    if (currentSourceId_ != 0) {
+        soundManager_.setSourcePosition(currentSourceId_, x_, y_, z_);
     }
 }
 
@@ -138,10 +115,29 @@ void SoundComponent::setPosition(float x, float y, float z) {
  * @return 재생 중이면 true, 아니면 false.
  */
 bool SoundComponent::isPlaying() const {
-    if (sourceIdLeft == 0) {
+    if (currentSourceId_ == 0) {
         return false;
     }
     ALint state;
-    alGetSourcei(sourceIdLeft, AL_SOURCE_STATE, &state);
+    alGetSourcei(currentSourceId_, AL_SOURCE_STATE, &state);
     return state == AL_PLAYING;
+}
+
+// 3D 감쇠 효과 조절 함수 구현
+void SoundComponent::setRolloffFactor(float factor) {
+    if (currentSourceId_ != 0) {
+        soundManager_.setSourceRolloffFactor(currentSourceId_, factor);
+    }
+}
+
+void SoundComponent::setReferenceDistance(float distance) {
+    if (currentSourceId_ != 0) {
+        soundManager_.setSourceReferenceDistance(currentSourceId_, distance);
+    }
+}
+
+void SoundComponent::setMaxDistance(float distance) {
+    if (currentSourceId_ != 0) {
+        soundManager_.setSourceMaxDistance(currentSourceId_, distance);
+    }
 }

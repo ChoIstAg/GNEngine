@@ -16,6 +16,7 @@ public:
     TestObject(EventManager& eventManager, TextureManager& textureManager, RenderManager& renderManager, SoundManager& soundManager);
 
     void update(float dt) override;
+    void render() override;
 
 private:
     void onPressEvent(const KeyPressedEvent& event);

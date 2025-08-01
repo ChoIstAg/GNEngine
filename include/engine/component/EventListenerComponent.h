@@ -6,7 +6,7 @@
 #include "../event/EventInterface.h"
 #include "../manager/event/EventManager.h"
 
-class EventListenerComponent {
+class EventListenerComponent : public Component {
 private:
     EventManager& eventManager_;
     std::map<std::type_index, EventManager::SubscriptionId> subscriptionIds_;

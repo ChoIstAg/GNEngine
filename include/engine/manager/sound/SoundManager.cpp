@@ -67,8 +67,9 @@ bool SoundManager::initAL() {
     AL_CHECK_ERROR();
 
     // OpenAL 거리 모델 설정
-    // AL_INVERSE_DISTANCE_CLAMPED: 거리에 따라 볼륨이 감소하지만, 특정 거리 이하로 내려가지 않음
-    alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+    // AL_INVERSE_DISTANCE_CLAMPED: 거리에 따라 볼륨이 감소하지만, 특정 거리 이하로 내려가지 않음.
+    // None: 3D 감쇠 효과 비활성화
+    alDistanceModel(AL_NONE);
     AL_CHECK_ERROR();
 
     // 리스너 기본 설정 (위치: 0,0,0), (정면, 상향 Y축)
@@ -162,15 +163,14 @@ void SoundManager::checkAlErrors(const std::string& filename, int line) {
     }
 }
 
-bool SoundManager::loadSound(const std::string& filePath) {
+bool SoundManager::loadSound(const std::filesystem::path& filePath) {
     if (soundBuffers_.count(filePath)) {
         return true; // 이미 로드됨
     }
 
     SoundBufferInfo bufferInfo;
     
-    std::filesystem::path path(filePath);
-    std::string extension = path.extension().string();
+    std::string extension = filePath.extension().string();
     
     bool loaded = false;
     if (extension == ".wav" || extension == ".WAV") {
@@ -197,10 +197,10 @@ bool SoundManager::loadSound(const std::string& filePath) {
     }
 }
 
-ALuint SoundManager::playSound(const std::string& filePath, SoundPriority priority, float volume, float pitch, bool loop) {
+ALuint SoundManager::playSound(const std::filesystem::path& filePath, SoundPriority priority, float volume, float pitch, bool loop) {
     auto it = soundBuffers_.find(filePath);
     if (it == soundBuffers_.end()) {
-        std::cerr << "Sound with ID '" << filePath << "' not found." << std::endl;
+        std::cerr << "Sound with ID '" << filePath.string() << "' not found." << std::endl;
         return 0;
     }
 
@@ -223,12 +223,14 @@ ALuint SoundManager::playSound(const std::string& filePath, SoundPriority priori
         alSourcef(sourceLeft, AL_GAIN, volume); // Apply volume to left channel
         alSourcef(sourceLeft, AL_PITCH, pitch); // Apply pitch to left channel
         alSourcei(sourceLeft, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
+        alSourcei(sourceLeft, AL_SOURCE_RELATIVE, AL_TRUE); // 공간화 비활성화
         AL_CHECK_ERROR();
 
         alSourcei(sourceRight, AL_BUFFER, it->second.stereoBufferRight); // Right channel
         alSourcef(sourceRight, AL_GAIN, volume); // Apply volume to right channel
         alSourcef(sourceRight, AL_PITCH, pitch); // Apply pitch to right channel
         alSourcei(sourceRight, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
+        alSourcei(sourceRight, AL_SOURCE_RELATIVE, AL_TRUE); // 공간화 비활성화
         AL_CHECK_ERROR();
 
         alSourcePlay(sourceLeft);
@@ -239,6 +241,7 @@ ALuint SoundManager::playSound(const std::string& filePath, SoundPriority priori
         alSourcef(sourceLeft, AL_GAIN, volume);
         alSourcef(sourceLeft, AL_PITCH, pitch);
         alSourcei(sourceLeft, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
+        alSourcei(sourceLeft, AL_SOURCE_RELATIVE, AL_TRUE); // 공간화 비활성화
         AL_CHECK_ERROR();
 
         alSourcePlay(sourceLeft);
@@ -468,13 +471,13 @@ ALuint SoundManager::getSourceIdRight(ALuint sourceIdLeft) {
 }
 
 // WAV 파일 로딩
-bool SoundManager::loadWav(const std::string& filePath, SoundBufferInfo& bufferInfo) {
+bool SoundManager::loadWav(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo) {
     unsigned int channels;
     unsigned int sampleRate;
     drwav_uint64 totalPcmFrameCount;
-    short* pData = drwav_open_file_and_read_pcm_frames_s16(filePath.c_str(), &channels, &sampleRate, &totalPcmFrameCount, NULL);
+    short* pData = drwav_open_file_and_read_pcm_frames_s16(filePath.string().c_str(), &channels, &sampleRate, &totalPcmFrameCount, NULL);
     if (pData == NULL) {
-        std::cerr << "Failed to load WAV file: " << filePath << std::endl;
+        std::cerr << "Failed to load WAV file: " << filePath.string() << std::endl;
         return false;
     }
 
@@ -512,12 +515,13 @@ bool SoundManager::loadWav(const std::string& filePath, SoundBufferInfo& bufferI
 }
 
 // MP3 파일 로딩
-bool SoundManager::loadMp3(const std::string& filePath, SoundBufferInfo& bufferInfo) {
+bool SoundManager::loadMp3(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo) {
     drmp3_config config;
     drmp3_uint64 totalPcmFrameCount;
-    float* pPcmData = drmp3_open_file_and_read_pcm_frames_f32(filePath.c_str(), &config, &totalPcmFrameCount, NULL);
+    float* pPcmData = drmp3_open_file_and_read_pcm_frames_f32(filePath.string().c_str(), &config, &totalPcmFrameCount, NULL);
     if (pPcmData == NULL) {
-        std::cerr << "Failed to load MP3 file: " << filePath << "\n";
+        std::cerr << "Failed to load MP3 file: " << filePath.string() << "\n";
+
         return false;
     }
 
@@ -561,13 +565,13 @@ bool SoundManager::loadMp3(const std::string& filePath, SoundBufferInfo& bufferI
     return true;
 }
 
-bool SoundManager::loadFlac(const std::string& filePath, SoundBufferInfo& bufferInfo) {
+bool SoundManager::loadFlac(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo) {
     unsigned int channels;
     unsigned int sampleRate;
     drflac_uint64 totalPcmFrameCount;
-    short* pData = drflac_open_file_and_read_pcm_frames_s16(filePath.c_str(), &channels, &sampleRate, &totalPcmFrameCount, NULL);
+    short* pData = drflac_open_file_and_read_pcm_frames_s16(filePath.string().c_str(), &channels, &sampleRate, &totalPcmFrameCount, NULL);
     if (pData == NULL) {
-        std::cerr << "Failed to load FLAC file: " << filePath << std::endl;
+        std::cerr << "Failed to load FLAC file: " << filePath.string() << std::endl;
         return false;
     }
 
@@ -605,14 +609,15 @@ bool SoundManager::loadFlac(const std::string& filePath, SoundBufferInfo& buffer
 }
 
 // OGG 파일 로딩
-bool SoundManager::loadOgg(const std::string& filePath, SoundBufferInfo& bufferInfo) {
+bool SoundManager::loadOgg(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo) {
     int channels;
     int sample_rate;
     short* pcm;
-    int samples = stb_vorbis_decode_filename(filePath.c_str(), &channels, &sample_rate, &pcm);
+    int samples = stb_vorbis_decode_filename(filePath.string().c_str(), &channels, &sample_rate, &pcm);
 
     if (samples == -1) {
-        std::cerr << "Failed to load OGG file: " << filePath << "\n";
+        std::cerr << "Failed to load OGG file: " << filePath.string() << "\n";
+
         return false;
     }
 

@@ -5,6 +5,8 @@
 #include <string>
 #include <unordered_map>
 #include <memory> // For std::unique_ptr
+#include <filesystem> // Ensure this is included
+#include <functional> // For std::hash<std::filesystem::path>
 
 #include "engine/resource/texture/Texture.h"
 #include "config.h"
@@ -13,13 +15,13 @@
 class TextureManager {
 private:    
     SDL_Renderer* renderer_; /* Raw renderer actually used in main */
-    std::unordered_map<std::string, std::unique_ptr<Texture>> textureMap_; /* Normal texture name : texture value*/
+    std::unordered_map<std::filesystem::path, std::unique_ptr<Texture>> textureMap_; /* Normal texture name : texture value*/
 
 public:
     TextureManager(SDL_Renderer* renderer);
     ~TextureManager();
 
-    bool loadTexture(const std::string& filePath); 
+    bool loadTexture(const std::filesystem::path& filePath); 
     
-    Texture* getTexture(const std::string& filePath) const;
+    Texture* getTexture(const std::filesystem::path& filePath) const;
 };

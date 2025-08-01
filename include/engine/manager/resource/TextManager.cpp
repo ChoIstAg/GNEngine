@@ -15,16 +15,16 @@ TextManager::~TextManager() {
     std::cerr << "TextManager destroyed and all fonts unloaded." << std::endl;
 }
 
-bool TextManager::loadFont(const std::string& filePath, int fontPointSize) {
+bool TextManager::loadFont(const std::filesystem::path& filePath, int fontPointSize) {
     // 이미 로드된 폰트인지 확인
     if (fontMap_.count(filePath)) {
-        SDL_Log("Font already loaded: %s", filePath.c_str());
+        SDL_Log("Font already loaded: %s", filePath.string().c_str());
         return true; // 이미 로드되어 있다면 성공으로 간주
     }
 
-    TTF_Font* font = TTF_OpenFont(filePath.c_str(), fontPointSize);
+    TTF_Font* font = TTF_OpenFont(filePath.string().c_str(), fontPointSize);
     if (!font) {
-        SDL_Log("Failed to load font %s: %s", filePath.c_str(), SDL_GetError());
+        SDL_Log("Failed to load font %s: %s", filePath.string().c_str(), SDL_GetError());
         return false;
     }
 
@@ -32,23 +32,23 @@ bool TextManager::loadFont(const std::string& filePath, int fontPointSize) {
     return true;
 }
 
-bool TextManager::setFontSizePt(const std::string& filePath, int fontPointSize) {
+bool TextManager::setFontSizePt(const std::filesystem::path& filePath, int fontPointSize) {
     auto it = fontMap_.find(filePath);
     if (it == fontMap_.end()) {
-        SDL_Log("setFontSizePt - Font not found: %s", filePath.c_str());
+        SDL_Log("setFontSizePt - Font not found: %s", filePath.string().c_str());
         return false;
     }
     if (!TTF_SetFontSize(it->second, fontPointSize)) {
-        SDL_Log("setFontSizePt - Failed to set font size for %s: %s", filePath.c_str(), SDL_GetError());
+        SDL_Log("setFontSizePt - Failed to set font size for %s: %s", filePath.string().c_str(), SDL_GetError());
         return false;
     }
     return true;
 }
 
-std::unique_ptr<Text> TextManager::createText(const std::string& filePath, const std::string& text, SDL_Color color, bool enableMultiline, bool enableNewline, int wrapWidth, int maxHeight) {
+std::unique_ptr<Text> TextManager::createText(const std::filesystem::path& filePath, const std::string& text, SDL_Color color, bool enableMultiline, bool enableNewline, int wrapWidth, int maxHeight) {
     auto it = fontMap_.find(filePath);
     if (it == fontMap_.end()) { /* 만약 폰트를 찾지 못했다면 */
-        SDL_Log("createText - Font not found: %s", filePath.c_str());
+        SDL_Log("createText - Font not found: %s", filePath.string().c_str());
         return nullptr; 
     }
     return std::make_unique<Text>(renderer_, it->second, text, color, enableMultiline, enableNewline, wrapWidth, maxHeight);

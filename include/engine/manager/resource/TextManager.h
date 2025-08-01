@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <format>
+#include <functional> // For std::hash<std::filesystem::path> (if using unordered_map)
 
 #include "engine/resource/text/Text.h"
 
@@ -34,7 +35,7 @@ public:
      * @param fontPointSize 폰트 크기 (포인트 단위)
      * @return 성공 시 true, 실패 시 false
      */
-    bool loadFont(const std::string& filePath, int fontPointSize);
+    bool loadFont(const std::filesystem::path& filePath, int fontPointSize);
 
     /*
      * @brief 폰트 크기를 Point 단위로 변경함.
@@ -42,7 +43,7 @@ public:
      * @param sizePoint 변경할 폰트 크기 (포인트 단위)
      * @return 성공 시 true, 실패 시 false
      */
-    bool setFontSizePt(const std::string& filePath, int fontPointSize);
+    bool setFontSizePt(const std::filesystem::path& filePath, int fontPointSize);
 
     /*
      * @brief 지정된 파일 경로, 내용, 색상으로 Text 객체를 생성함.
@@ -52,7 +53,7 @@ public:
      * @param isMultiline true: 개행 문자를 처리.  false: 개행 문자를 무시함.
      * @return 생성된 Text 객체에 대한 std::unique_ptr
      */
-    std::unique_ptr<Text> createText(const std::string& filePath, const std::string& text, SDL_Color color, bool enableMultiline = false, bool enableNewline = false, int wrapWidth = 0, int maxHeight = 0);
+    std::unique_ptr<Text> createText(const std::filesystem::path& filePath, const std::string& text, SDL_Color color, bool enableMultiline = false, bool enableNewline = false, int wrapWidth = 0, int maxHeight = 0);
 
     /**
      * @brief 파일 경로로부터 텍스트를 불러옴.
@@ -63,5 +64,5 @@ public:
 
 private:
     SDL_Renderer* renderer_;
-    std::map<std::string, TTF_Font*> fontMap_;
+    std::map<std::filesystem::path, TTF_Font*> fontMap_;
 };

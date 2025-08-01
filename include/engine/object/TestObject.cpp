@@ -1,19 +1,23 @@
 #include "TestObject.h"
 #include <iostream>
+#include <filesystem>
 
 TestObject::TestObject(EventManager& eventManager, TextureManager& textureManager, RenderManager& renderManager, SoundManager& soundManager)
 {
-    transform_ = &addComponent<TransformComponent>();
-    transform_->positionX = 100.0f;
-    transform_->positionY = 100.0f;
+    transform_ = &addComponent<TransformComponent>(100.0f, 100.0f);
 
-    std::string texturePath = static_cast<std::string>(IMAGE_ASSET_ROOT_PATH) + "example_png.png";
+    std::filesystem::path texturePath = std::filesystem::path(IMAGE_ASSET_ROOT_PATH) / "example_png.png";
     if (textureManager.loadTexture(texturePath)) {
-        render_ = &addComponent<RenderComponent>(renderManager, *textureManager.getTexture(texturePath));
+        render_ = &addComponent<RenderComponent>(renderManager, *textureManager.getTexture(texturePath), *transform_);
     }
-
-    std::string soundPath = static_cast<std::string>(SOUND_EFFECT_ASSET_ROOT_PATH) + "hit01.flac";
+    
+    std::filesystem::path soundPath = std::filesystem::path(SOUND_EFFECT_ASSET_ROOT_PATH) / "hit01.flac";
     sound_ = &addComponent<SoundComponent>(soundManager, soundPath);
+    
+    /* 감쇠 효과 조절 */
+    // sound_->setRolloffFactor(0.5f); // 감쇠 속도를 절반으로 줄임 (소리가 더 멀리까지 들림)
+    // sound_->setReferenceDistance(5.0f); // 5.0 단위 거리까지 최대 볼륨 유지
+    // sound_->setMaxDistance(50.0f); // 50.0 단위 거리 이후에는 소리가 들리지 않음
 
     eventListener_ = &addComponent<EventListenerComponent>(eventManager);
     eventListener_->addListener<KeyPressedEvent>([this](const KeyPressedEvent& event) { this->onPressEvent(event); });
@@ -21,13 +25,17 @@ TestObject::TestObject(EventManager& eventManager, TextureManager& textureManage
 }
 
 void TestObject::update(float dt) {
-    // Component updates are handled by their respective systems, so this can be left empty for now.
+}
+
+void TestObject::render() {
+    render_->render();
 }
 
 void TestObject::onPressEvent(const KeyPressedEvent& event) {
     if (event.keyCode == SDL_SCANCODE_H) {
         std::cout << "'h' key pressed. Playing hit sound." << std::endl;
-        sound_->play(SoundPriority::HIGH);
+        sound_->play(SoundPriority::HIGH, 1.0f, 1.0f, false, false); // spatialized를 false로 설정
+
     }
 }
 
@@ -36,20 +44,20 @@ void TestObject::onKeysHeldEvent(const KeysHeldEvent& event) {
     for (const auto& keyInfo : event.heldKeys) {
         switch (keyInfo.scancode) {
             case SDL_SCANCODE_W:
-                transform_->positionY -= moveSpeed;
+                transform_->positionY_ -= moveSpeed;
                 break;
             case SDL_SCANCODE_S:
-                transform_->positionY += moveSpeed;
+                transform_->positionY_ += moveSpeed;
                 break;
             case SDL_SCANCODE_A:
-                transform_->positionX -= moveSpeed;
+                transform_->positionX_ -= moveSpeed;
                 break;
             case SDL_SCANCODE_D:
-                transform_->positionX += moveSpeed;
+                transform_->positionX_ += moveSpeed;
                 break;
             default:
                 break;
         }
     }
-    sound_->setPosition(transform_->positionX, transform_->positionY, 0.0f);
+    sound_->setPosition(transform_->positionX_, transform_->positionX_, 0.0f);
 }

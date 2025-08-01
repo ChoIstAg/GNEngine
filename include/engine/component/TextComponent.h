@@ -7,7 +7,7 @@
 
 class TextComponent : public Component {
 public:
-    TextComponent(std::unique_ptr<Text> text);
+    TextComponent(std::unique_ptr<Text> text, TransformComponent& transform);
 
     void render();
     void setText(const std::string& newText);

@@ -62,6 +62,7 @@ PUBLIC
     SDL3_image::SDL3_image
     SDL3_ttf::SDL3_ttf
     "${OPENAL_DIR}/libs/Win64/OpenAL32.lib"
+    stdc++fs
 )
 
 # target_compile_definitions

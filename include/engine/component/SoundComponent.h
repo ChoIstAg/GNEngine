@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <filesystem>
 #include "./Component.h"
 #include "../manager/sound/SoundManager.h"
 
@@ -10,10 +10,9 @@
  */
 class SoundComponent : public Component {
 private:
-    SoundManager& soundManager;
-    std::string soundPath;
-    ALuint sourceIdLeft = 0; // OpenAL 소스 ID (모노 또는 왼쪽 채널)
-    ALuint sourceIdRight = 0; // OpenAL 소스 ID (오른쪽 채널, 스테레오 전용)
+    SoundManager& soundManager_;
+    std::filesystem::path soundPath_;
+    ALuint currentSourceId_ = 0;
 
     // 3D 사운드 위치
     float x_ = 0.0f;
@@ -21,10 +20,10 @@ private:
     float z_ = 0.0f;
 
 public:
-    SoundComponent(SoundManager& manager, const std::string& path);
+    SoundComponent(SoundManager& soundManager, const std::filesystem::path& path);
     virtual ~SoundComponent();
 
-    void play(SoundPriority priority = SoundPriority::NORMAL, float volume = 1.0f, float pitch = 1.0f, bool loop = false);
+    void play(SoundPriority priority = SoundPriority::NORMAL, float volume = 1.0f, float pitch = 1.0f, bool loop = false, bool spatialized = true);
     void stop();
     void pause();
     void resume();
@@ -33,6 +32,11 @@ public:
     void setVolume(float volume);
     void setPitch(float pitch);
     void setPosition(float x, float y, float z);
+
+    // 3D 감쇠 효과 조절 함수 추가
+    void setRolloffFactor(float factor);
+    void setReferenceDistance(float distance);
+    void setMaxDistance(float distance);
 
     bool isPlaying() const;
 };
