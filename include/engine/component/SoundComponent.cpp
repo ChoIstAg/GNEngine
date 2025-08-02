@@ -1,19 +1,21 @@
 #include "SoundComponent.h"
 
 /* 
- * SoundComponent의 생성자임.
- * 사운드 관리를 위한 SoundManager의 참조와 재생할 사운드 파일의 경로를 받음.
+ * @brief SoundComponent 생성자.
+ * @param enableSpatialized 공간 음향 사용 여부.
+ * @param enableAttenuation 거리 감쇠 효과 사용 여부.
+ * @param rolloffFactor 감쇠율 (Rolloff Factor).
+ * @param referenceDistance 최대 볼륨을 유지할 거리.
+ * @param maxDistance 감쇠가 적용되는 최대 거리.
+ * @note SoundManager를 통해 사운드를 로드하고, 초기 위치를 (0.0f, 0.0f, 0.0f)으로 설정함.
  */
-SoundComponent::SoundComponent(SoundManager& soundManager, const std::filesystem::path& path)
-    : soundManager_(soundManager), 
-      soundPath_(path), 
-      currentSourceId_(0),
-      spatialized_(true),
-      attenuation_(true),
-      splitChannels_(true),
-      rolloffFactor_(1.0f),
-      referenceDistance_(1.0f),
-      maxDistance_(100.0f) {
+SoundComponent::SoundComponent(SoundManager& soundManager, const std::filesystem::path& filePath, 
+    bool enableSpatialized, bool enableAttenuation, 
+    float rolloffFactor, float referenceDistance, float maxDistance)
+    : soundManager_(soundManager), soundPath_(filePath), currentSourceId_(0),
+      enableSpatialized_(enableSpatialized), enableAttenuation_(enableAttenuation),
+      rolloffFactor_(rolloffFactor), referenceDistance_(referenceDistance), maxDistance_(maxDistance) 
+{
     soundManager_.loadSound(soundPath_);
 }
 
@@ -29,7 +31,7 @@ SoundComponent::~SoundComponent() {
 
 /* 
  * 사운드를 재생함.
- * 컴포넌트에 저장된 속성(공간 음향, 감쇠, 채널 분리 등)을 사용하여 SoundManager에 재생을 요청함.
+ * 컴포넌트에 저장된 속성(공간 음향, 감쇠 등)을 사용하여 SoundManager에 재생을 요청함.
  * 이미 재생 중인 사운드가 있다면 정지하고 새로 재생함.
  */
 void SoundComponent::play(SoundPriority priority, float volume, float pitch, bool loop) {
@@ -38,10 +40,10 @@ void SoundComponent::play(SoundPriority priority, float volume, float pitch, boo
     }
 
     currentSourceId_ = soundManager_.playSound(soundPath_, priority, volume, pitch, loop, 
-                                               spatialized_, attenuation_, splitChannels_,
+                                               enableSpatialized_, enableAttenuation_,
                                                rolloffFactor_, referenceDistance_, maxDistance_);
 
-    if (currentSourceId_ != 0 && spatialized_) {
+    if (currentSourceId_ != 0 && enableSpatialized_) {
         soundManager_.setSourcePosition(currentSourceId_, x_, y_, z_);
     }
 }
@@ -112,7 +114,7 @@ void SoundComponent::setPosition(float x, float y, float z) {
     z_ = z;
 
     if (currentSourceId_ != 0) {
-        if (spatialized_) {
+        if (enableSpatialized_) {
             /* [DEBUG] 공간 음향이 활성화된 사운드의 위치를 업데이트함. */
             std::cout << "[DEBUG] Updating position for spatialized sound. Source ID: " << currentSourceId_ << std::endl;
             soundManager_.setSourcePosition(currentSourceId_, x_, y_, z_);
@@ -139,21 +141,14 @@ bool SoundComponent::isPlaying() const {
  * 공간 음향 사용 여부를 설정함.
  */
 void SoundComponent::setSpatialized(bool spatialized) {
-    spatialized_ = spatialized;
+    enableSpatialized_ = spatialized;
 }
 
 /* 
  * 거리 감쇠 효과 사용 여부를 설정함.
  */
 void SoundComponent::setAttenuation(bool attenuation) {
-    attenuation_ = attenuation;
-}
-
-/* 
- * 스테레오 채널 분리 여부를 설정함.
- */
-void SoundComponent::setSplitChannels(bool split) {
-    splitChannels_ = split;
+    enableAttenuation_ = attenuation;
 }
 
 /* 

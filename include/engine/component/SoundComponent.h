@@ -21,15 +21,16 @@ private:
     float z_ = 0.0f;
 
     // 사운드 재생 속성
-    bool spatialized_ = false;       // 공간 음향 사용 여부
-    bool attenuation_ = false;      // 감쇠 효과 사용 여부
-    bool splitChannels_ = false;    // 스테레오 채널 분리 여부
+    bool enableSpatialized_ = false;       // 공간 음향 사용 여부
+    bool enableAttenuation_ = false;      // 감쇠 효과 사용 여부
     float rolloffFactor_ = 1.0f;
     float referenceDistance_ = 1.0f;
     float maxDistance_ = 100.0f;
 
 public:
-    SoundComponent(SoundManager& soundManager, const std::filesystem::path& path);
+    SoundComponent(SoundManager& soundManager, const std::filesystem::path& path, 
+        bool enableSpatialized = false, bool enableAttenuation = false, 
+        float rolloffFactor = 1.0f, float referenceDistance = 1.0f, float maxDistance = 100.0f);
     virtual ~SoundComponent();
 
     void play(SoundPriority priority = SoundPriority::NORMAL, float volume = 1.0f, float pitch = 1.0f, bool loop = false);
@@ -43,9 +44,8 @@ public:
     void setPosition(float x, float y, float z);
 
     // 사운드 속성 설정 함수
-    void setSpatialized(bool spatialized);
-    void setAttenuation(bool attenuation);
-    void setSplitChannels(bool split);
+    void setSpatialized(bool enableSpatialized);
+    void setAttenuation(bool enableAttenuation);
     void setRolloffFactor(float factor);
     void setReferenceDistance(float distance);
     void setMaxDistance(float distance);

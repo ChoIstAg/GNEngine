@@ -44,16 +44,16 @@ public:
      * @param volume 볼륨 (0.0f ~ 1.0f).
      * @param pitch 피치 (0.xxf ~ 2.0f).
      * @param loop 반복 재생 여부.
+     * @param spatialized 3D 공간 음향 적용 여부. false일 경우 2D 사운드로 재생 (BGM 등).
      * @return 재생에 성공한 경우 OpenAL 소스 ID, 실패 시 0 반환.
     */
-    ALuint playSound(const std::filesystem::path& filePath, 
-                     SoundPriority priority = SoundPriority::NORMAL, 
-                     float volume = 1.0f, 
-                     float pitch = 1.0f, 
-                     bool loop = false, 
-                     bool spatialized = true, 
-                     bool attenuation = true, 
-                     bool splitChannels = true,
+    ALuint playSound(const std::filesystem::path& filePath,
+                     SoundPriority priority = SoundPriority::NORMAL,
+                     float volume = 1.0f,
+                     float pitch = 1.0f,
+                     bool loop = false,
+                     bool spatialized = true,
+                     bool attenuation = true,
                      float rolloffFactor = 1.0f,
                      float referenceDistance = 1.0f,
                      float maxDistance = 100.0f);
@@ -84,18 +84,24 @@ private:
      * @brief 현재 재생 중인 소스(보이스)의 정보를 담는 구조체.
      */
     struct Voice {
-        ALuint sourceIdLeft = 0; // 모노 사운드 또는 스테레오 사운드의 왼쪽 채널 소스
-        ALuint sourceIdRight = 0; // 스테레오 사운드의 오른쪽 채널 소스 (스테레오 사운드인 경우에만 사용)
+        ALuint sourceIdLeft = 0;  // 주 소스 (모노, 2D 스테레오, 3D 스테레오의 왼쪽 채널)
+        ALuint sourceIdRight = 0; // 3D 스테레오의 오른쪽 채널 전용 소스
         std::filesystem::path soundPath;
         SoundPriority priority = SoundPriority::NORMAL;
         bool isPlaying = false;
-        bool isStereo = false; // 이 보이스가 스테레오 사운드를 재생 중인지 여부
+        bool isSplitStereo = false; // 이 보이스가 3D 분리 스테레오 모드로 재생 중인지 여부
     };
 
+    /*
+     * @brief 로드된 사운드 버퍼에 대한 정보를 담는 구조체.
+     * @note 스테레오 음원의 경우, 3D 공간화를 위한 분리된 모노 버퍼 2개와
+     *       2D 재생을 위한 통합 스테레오 버퍼 1개를 모두 가짐.
+     */
     struct SoundBufferInfo {
-        ALuint monoBuffer = 0; // 모노 사운드 또는 스테레오 사운드의 왼쪽 채널
-        ALuint stereoBufferRight = 0; // 스테레오 사운드의 오른쪽 채널 (스테레오 사운드인 경우에만 사용)
-        bool isStereo = false;
+        ALuint monoBufferLeft = 0;    // 3D용 왼쪽 채널(또는 모노 음원) 버퍼
+        ALuint monoBufferRight = 0;   // 3D용 오른쪽 채널 버퍼
+        ALuint stereoBuffer = 0;      // 2D용 통합 스테레오 버퍼
+        bool isStereo = false;        // 원본 파일이 스테레오인지 여부
     };
 
     static constexpr int MAX_VOICES = 64; // 동시 재생 가능한 최대 소스 수

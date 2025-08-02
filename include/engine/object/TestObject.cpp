@@ -12,11 +12,12 @@ TestObject::TestObject(EventManager& eventManager, TextureManager& textureManage
     }
     
     std::filesystem::path soundPath = std::filesystem::path(SOUND_EFFECT_ASSET_ROOT_PATH) / "hit01.flac";
-    sound_ = &addComponent<SoundComponent>(soundManager, soundPath);
+    // 3D 효과음으로 사용할 것이므로 spatialized와 attenuation을 true로 설정
+    sound_ = &addComponent<SoundComponent>(soundManager, soundPath, true, true);
     
     /* 감쇠 효과 조절 */
-    sound_->setRolloffFactor(0.5f); // 감쇠 속도를 절반으로 줄임 (소리가 더 멀리까지 들림)
-    sound_->setReferenceDistance(5.0f); // 5.0 단위 거리까지 최대 볼륨 유지
+    sound_->setRolloffFactor(1.0f); // 감쇠 속도를 절반으로 줄임
+    sound_->setReferenceDistance(1000.0f); // 5.0 단위 거리까지 최대 볼륨 유지
 
     eventListener_ = &addComponent<EventListenerComponent>(eventManager);
     eventListener_->addListener<KeyPressedEvent>([this](const KeyPressedEvent& event) { this->onPressEvent(event); });
@@ -33,8 +34,8 @@ void TestObject::render() {
 void TestObject::onPressEvent(const KeyPressedEvent& event) {
     if (event.keyCode == SDL_SCANCODE_H) {
         std::cout << "'h' key pressed. Playing hit sound." << std::endl;
-        // sound_->setSpatialized(false); // 3D 공간 음향 비활성화
-        // sound_->setSplitChannels(false); // 스테레오 채널을 모노로 처리
+        // 예시: 재생 시점에 3D 사운드 속성을 바꾸고 싶다면 아래처럼 사용 가능
+        // sound_->setSpatialized(false); // 2D 사운드로 재생
         // sound_->setAttenuation(false); // 거리 감쇠 비활성화
         sound_->play(SoundPriority::HIGH, 1.0f, 1.0f, false);
     }
@@ -47,11 +48,11 @@ void TestObject::onKeysHeldEvent(const KeysHeldEvent& event) {
             case SDL_SCANCODE_W:
                 transform_->positionY_ -= moveSpeed;
                 break;
-            case SDL_SCANCODE_S:
-                transform_->positionY_ += moveSpeed;
-                break;
             case SDL_SCANCODE_A:
                 transform_->positionX_ -= moveSpeed;
+                break;
+            case SDL_SCANCODE_S:
+                transform_->positionY_ += moveSpeed;
                 break;
             case SDL_SCANCODE_D:
                 transform_->positionX_ += moveSpeed;

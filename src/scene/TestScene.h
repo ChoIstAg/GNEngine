@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "engine/object/TestObject.h"
+#include "engine/component/SoundComponent.h"
 #include <iostream>
 #include <memory>
 
@@ -12,10 +13,11 @@ public:
 
     void onEnter() override;
     void onExit() override;
-    void handleEvent(const SDL_Event& e) override;
+    void handleEvent(const SDL_Event& event) override;
     void update(float deltaTime) override;
     void render(SDL_Renderer* renderer) override;
 
 private:
     std::unique_ptr<TestObject> testObject_;
+    std::unique_ptr<SoundComponent> bgm_;
 };
