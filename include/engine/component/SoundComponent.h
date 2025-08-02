@@ -1,54 +1,51 @@
 #pragma once
 
 #include <filesystem>
-#include <iostream>
+#include <memory>
 #include "./Component.h"
 #include "../manager/sound/SoundManager.h"
+#include "../resource/sound/Sound.h"
 
 /*
- * @brief 사운드 재생과 관련된 컴포넌트.
- * 이 컴포넌트는 특정 게임 오브젝트에 사운드 효과나 배경 음악을 첨부하는 데 사용됨.
+ * 사운드 재생을 위한 설정 정보를 담고, "Fire-and-Forget" 방식으로 재생을 요청하는 컴포넌트임.
  */
 class SoundComponent : public Component {
+public:
+    SoundComponent(SoundManager& soundManager, std::shared_ptr<Sound> sound);
+    virtual ~SoundComponent() = default;
+
+    /* 현재 설정된 속성으로 사운드를 즉시 재생함 (Fire-and-Forget) */
+    void play();
+
+    // --- 재생 전 사운드 속성 설정 함수들 ---
+    void setPosition(float x, float y, float z) { x_ = x; y_ = y; z_ = z; }
+    void setVolume(float volume) { volume_ = volume; }
+    void setPitch(float pitch) { pitch_ = pitch; }
+    void setLoop(bool loop) { loop_ = loop; }
+    void setPriority(SoundPriority priority) { priority_ = priority; }
+
+    void setSpatialized(bool spatialized) { spatialized_ = spatialized; }
+    void setAttenuation(bool attenuation) { attenuation_ = attenuation; }
+    void setSplitChannels(bool split) { splitChannels_ = split; }
+    void setRolloffFactor(float factor) { rolloffFactor_ = factor; }
+    void setReferenceDistance(float distance) { referenceDistance_ = distance; }
+    void setMaxDistance(float distance) { maxDistance_ = distance; }
+
 private:
     SoundManager& soundManager_;
-    std::filesystem::path soundPath_;
-    ALuint currentSourceId_ = 0;
+    std::shared_ptr<Sound> sound_;
 
-    // 3D 사운드 위치
-    float x_ = 0.0f;
-    float y_ = 0.0f;
-    float z_ = 0.0f;
+    // --- 재생 속성 --- 
+    float x_ = 0.0f, y_ = 0.0f, z_ = 0.0f;
+    float volume_ = 1.0f;
+    float pitch_ = 1.0f;
+    bool loop_ = false;
+    SoundPriority priority_ = SoundPriority::NORMAL;
 
-    // 사운드 재생 속성
-    bool enableSpatialized_ = false;       // 공간 음향 사용 여부
-    bool enableAttenuation_ = false;      // 감쇠 효과 사용 여부
+    bool spatialized_ = true;
+    bool attenuation_ = true;
+    bool splitChannels_ = true;
     float rolloffFactor_ = 1.0f;
     float referenceDistance_ = 1.0f;
     float maxDistance_ = 100.0f;
-
-public:
-    SoundComponent(SoundManager& soundManager, const std::filesystem::path& path, 
-        bool enableSpatialized = false, bool enableAttenuation = false, 
-        float rolloffFactor = 1.0f, float referenceDistance = 1.0f, float maxDistance = 100.0f);
-    virtual ~SoundComponent();
-
-    void play(SoundPriority priority = SoundPriority::NORMAL, float volume = 1.0f, float pitch = 1.0f, bool loop = false);
-    void stop();
-    void pause();
-    void resume();
-    void togglePause();
-
-    void setVolume(float volume);
-    void setPitch(float pitch);
-    void setPosition(float x, float y, float z);
-
-    // 사운드 속성 설정 함수
-    void setSpatialized(bool enableSpatialized);
-    void setAttenuation(bool enableAttenuation);
-    void setRolloffFactor(float factor);
-    void setReferenceDistance(float distance);
-    void setMaxDistance(float distance);
-
-    bool isPlaying() const;
 };

@@ -12,9 +12,10 @@ add_executable(GNEngine
     ../include/engine/manager/event/InputManager.cpp
     ../include/engine/manager/render/RenderManager.cpp
     
+    ../include/engine/manager/sound/SoundManager.cpp
+    ../include/engine/resource/sound/Sound.cpp
     ../include/engine/manager/resource/TextureManager.cpp
     ../include/engine/manager/resource/TextManager.cpp
-    ../include/engine/manager/sound/SoundManager.cpp
     ../include/engine/resource/text/Text.cpp
 
     ../include/engine/component/SoundComponent.cpp

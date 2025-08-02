@@ -36,7 +36,7 @@ SoundManager::~SoundManager() {
  * @note HRTF 지원을 확인하고 가능한 경우 활성화함.
  */
 bool SoundManager::initAL() {
-    // 기본 오디오 장치를 염.
+    // 기본 오디오 장치 열기
     device_ = alcOpenDevice(NULL);
     if (!device_) {
         std::cerr << "Failed to open OpenAL device(" << alcGetString(NULL, alcGetError(NULL)) << ")." << std::endl;
@@ -132,7 +132,6 @@ bool SoundManager::initAL() {
 
 /*
  * @brief 사용된 모든 OpenAL 리소스를 정리하고 종료함.
- * @note 재생 중인 모든 소리를 멈추고, 소스, 버퍼, 컨텍스트, 장치를 순서대로 정리함.
  */
 void SoundManager::quitAL() {
     if (context_ && device_) {
@@ -152,19 +151,8 @@ void SoundManager::quitAL() {
         }
         voicePool_.clear();
 
-        // 로드된 모든 사운드 버퍼를 삭제함.
-        for (auto const& [id, bufferInfo] : soundBuffers_) {
-            if (bufferInfo.monoBufferLeft != 0 && alIsBuffer(bufferInfo.monoBufferLeft)) {
-                alDeleteBuffers(1, &bufferInfo.monoBufferLeft);
-            }
-            if (bufferInfo.monoBufferRight != 0 && alIsBuffer(bufferInfo.monoBufferRight)) {
-                alDeleteBuffers(1, &bufferInfo.monoBufferRight);
-            }
-            if (bufferInfo.stereoBuffer != 0 && alIsBuffer(bufferInfo.stereoBuffer)) {
-                alDeleteBuffers(1, &bufferInfo.stereoBuffer);
-            }
-        }
-        soundBuffers_.clear();
+        // 사운드 캐시를 비움. shared_ptr가 Sound 객체의 소멸자를 호출하여 버퍼를 자동 정리함.
+        soundCache_.clear();
 
         // 컨텍스트와 장치를 닫음.
         alcMakeContextCurrent(NULL);
@@ -179,8 +167,6 @@ void SoundManager::quitAL() {
 
 /*
  * @brief OpenAL API 호출 후 발생할 수 있는 오류를 확인하고 출력함.
- * @param filename 오류가 발생한 소스 파일 이름.
- * @param line 오류가 발생한 소스 파일의 라인 번호.
  */
 void SoundManager::checkAlErrors(const std::string& filename, int line) {
     ALenum error = alGetError();
@@ -190,44 +176,45 @@ void SoundManager::checkAlErrors(const std::string& filename, int line) {
 }
 
 /*
- * @brief 지정된 경로의 사운드 파일을 로드하여 OpenAL 버퍼를 생성함.
- * @param filePath 로드할 사운드 파일의 경로.
- * @return 로딩 성공 시 true, 실패 시 false를 반환함.
- * @note 파일 확장자를 기반으로 적절한 디코더(WAV, MP3, OGG, FLAC)를 호출함.
- *       이미 로드된 파일은 다시 로드하지 않음.
+ * @brief 지정된 경로의 사운드 파일을 로드하거나 캐시에서 가져옴.
  */
-bool SoundManager::loadSound(const std::filesystem::path& filePath) {
-    if (soundBuffers_.count(filePath)) {
-        return true; // 이미 로드됨.
+std::shared_ptr<Sound> SoundManager::getSound(const std::filesystem::path& filePath) {
+    // 1. 캐시에 이미 사운드가 있는지 확인
+    auto it = soundCache_.find(filePath);
+    if (it != soundCache_.end()) {
+        return it->second;
     }
 
-    SoundBufferInfo bufferInfo;
-    
+    // 2. 캐시에 없으면 새로 로드
+    ALuint monoBuffer = 0;
+    ALuint stereoBufferRight = 0;
+    bool isStereo = false;
+
     std::string extension = filePath.extension().string();
-    
     bool loaded = false;
     if (extension == ".wav" || extension == ".WAV") {
-        loaded = loadWav(filePath, bufferInfo);
+        loaded = loadWav(filePath, monoBuffer, stereoBufferRight, isStereo);
     } else if (extension == ".mp3" || extension == ".MP3") {
-        loaded = loadMp3(filePath, bufferInfo);
+        loaded = loadMp3(filePath, monoBuffer, stereoBufferRight, isStereo);
     } else if (extension == ".ogg" || extension == ".OGG") {
-        loaded = loadOgg(filePath, bufferInfo);
+        loaded = loadOgg(filePath, monoBuffer, stereoBufferRight, isStereo);
     } else if (extension == ".flac" || extension == ".FLAC") {
-        loaded = loadFlac(filePath, bufferInfo);
+        loaded = loadFlac(filePath, monoBuffer, stereoBufferRight, isStereo);
     } else {
         std::cerr << "Unsupported sound file format: " << extension << std::endl;
-        return false;
+        return nullptr;
     }
 
+    // 3. 로딩 성공 시 Sound 객체를 생성하고 캐시에 저장
     if (loaded) {
-        soundBuffers_[filePath] = bufferInfo;
-        return true;
+        auto sound = std::make_shared<Sound>(monoBuffer, stereoBufferRight, isStereo);
+        soundCache_[filePath] = sound;
+        return sound;
     } else {
         // 로딩 실패 시 생성되었을 수 있는 버퍼를 정리함.
-        if (bufferInfo.monoBufferLeft != 0) alDeleteBuffers(1, &bufferInfo.monoBufferLeft);
-        if (bufferInfo.monoBufferRight != 0) alDeleteBuffers(1, &bufferInfo.monoBufferRight);
-        if (bufferInfo.stereoBuffer != 0) alDeleteBuffers(1, &bufferInfo.stereoBuffer);
-        return false;
+        if (monoBuffer != 0) alDeleteBuffers(1, &monoBuffer);
+        if (stereoBufferRight != 0) alDeleteBuffers(1, &stereoBufferRight);
+        return nullptr;
     }
 }
 
@@ -246,22 +233,23 @@ bool SoundManager::loadSound(const std::filesystem::path& filePath) {
  * @param maxDistance 사운드가 더 이상 감쇠하지 않는 최대 거리.
  * @return 재생에 사용된 OpenAL 소스의 ID (왼쪽 채널). 실패 시 0을 반환.
  */
-ALuint SoundManager::playSound(const std::filesystem::path& filePath, SoundPriority priority, float volume, float pitch, bool loop, bool spatialized, bool attenuation, float rolloffFactor, float referenceDistance, float maxDistance) {
-    auto it = soundBuffers_.find(filePath);
-    if (it == soundBuffers_.end()) {
-        std::cerr << "Sound with ID '" << filePath.string() << "' not found." << std::endl;
+ALuint SoundManager::playSound(Sound* sound,
+                             SoundPriority priority, float volume, float pitch, bool loop,
+                             bool spatialized, bool attenuation, 
+                             float rolloffFactor, float referenceDistance, float maxDistance) {
+    if (!sound) {
+        std::cerr << "Attempted to play a null sound." << std::endl;
         return 0;
     }
 
-    const auto& bufferInfo = it->second;
-    bool is3DStereo = bufferInfo.isStereo && spatialized;
+    bool is3DStereo = sound->isStereo() && spatialized;
 
     Voice* voice = findAvailableVoice(priority, is3DStereo);
     if (!voice) {
         return 0; // 사용 가능한 보이스가 없음.
     }
 
-    voice->soundPath = filePath;
+    voice->sound = sound;
     voice->priority = priority;
     voice->isPlaying = true;
     voice->isSplitStereo = is3DStereo;
@@ -279,8 +267,8 @@ ALuint SoundManager::playSound(const std::filesystem::path& filePath, SoundPrior
     // --- 재생 방식에 따른 분기 처리 ---
     if (is3DStereo) {
         // [CASE 1: 3D 스테레오] - 2개의 소스, 2개의 모노 버퍼 사용
-        alSourcei(sourceLeft, AL_BUFFER, bufferInfo.monoBufferLeft);
-        alSourcei(sourceRight, AL_BUFFER, bufferInfo.monoBufferRight);
+        alSourcei(sourceLeft, AL_BUFFER, sound->getMonoBuffer());
+        alSourcei(sourceRight, AL_BUFFER, sound->getStereoBufferRight());
 
         // 오른쪽 채널 소스 설정
         alSourcef(sourceRight, AL_GAIN, volume);
@@ -305,20 +293,15 @@ ALuint SoundManager::playSound(const std::filesystem::path& filePath, SoundPrior
         alSourcePlay(sourceLeft);
         alSourcePlay(sourceRight);
 
-    } else if (bufferInfo.isStereo) {
-        // [CASE 2: 2D 스테레오] - 1개의 소스, 1개의 스테레오 버퍼 사용
-        alSourcei(sourceLeft, AL_BUFFER, bufferInfo.stereoBuffer);
-        alSource3f(sourceLeft, AL_POSITION, 0.0f, 0.0f, 0.0f); // 위치 고정
-        alDistanceModel(AL_NONE); // 2D는 감쇠 없음
-        AL_CHECK_ERROR();
-        alSourcePlay(sourceLeft);
-
-    } else {
-        // [CASE 3: 모노] - 1개의 소스, 1개의 모노 버퍼 사용
-        alSourcei(sourceLeft, AL_BUFFER, bufferInfo.monoBufferLeft);
+    } else { // 모노 또는 2D 스테레오
+        // [CASE 2: 모노 또는 2D 스테레오] - 1개의 소스, 1개의 버퍼 사용
+        // OpenAL은 스테레오 버퍼를 3D 공간화할 수 없으므로, 2D 스테레오는 3D 스테레오와 다르게 처리해야 함.
+        // 여기서는 3D가 아닌 모든 경우(모노, 2D 스테레오)를 통합하여 처리.
+        alSourcei(sourceLeft, AL_BUFFER, sound->getMonoBuffer()); // 2D 스테레오도 왼쪽 채널만 사용.
         if (!spatialized) {
-            alSource3f(sourceLeft, AL_POSITION, 0.0f, 0.0f, 0.0f); // 2D 모노 위치 고정
+            alSource3f(sourceLeft, AL_POSITION, 0.0f, 0.0f, 0.0f); // 2D 사운드 위치 고정
         }
+
         // 3D 감쇠 설정
         if (spatialized && attenuation) {
             alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
@@ -446,19 +429,7 @@ SoundManager::Voice* SoundManager::findAvailableVoice(SoundPriority priority, bo
     return nullptr;
 }
 
-/*
- * @brief 소스 ID를 사용하여 보이스를 해제(반환)함.
- * @param sourceId 해제할 보이스의 소스 ID.
- */
-void SoundManager::releaseVoice(ALuint sourceId) {
-    auto it = std::find_if(voicePool_.begin(), voicePool_.end(), [sourceId](const Voice& v) {
-        return v.sourceIdLeft == sourceId || v.sourceIdRight == sourceId;
-    });
 
-    if (it != voicePool_.end()) {
-        releaseVoice(&(*it));
-    }
-}
 
 /*
  * @brief Voice 객체를 직접 받아 보이스를 해제(반환)함.
@@ -644,7 +615,7 @@ ALuint SoundManager::getSourceIdRight(ALuint sourceIdLeft) {
  * @return 로딩 성공 시 true, 실패 시 false.
  * @note 스테레오 파일의 경우, 3D용 분리 모노 버퍼 2개와 2D용 통합 스테레오 버퍼 1개를 모두 생성함.
  */
-bool SoundManager::loadWav(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo) {
+bool SoundManager::loadWav(const std::filesystem::path& filePath, ALuint& monoBuffer, ALuint& stereoBufferRight, bool& isStereo) {
     unsigned int channels;
     unsigned int sampleRate;
     drwav_uint64 totalPcmFrameCount;
@@ -655,20 +626,13 @@ bool SoundManager::loadWav(const std::filesystem::path& filePath, SoundBufferInf
     }
 
     if (channels == 1) { // 모노
-        alGenBuffers(1, &bufferInfo.monoBufferLeft);
+        isStereo = false;
+        alGenBuffers(1, &monoBuffer);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferLeft, AL_FORMAT_MONO16, pData, totalPcmFrameCount * channels * sizeof(short), sampleRate);
-        bufferInfo.isStereo = false;
+        alBufferData(monoBuffer, AL_FORMAT_MONO16, pData, totalPcmFrameCount * sizeof(short), sampleRate);
+        AL_CHECK_ERROR();
     } else if (channels == 2) { // 스테레오
-        bufferInfo.isStereo = true;
-
-        // 1. 2D 재생을 위한 통합 스테레오 버퍼 생성
-        alGenBuffers(1, &bufferInfo.stereoBuffer);
-        AL_CHECK_ERROR();
-        alBufferData(bufferInfo.stereoBuffer, AL_FORMAT_STEREO16, pData, totalPcmFrameCount * channels * sizeof(short), sampleRate);
-        AL_CHECK_ERROR();
-
-        // 2. 3D 재생을 위한 채널 분리 및 모노 버퍼 생성
+        isStereo = true;
         std::vector<short> pcmLeft(totalPcmFrameCount);
         std::vector<short> pcmRight(totalPcmFrameCount);
         for (drwav_uint64 i = 0; i < totalPcmFrameCount; ++i) {
@@ -676,14 +640,14 @@ bool SoundManager::loadWav(const std::filesystem::path& filePath, SoundBufferInf
             pcmRight[i] = pData[i * 2 + 1];
         }
 
-        alGenBuffers(1, &bufferInfo.monoBufferLeft);
+        alGenBuffers(1, &monoBuffer);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferLeft, AL_FORMAT_MONO16, pcmLeft.data(), pcmLeft.size() * sizeof(short), sampleRate);
+        alBufferData(monoBuffer, AL_FORMAT_MONO16, pcmLeft.data(), pcmLeft.size() * sizeof(short), sampleRate);
         AL_CHECK_ERROR();
 
-        alGenBuffers(1, &bufferInfo.monoBufferRight);
+        alGenBuffers(1, &stereoBufferRight);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferRight, AL_FORMAT_MONO16, pcmRight.data(), pcmRight.size() * sizeof(short), sampleRate);
+        alBufferData(stereoBufferRight, AL_FORMAT_MONO16, pcmRight.data(), pcmRight.size() * sizeof(short), sampleRate);
         AL_CHECK_ERROR();
     } else {
         std::cerr << "Unsupported WAV channel count: " << channels << "\n";
@@ -701,7 +665,7 @@ bool SoundManager::loadWav(const std::filesystem::path& filePath, SoundBufferInf
  * @param bufferInfo 버퍼 정보를 저장할 구조체.
  * @return 로딩 성공 시 true, 실패 시 false.
  */
-bool SoundManager::loadMp3(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo) {
+bool SoundManager::loadMp3(const std::filesystem::path& filePath, ALuint& monoBuffer, ALuint& stereoBufferRight, bool& isStereo) {
     drmp3_config config;
     drmp3_uint64 totalPcmFrameCount;
     float* pPcmData = drmp3_open_file_and_read_pcm_frames_f32(filePath.string().c_str(), &config, &totalPcmFrameCount, NULL);
@@ -718,21 +682,13 @@ bool SoundManager::loadMp3(const std::filesystem::path& filePath, SoundBufferInf
     drmp3_free(pPcmData, NULL);
 
     if (config.channels == 1) { // 모노
-        bufferInfo.isStereo = false;
-        alGenBuffers(1, &bufferInfo.monoBufferLeft);
+        isStereo = false;
+        alGenBuffers(1, &monoBuffer);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferLeft, AL_FORMAT_MONO16, pcm16.data(), pcm16.size() * sizeof(short), config.sampleRate);
+        alBufferData(monoBuffer, AL_FORMAT_MONO16, pcm16.data(), pcm16.size() * sizeof(short), config.sampleRate);
         AL_CHECK_ERROR();
     } else if (config.channels == 2) { // 스테레오
-        bufferInfo.isStereo = true;
-
-        // 1. 2D 재생을 위한 통합 스테레오 버퍼 생성
-        alGenBuffers(1, &bufferInfo.stereoBuffer);
-        AL_CHECK_ERROR();
-        alBufferData(bufferInfo.stereoBuffer, AL_FORMAT_STEREO16, pcm16.data(), pcm16.size() * sizeof(short), config.sampleRate);
-        AL_CHECK_ERROR();
-
-        // 2. 3D 재생을 위한 채널 분리 및 모노 버퍼 생성
+        isStereo = true;
         std::vector<short> pcmLeft(totalPcmFrameCount);
         std::vector<short> pcmRight(totalPcmFrameCount);
         for (drmp3_uint64 i = 0; i < totalPcmFrameCount; ++i) {
@@ -740,14 +696,14 @@ bool SoundManager::loadMp3(const std::filesystem::path& filePath, SoundBufferInf
             pcmRight[i] = pcm16[i * 2 + 1];
         }
 
-        alGenBuffers(1, &bufferInfo.monoBufferLeft);
+        alGenBuffers(1, &monoBuffer);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferLeft, AL_FORMAT_MONO16, pcmLeft.data(), pcmLeft.size() * sizeof(short), config.sampleRate);
+        alBufferData(monoBuffer, AL_FORMAT_MONO16, pcmLeft.data(), pcmLeft.size() * sizeof(short), config.sampleRate);
         AL_CHECK_ERROR();
 
-        alGenBuffers(1, &bufferInfo.monoBufferRight);
+        alGenBuffers(1, &stereoBufferRight);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferRight, AL_FORMAT_MONO16, pcmRight.data(), pcmRight.size() * sizeof(short), config.sampleRate);
+        alBufferData(stereoBufferRight, AL_FORMAT_MONO16, pcmRight.data(), pcmRight.size() * sizeof(short), config.sampleRate);
         AL_CHECK_ERROR();
     } else {
         std::cerr << "Unsupported MP3 channel count: " << config.channels << "\n";
@@ -762,7 +718,7 @@ bool SoundManager::loadMp3(const std::filesystem::path& filePath, SoundBufferInf
  * @param bufferInfo 버퍼 정보를 저장할 구조체.
  * @return 로딩 성공 시 true, 실패 시 false.
  */
-bool SoundManager::loadFlac(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo) {
+bool SoundManager::loadFlac(const std::filesystem::path& filePath, ALuint& monoBuffer, ALuint& stereoBufferRight, bool& isStereo) {
     unsigned int channels;
     unsigned int sampleRate;
     drflac_uint64 totalPcmFrameCount;
@@ -773,21 +729,13 @@ bool SoundManager::loadFlac(const std::filesystem::path& filePath, SoundBufferIn
     }
 
     if (channels == 1) { // 모노
-        bufferInfo.isStereo = false;
-        alGenBuffers(1, &bufferInfo.monoBufferLeft);
+        isStereo = false;
+        alGenBuffers(1, &monoBuffer);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferLeft, AL_FORMAT_MONO16, pData, totalPcmFrameCount * channels * sizeof(short), sampleRate);
+        alBufferData(monoBuffer, AL_FORMAT_MONO16, pData, totalPcmFrameCount * sizeof(short), sampleRate);
         AL_CHECK_ERROR();
     } else if (channels == 2) { // 스테레오
-        bufferInfo.isStereo = true;
-
-        // 1. 2D 재생을 위한 통합 스테레오 버퍼 생성
-        alGenBuffers(1, &bufferInfo.stereoBuffer);
-        AL_CHECK_ERROR();
-        alBufferData(bufferInfo.stereoBuffer, AL_FORMAT_STEREO16, pData, totalPcmFrameCount * channels * sizeof(short), sampleRate);
-        AL_CHECK_ERROR();
-
-        // 2. 3D 재생을 위한 채널 분리 및 모노 버퍼 생성
+        isStereo = true;
         std::vector<short> pcmLeft(totalPcmFrameCount);
         std::vector<short> pcmRight(totalPcmFrameCount);
         for (drflac_uint64 i = 0; i < totalPcmFrameCount; ++i) {
@@ -795,14 +743,14 @@ bool SoundManager::loadFlac(const std::filesystem::path& filePath, SoundBufferIn
             pcmRight[i] = pData[i * 2 + 1];
         }
 
-        alGenBuffers(1, &bufferInfo.monoBufferLeft);
+        alGenBuffers(1, &monoBuffer);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferLeft, AL_FORMAT_MONO16, pcmLeft.data(), pcmLeft.size() * sizeof(short), sampleRate);
+        alBufferData(monoBuffer, AL_FORMAT_MONO16, pcmLeft.data(), pcmLeft.size() * sizeof(short), sampleRate);
         AL_CHECK_ERROR();
 
-        alGenBuffers(1, &bufferInfo.monoBufferRight);
+        alGenBuffers(1, &stereoBufferRight);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferRight, AL_FORMAT_MONO16, pcmRight.data(), pcmRight.size() * sizeof(short), sampleRate);
+        alBufferData(stereoBufferRight, AL_FORMAT_MONO16, pcmRight.data(), pcmRight.size() * sizeof(short), sampleRate);
         AL_CHECK_ERROR();
     } else {
         std::cerr << "Unsupported FLAC channel count: " << channels << "\n";
@@ -820,7 +768,7 @@ bool SoundManager::loadFlac(const std::filesystem::path& filePath, SoundBufferIn
  * @param bufferInfo 버퍼 정보를 저장할 구조체.
  * @return 로딩 성공 시 true, 실패 시 false.
  */
-bool SoundManager::loadOgg(const std::filesystem::path& filePath, SoundBufferInfo& bufferInfo) {
+bool SoundManager::loadOgg(const std::filesystem::path& filePath, ALuint& monoBuffer, ALuint& stereoBufferRight, bool& isStereo) {
     int channels;
     int sample_rate;
     short* pcm;
@@ -832,21 +780,13 @@ bool SoundManager::loadOgg(const std::filesystem::path& filePath, SoundBufferInf
     }
 
     if (channels == 1) { // 모노
-        bufferInfo.isStereo = false;
-        alGenBuffers(1, &bufferInfo.monoBufferLeft);
+        isStereo = false;
+        alGenBuffers(1, &monoBuffer);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferLeft, AL_FORMAT_MONO16, pcm, samples * channels * sizeof(short), sample_rate);
+        alBufferData(monoBuffer, AL_FORMAT_MONO16, pcm, samples * sizeof(short), sample_rate);
         AL_CHECK_ERROR();
     } else if (channels == 2) { // 스테레오
-        bufferInfo.isStereo = true;
-
-        // 1. 2D 재생을 위한 통합 스테레오 버퍼 생성
-        alGenBuffers(1, &bufferInfo.stereoBuffer);
-        AL_CHECK_ERROR();
-        alBufferData(bufferInfo.stereoBuffer, AL_FORMAT_STEREO16, pcm, samples * channels * sizeof(short), sample_rate);
-        AL_CHECK_ERROR();
-
-        // 2. 3D 재생을 위한 채널 분리 및 모노 버퍼 생성
+        isStereo = true;
         std::vector<short> pcmLeft(samples);
         std::vector<short> pcmRight(samples);
         for (int i = 0; i < samples; ++i) {
@@ -854,14 +794,14 @@ bool SoundManager::loadOgg(const std::filesystem::path& filePath, SoundBufferInf
             pcmRight[i] = pcm[i * 2 + 1];
         }
 
-        alGenBuffers(1, &bufferInfo.monoBufferLeft);
+        alGenBuffers(1, &monoBuffer);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferLeft, AL_FORMAT_MONO16, pcmLeft.data(), pcmLeft.size() * sizeof(short), sample_rate);
+        alBufferData(monoBuffer, AL_FORMAT_MONO16, pcmLeft.data(), pcmLeft.size() * sizeof(short), sample_rate);
         AL_CHECK_ERROR();
 
-        alGenBuffers(1, &bufferInfo.monoBufferRight);
+        alGenBuffers(1, &stereoBufferRight);
         AL_CHECK_ERROR();
-        alBufferData(bufferInfo.monoBufferRight, AL_FORMAT_MONO16, pcmRight.data(), pcmRight.size() * sizeof(short), sample_rate);
+        alBufferData(stereoBufferRight, AL_FORMAT_MONO16, pcmRight.data(), pcmRight.size() * sizeof(short), sample_rate);
         AL_CHECK_ERROR();
     } else {
         std::cerr << "Unsupported OGG channel count: " << channels << "\n";

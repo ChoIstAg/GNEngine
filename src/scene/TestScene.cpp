@@ -15,9 +15,7 @@ void TestScene::onEnter() {
 
 void TestScene::onExit() {
     std::cout << "TestScene: Exiting..." << std::endl;
-    if (bgm_) {
-        bgm_->stop();
-    }
+    soundManager_.stopAllSounds();
     testObject_.reset();
 }
 

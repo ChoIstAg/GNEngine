@@ -8,7 +8,7 @@
 class TestScene : public Scene {
 public:
     TestScene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager)
-        : Scene(eventManager, renderManager, textureManager, soundManager) {}
+        : Scene(eventManager, renderManager, textureManager, soundManager), soundManager_(soundManager) {}
     ~TestScene() override = default;
 
     void onEnter() override;
@@ -18,6 +18,7 @@ public:
     void render(SDL_Renderer* renderer) override;
 
 private:
+    SoundManager& soundManager_;
     std::unique_ptr<TestObject> testObject_;
     std::unique_ptr<SoundComponent> bgm_;
 };

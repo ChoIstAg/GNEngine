@@ -11,20 +11,29 @@ TestObject::TestObject(EventManager& eventManager, TextureManager& textureManage
         render_ = &addComponent<RenderComponent>(renderManager, *textureManager.getTexture(texturePath), *transform_);
     }
     
+    // 1. SoundManager로부터 Sound 자원을 얻음
     std::filesystem::path soundPath = std::filesystem::path(SOUND_EFFECT_ASSET_ROOT_PATH) / "hit01.flac";
-    // 3D 효과음으로 사용할 것이므로 spatialized와 attenuation을 true로 설정
-    sound_ = &addComponent<SoundComponent>(soundManager, soundPath, true, true);
-    
-    /* 감쇠 효과 조절 */
-    sound_->setRolloffFactor(1.0f); // 감쇠 속도를 절반으로 줄임
-    sound_->setReferenceDistance(1000.0f); // 5.0 단위 거리까지 최대 볼륨 유지
+    std::shared_ptr<Sound> hitSound = soundManager.getSound(soundPath);
+
+    // 2. Sound 자원을 사용하여 SoundComponent를 생성
+    if (hitSound) {
+        sound_ = &addComponent<SoundComponent>(soundManager, hitSound);
+        // 3. 컴포넌트의 속성을 설정
+        sound_->setSpatialized(true);
+        sound_->setAttenuation(true);
+        sound_->setRolloffFactor(1.0f);
+        sound_->setReferenceDistance(5.0f);
+    }
 
     eventListener_ = &addComponent<EventListenerComponent>(eventManager);
     eventListener_->addListener<KeyPressedEvent>([this](const KeyPressedEvent& event) { this->onPressEvent(event); });
     eventListener_->addListener<KeysHeldEvent>([this](const KeysHeldEvent& event) { this->onKeysHeldEvent(event); });
 }
 
-void TestObject::update(float dt) {
+void TestObject::update(float deltaTime) {
+    if (sound_) {
+        sound_->setPosition(transform_->positionX_, transform_->positionY_, 0.0f);
+    }
 }
 
 void TestObject::render() {
@@ -32,12 +41,10 @@ void TestObject::render() {
 }
 
 void TestObject::onPressEvent(const KeyPressedEvent& event) {
-    if (event.keyCode == SDL_SCANCODE_H) {
+    if (event.keyCode == SDL_SCANCODE_H && sound_) {
         std::cout << "'h' key pressed. Playing hit sound." << std::endl;
-        // 예시: 재생 시점에 3D 사운드 속성을 바꾸고 싶다면 아래처럼 사용 가능
-        // sound_->setSpatialized(false); // 2D 사운드로 재생
-        // sound_->setAttenuation(false); // 거리 감쇠 비활성화
-        sound_->play(SoundPriority::HIGH, 1.0f, 1.0f, false);
+        // 기존에 설정된 속성으로 그냥 재생만 요청 (Fire-and-Forget)
+        sound_->play();
     }
 }
 
@@ -61,5 +68,5 @@ void TestObject::onKeysHeldEvent(const KeysHeldEvent& event) {
                 break;
         }
     }
-    sound_->setPosition(transform_->positionX_, transform_->positionY_, 0.0f);
+    // 위치 업데이트는 이제 update() 함수에서 처리
 }
