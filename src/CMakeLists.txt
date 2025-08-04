@@ -3,7 +3,7 @@ add_executable(GNEngine
     main.cpp
     Application.cpp
     
-    # 모든 Scene 추가
+    # Scenes
     scene/TestScene.cpp
 
 
@@ -13,19 +13,25 @@ add_executable(GNEngine
     ../include/engine/manager/render/RenderManager.cpp
     
     ../include/engine/manager/sound/SoundManager.cpp
-    ../include/engine/resource/sound/Sound.cpp
     ../include/engine/manager/resource/TextureManager.cpp
     ../include/engine/manager/resource/TextManager.cpp
-    ../include/engine/resource/text/Text.cpp
-
+    ../include/engine/manager/scene/SceneManager.cpp
+    ../include/engine/manager/resource/AnimationManager.cpp
+    
     ../include/engine/component/SoundComponent.cpp
     ../include/engine/component/RenderComponent.cpp
     ../include/engine/component/TextComponent.cpp
+    ../include/engine/component/AnimationComponent.cpp
 
+    ../include/engine/resource/text/Text.cpp
+    ../include/engine/resource/sound/Sound.cpp
+    ../include/engine/resource/animation/Animation.cpp
+    
     ../include/engine/object/TestObject.cpp
     ../include/engine/object/TextObject.cpp
 
-    ../include/engine/manager/scene/SceneManager.cpp
+    ../include/engine/component/PlayerAnimationControllerComponent.cpp
+    ../include/engine/component/PlayerMovementComponent.cpp
 )
 
 add_subdirectory(scene)

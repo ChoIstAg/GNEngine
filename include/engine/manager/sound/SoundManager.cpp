@@ -234,12 +234,24 @@ std::shared_ptr<Sound> SoundManager::getSound(const std::filesystem::path& fileP
  * @return 재생에 사용된 OpenAL 소스의 ID (왼쪽 채널). 실패 시 0을 반환.
  */
 ALuint SoundManager::playSound(Sound* sound,
+                             Position position,
                              SoundPriority priority, float volume, float pitch, bool loop,
                              bool spatialized, bool attenuation, 
                              float rolloffFactor, float referenceDistance, float maxDistance) {
     if (!sound) {
         std::cerr << "Attempted to play a null sound." << std::endl;
         return 0;
+    }
+
+    // 거리 기반 사운드 컬링 (Culling)
+    if (spatialized && attenuation) {
+        float dx = position.x - listenerPosition_.x;
+        float dy = position.y - listenerPosition_.y;
+        float dz = position.z - listenerPosition_.z;
+        float distanceSq = dx * dx + dy * dy + dz * dz;
+        if (distanceSq > maxDistance * maxDistance) {
+            return 0; // maxDistance보다 멀리 있으면 재생하지 않음
+        }
     }
 
     bool is3DStereo = sound->isStereo() && spatialized;
@@ -276,6 +288,11 @@ ALuint SoundManager::playSound(Sound* sound,
         alSourcei(sourceRight, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
         alSourcei(sourceRight, AL_SOURCE_RELATIVE, !spatialized);
 
+        // 3D 스테레오 위치 설정 (좌우 분리)
+        const float stereo_separation = 0.5f; // 좌우 소스 간의 거리 (OpenAL 단위).
+        alSource3f(sourceLeft, AL_POSITION, position.x - stereo_separation, position.y, position.z);
+        alSource3f(sourceRight, AL_POSITION, position.x + stereo_separation, position.y, position.z);
+
         // 3D 감쇠 설정
         if (attenuation) {
             alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
@@ -294,22 +311,22 @@ ALuint SoundManager::playSound(Sound* sound,
         alSourcePlay(sourceRight);
 
     } else { // 모노 또는 2D 스테레오
-        // [CASE 2: 모노 또는 2D 스테레오] - 1개의 소스, 1개의 버퍼 사용
-        // OpenAL은 스테레오 버퍼를 3D 공간화할 수 없으므로, 2D 스테레오는 3D 스테레오와 다르게 처리해야 함.
-        // 여기서는 3D가 아닌 모든 경우(모노, 2D 스테레오)를 통합하여 처리.
-        alSourcei(sourceLeft, AL_BUFFER, sound->getMonoBuffer()); // 2D 스테레오도 왼쪽 채널만 사용.
-        if (!spatialized) {
-            alSource3f(sourceLeft, AL_POSITION, 0.0f, 0.0f, 0.0f); // 2D 사운드 위치 고정
-        }
+        // [CASE 2: 3D 모노 또는 2D 스테레오/모노] - 1개의 소스, 1개의 버퍼 사용
+        alSourcei(sourceLeft, AL_BUFFER, sound->getMonoBuffer());
 
-        // 3D 감쇠 설정
-        if (spatialized && attenuation) {
-            alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
-            alSourcef(sourceLeft, AL_ROLLOFF_FACTOR, rolloffFactor);
-            alSourcef(sourceLeft, AL_REFERENCE_DISTANCE, referenceDistance);
-            alSourcef(sourceLeft, AL_MAX_DISTANCE, maxDistance);
+        if (spatialized) {
+            alSource3f(sourceLeft, AL_POSITION, position.x, position.y, position.z);
+            if (attenuation) {
+                alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+                alSourcef(sourceLeft, AL_ROLLOFF_FACTOR, rolloffFactor);
+                alSourcef(sourceLeft, AL_REFERENCE_DISTANCE, referenceDistance);
+                alSourcef(sourceLeft, AL_MAX_DISTANCE, maxDistance);
+            } else {
+                alDistanceModel(AL_NONE);
+            }
         } else {
-            alDistanceModel(AL_NONE);
+            alSource3f(sourceLeft, AL_POSITION, 0.0f, 0.0f, 0.0f); // 2D 사운드 위치 고정
+            alDistanceModel(AL_NONE); // 2D 사운드는 감쇠 없음
         }
         AL_CHECK_ERROR();
         alSourcePlay(sourceLeft);
@@ -458,6 +475,7 @@ void SoundManager::releaseVoice(Voice* voice) {
  * @param x, y, z 리스너의 월드 좌표.
  */
 void SoundManager::setListenerPosition(float x, float y, float z) {
+    listenerPosition_ = {x, y, z};
     alListener3f(AL_POSITION, x, y, z);
     AL_CHECK_ERROR();
 }

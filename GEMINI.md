@@ -4,7 +4,7 @@
 
 - **프로젝트명:** GNEngine
 - **목표:** Modern C++과 SDL3를 이용한 2D 게임 엔진 개발.
-- **주요 기술:** Modern C++, CMake, SDL3, SDL3_image, SDL3_ttf
+- **사용 패러다임:** DOD(Data Oriented Design) + ECS(Entity Component System)
 
 ## 2. 빌드 및 실행 (Build & Run)
 
@@ -30,9 +30,16 @@
 
 ## 3. 의존성 (Dependencies)
 
-- **SDL3:** v3.2.18
-- **SDL3_image:** v3.2.4
-- **SDL3_ttf:** v3.2.2
+- SDL3 (v3.2.18): [https://github.com/libsdl-org/SDL](https://github.com/libsdl-org/SDL)
+- SDL3_image (v3.2.4): [https://github.com/libsdl-org/SDL_image](https://github.com/libsdl-org/SDL_image)
+- SDL3_ttf (v3.2.2): [https://github.com/libsdl-org/SDL_ttf](https://github.com/libsdl-org/SDL_ttf)
+- OpenAL Soft (v1.24.3): [https://github.com/kcat/openal-soft](https://github.com/kcat/openal-soft)
+- for decoding sound files :
+    - dr_wav (v0.14.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs) 
+    - dr_mp3 (v0.7.1): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
+    - dr_flac (v0.13.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
+    - stb_vorbis (v1.22): [https://github.com/nothings/stb](https://github.com/nothings/stb)
+- nlohmann/json (3.12.0): [https://github.com/nlohmann/json](https://github.com/nlohmann/json)
 
 의존성 라이브러리들은 `include/lib/` 디렉터리에서 관리됩니다.
 
@@ -51,6 +58,22 @@
 - `CMakeLists.txt`: 최상위 CMake 빌드 스크립트
 
 ## 5. 소스 파일들의 역할과 구조
+- System : 모든 직접적인 로직을 담당함.
+    - RenderSystem
+    - AnimationSystem
+    - MovementSystem
+    - PlayerAnimationControlSystem
+    - SoundSystem
+- Manager : 리소스 관리와 초기화 등 유틸리티 기능을 담당하는 관리자.
+    - EntityManager
+    - EventManager
+    - InputManager
+    - TextureManager, TextManager, AnimationManger, SoundManager
+    - SceneManager
+- Component : 
+- Entity : 
+
+
 - src/main.cpp: 어플리케이션의 진입점. 단지 메인 콜백을 실행하기 위한 시발점으로 사용됨.
 - src/Application.cpp: 메인 콜백 함수와 어플리케이션에서 필요한 각 매니저와 부가 요소들을 멤버 변수로 정의함.
 - engine/event/EventInterface.h: 이벤트 객체들을 정의해놓음. 새 이벤트를 만들 때 여기서 타입을 추가하기.
@@ -86,6 +109,7 @@
     }; )
 
 ## 7. 그 밖의 규칙
+- 항상 필요한 것만 바꿔줘.
 - 나는 Modern C++(23까지)와 게임 엔진을 배우고자 하는 열렬한 학습자야.
 - 나는 코드의 작동 원리를 알고싶어. 반드시 코드를 작성해준 후 코드의 작동 원리를 세세하게 명시해줘.
 - 조금 시간이 더 걸리더라도 정확한 정보를 가져오고, 더 효율적인 코드를 작성해줘.

@@ -5,8 +5,8 @@
 #include "engine/manager/sound/SoundManager.h"
 
 // SceneManager 생성자 구현
-SceneManager::SceneManager(EventManager* eventManager, RenderManager* renderManager, TextureManager* textureManager, SoundManager* soundManager)
-    : eventManager_(eventManager), renderManager_(renderManager), textureManager_(textureManager), soundManager_(soundManager) {
+SceneManager::SceneManager(EventManager* eventManager, RenderManager* renderManager, TextureManager* textureManager, SoundManager* soundManager, EntityManager* entityManager)
+    : eventManager_(eventManager), renderManager_(renderManager), textureManager_(textureManager), soundManager_(soundManager), entityManager_(entityManager) {
     // 모든 매니저 포인터가 유효한지 확인 (선택 사항이지만 안전을 위해)
     // assert(eventManager_ && renderManager_ && textureManager_ && soundManager_);
 }
@@ -39,18 +39,18 @@ void SceneManager::changeScene(const std::string& name) {
         currentScene_->onEnter();
     } else {
         // 씬을 찾을 수 없는 경우 오류 처리 또는 로그
-        // 예: std::cerr << "Error: Scene '" << name << "' not found." << std::endl;
+        std::cerr << "Error: Scene '" << name << "' not found." << std::endl;
         currentScene_ = nullptr; // 유효하지 않은 씬 이름이면 현재 씬을 null로 설정
     }
 }
 
 /*
  * handleEvent 함수는 현재 활성화된 씬의 이벤트를 처리합니다.
- * @param e 처리할 SDL 이벤트
+ * @param event 처리할 SDL 이벤트
 */
-void SceneManager::handleEvent(const SDL_Event& e) {
+void SceneManager::handleEvent(const SDL_Event& event) {
     if (currentScene_) {
-        currentScene_->handleEvent(e);
+        currentScene_->handleEvent(event);
     }
 }
 

@@ -1,11 +1,12 @@
 #pragma once
 #include "Scene.h"
 #include <iostream>
+#include "engine/ecs/EntityManager.h"
 
 class MainMenuScene : public Scene {
 public:
-    MainMenuScene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager)
-        : Scene(eventManager, renderManager, textureManager, soundManager) {}
+    MainMenuScene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager, EntityManager& entityManager)
+        : Scene(eventManager, renderManager, textureManager, soundManager, entityManager) {}
     ~MainMenuScene() override = default;
 
     void onEnter() override;

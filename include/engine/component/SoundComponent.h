@@ -14,6 +14,15 @@ public:
     SoundComponent(SoundManager& soundManager, std::shared_ptr<Sound> sound);
     virtual ~SoundComponent() = default;
 
+    // 이동 생성자
+    SoundComponent(SoundComponent&& other) noexcept;
+    // 이동 대입 연산자
+    SoundComponent& operator=(SoundComponent&& other) noexcept;
+
+    // 복사 생성자 및 복사 대입 연산자 삭제 (참조 멤버 때문)
+    SoundComponent(const SoundComponent&) = delete;
+    SoundComponent& operator=(const SoundComponent&) = delete;
+
     /* 현재 설정된 속성으로 사운드를 즉시 재생함 (Fire-and-Forget) */
     void play();
 
@@ -42,9 +51,9 @@ private:
     bool loop_ = false;
     SoundPriority priority_ = SoundPriority::NORMAL;
 
-    bool spatialized_ = true;
-    bool attenuation_ = true;
-    bool splitChannels_ = true;
+    bool spatialized_ = false;
+    bool attenuation_ = false;
+    bool splitChannels_ = false;
     float rolloffFactor_ = 1.0f;
     float referenceDistance_ = 1.0f;
     float maxDistance_ = 100.0f;

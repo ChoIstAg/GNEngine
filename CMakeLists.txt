@@ -39,6 +39,22 @@ add_subdirectory(
     include
 )
 
+target_sources(GNEngine PRIVATE
+    include/engine/manager/render/RenderSystem.cpp
+    include/engine/manager/resource/AnimationSystem.cpp
+    include/engine/component/SoundComponent.cpp
+    include/engine/component/RenderComponent.cpp
+    include/engine/component/TextComponent.cpp
+    include/engine/component/AnimationComponent.cpp
+    include/engine/component/PlayerAnimationControllerComponent.cpp
+    include/engine/component/PlayerMovementComponent.cpp
+    include/engine/manager/event/MovementSystem.cpp
+    include/engine/manager/resource/PlayerAnimationControlSystem.cpp
+    include/engine/manager/sound/SoundSystem.cpp
+    include/engine/ecs/EntityManager.cpp
+    include/engine/manager/event/InputSystem.cpp
+)
+
 # target_include_directories
 target_include_directories(GNEngine
 PUBLIC
@@ -53,6 +69,9 @@ PUBLIC
     "${OPENAL_DIR}/include"
     "${CMAKE_SOURCE_DIR}/lib/dr_libs"
     "${CMAKE_SOURCE_DIR}/lib/ogg"
+
+    # nlohmann/json
+    "${CMAKE_SOURCE_DIR}/lib/nlohmann"
 )
 
 # target_link_libraries

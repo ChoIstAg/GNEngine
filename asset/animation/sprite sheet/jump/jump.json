@@ -1,0 +1,19 @@
+
+{
+   "animations": {
+        "jump": {
+            "texturePath": "D:\\Development\\code\\GNEngine\\asset\\animation\\sprite sheet\\jump\\jump.png",
+            "loop": false,
+            "frames": [
+                    { "x": 0,   "y": 0, "w": 64, "h": 64, "duration": 120 },
+                    { "x": 64,  "y": 0, "w": 64, "h": 64, "duration": 120 },
+                    { "x": 128, "y": 0, "w": 64, "h": 64, "duration": 120 },
+                    { "x": 192, "y": 0, "w": 64, "h": 64, "duration": 120 },
+                    { "x": 256, "y": 0, "w": 64, "h": 64, "duration": 120 },
+                    { "x": 320, "y": 0, "w": 64, "h": 64, "duration": 120 },
+                    { "x": 384, "y": 0, "w": 64, "h": 64, "duration": 120 },
+                    { "x": 448, "y": 0, "w": 64, "h": 64, "duration": 120 }
+            ]
+        }
+    }
+}

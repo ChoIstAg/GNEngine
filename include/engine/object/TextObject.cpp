@@ -1,20 +1,9 @@
 #include "TextObject.h"
+#include "engine/component/TransformComponent.h"
 
-TextObject::TextObject(std::unique_ptr<Text> text, float x, float y) {
-    transform_ = &addComponent<TransformComponent>(x, y);
-
-    textComponent_ = &addComponent<TextComponent>(std::move(text), *transform_);
-}
-
-void TextObject::setText(const std::string& newText) {
-    textComponent_->setText(newText);
-}
-
-void TextObject::setColor(SDL_Color newColor) {
-    textComponent_->setColor(newColor);
-}
-
-void TextObject::setPosition(float x, float y) {
-    transform_->positionX_ = x;
-    transform_->positionY_ = y;
+TextObject::TextObject(EntityManager& entityManager, TextManager& textManager, std::unique_ptr<Text> text, float x, float y)
+    : entityId_(entityManager.createEntity())
+{
+    entityManager.addComponent<TransformComponent>(entityId_, x, y, 1.0f, 1.0f, 0.0f);
+    entityManager.addComponent<TextComponent>(entityId_, std::move(text));
 }

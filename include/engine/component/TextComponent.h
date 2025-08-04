@@ -2,18 +2,22 @@
 
 #include "engine/component/Component.h"
 #include "engine/resource/text/Text.h"
-#include "engine/component/TransformComponent.h"
 #include <memory>
 
 class TextComponent : public Component {
 public:
-    TextComponent(std::unique_ptr<Text> text, TransformComponent& transform);
+    TextComponent(std::unique_ptr<Text> text);
 
-    void render();
-    void setText(const std::string& newText);
-    void setColor(SDL_Color newColor);
+    // 이동 생성자 및 이동 대입 연산자
+    TextComponent(TextComponent&& other) noexcept = default;
+    TextComponent& operator=(TextComponent&& other) noexcept = default;
+
+    // 복사 생성자 및 복사 대입 연산자 삭제 (unique_ptr 멤버 때문)
+    TextComponent(const TextComponent&) = delete;
+    TextComponent& operator=(const TextComponent&) = delete;
+    
+    Text* getText() const { return text_.get(); }
 
 private:
     std::unique_ptr<Text> text_;
-    TransformComponent* transform_;
 };

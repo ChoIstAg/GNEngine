@@ -1,14 +1,13 @@
 #pragma once
 #include "Scene.h"
-#include "engine/object/TestObject.h"
+#include "engine/object/TestObject.h" // TestObject is now a helper class
 #include "engine/component/SoundComponent.h"
 #include <iostream>
 #include <memory>
 
 class TestScene : public Scene {
 public:
-    TestScene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager)
-        : Scene(eventManager, renderManager, textureManager, soundManager), soundManager_(soundManager) {}
+    TestScene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager, AnimationManager& animationManager, EntityManager& entityManager);
     ~TestScene() override = default;
 
     void onEnter() override;
@@ -19,6 +18,6 @@ public:
 
 private:
     SoundManager& soundManager_;
-    std::unique_ptr<TestObject> testObject_;
+    AnimationManager& animationManager_;
     std::unique_ptr<SoundComponent> bgm_;
 };

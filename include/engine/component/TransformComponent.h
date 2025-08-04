@@ -18,7 +18,6 @@ struct TransformComponent : public Component {
     TransformComponent(float positionX = 0.0f, float positionY = 0.0f, float scaleX = 1.0f, float scaleY = 1.0f, float rotatedAngle = 0.0f) 
         : positionX_(positionX), positionY_(positionY), scaleX_(scaleX), scaleY_(scaleY), rotatedAngle_(rotatedAngle) {}
 
-
     float positionX_;
     float positionY_;
 

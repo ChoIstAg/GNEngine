@@ -6,6 +6,7 @@ class EventManager;
 class RenderManager;
 class TextureManager;
 class SoundManager;
+class EntityManager;
 
 
 /**
@@ -19,10 +20,11 @@ protected:
     RenderManager& renderManager_;
     TextureManager& textureManager_;
     SoundManager& soundManager_;
+    EntityManager& entityManager_;
 
 public:
-    Scene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager)
-        : eventManager_(eventManager), renderManager_(renderManager), textureManager_(textureManager), soundManager_(soundManager) {}
+    Scene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager, EntityManager& entityManager)
+        : eventManager_(eventManager), renderManager_(renderManager), textureManager_(textureManager), soundManager_(soundManager), entityManager_(entityManager) {}
     virtual ~Scene() = default;
     
     // 씬 진입 시 호출.

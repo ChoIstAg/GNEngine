@@ -12,6 +12,10 @@
 
 #define AL_CHECK_ERROR() checkAlErrors(__FILE__, __LINE__)
 
+struct Position {
+    float x, y, z;
+};
+
 enum class SoundPriority {
     LOW,
     NORMAL,
@@ -30,12 +34,13 @@ public:
     std::shared_ptr<Sound> getSound(const std::filesystem::path& filePath);
 
     ALuint playSound(Sound* sound,
+                     Position position = {0.0f, 0.0f, 0.0f},
                      SoundPriority priority = SoundPriority::NORMAL,
                      float volume = 1.0f,
                      float pitch = 1.0f,
                      bool loop = false,
-                     bool spatialized = true,
-                     bool attenuation = true,
+                     bool spatialized = false,
+                     bool attenuation = false,
                      float rolloffFactor = 1.0f,
                      float referenceDistance = 1.0f,
                      float maxDistance = 100.0f);
@@ -73,6 +78,8 @@ private:
 
     ALCdevice* device_ = nullptr;
     ALCcontext* context_ = nullptr;
+
+    Position listenerPosition_ = {0.0f, 0.0f, 0.0f};
 
     std::unordered_map<std::filesystem::path, std::shared_ptr<Sound>> soundCache_;
     std::vector<Voice> voicePool_;

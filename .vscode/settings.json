@@ -71,7 +71,11 @@
         "condition_variable": "cpp",
         "mutex": "cpp",
         "set": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "cfenv": "cpp",
+        "forward_list": "cpp",
+        "valarray": "cpp"
     },
     "discord.enabled": true,
     "vscord.enabled": true

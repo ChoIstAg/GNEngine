@@ -9,6 +9,7 @@ class EventManager;
 class RenderManager;
 class TextureManager;
 class SoundManager;
+class EntityManager;
 
 class SceneManager {
 private:
@@ -20,10 +21,11 @@ private:
     RenderManager* renderManager_ = nullptr;
     TextureManager* textureManager_ = nullptr;
     SoundManager* soundManager_ = nullptr;
+    EntityManager* entityManager_ = nullptr;
 
 public:
     // 생성자: 필요한 매니저들을 주입받아 초기화
-    SceneManager(EventManager* eventManager, RenderManager* renderManager, TextureManager* textureManager, SoundManager* soundManager);
+    SceneManager(EventManager* eventManager, RenderManager* renderManager, TextureManager* textureManager, SoundManager* soundManager, EntityManager* entityManager);
 
     // 씬 추가
     void addScene(const std::string& name, std::unique_ptr<Scene> scene);
@@ -31,7 +33,7 @@ public:
     void changeScene(const std::string& name);
 
     // 현재 활성화된 씬의 생명주기 함수 호출 위임
-    void handleEvent(const SDL_Event& e);
+    void handleEvent(const SDL_Event& event);
     void update(float deltaTime);
     void render(SDL_Renderer* renderer);
 };

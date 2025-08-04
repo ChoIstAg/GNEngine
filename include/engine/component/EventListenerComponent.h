@@ -11,7 +11,7 @@ private:
     EventManager& eventManager_;
     std::map<std::type_index, EventManager::SubscriptionId> subscriptionIds_;
 public:
-    explicit EventListenerComponent(EventManager& eventManager) : eventManager_(eventManager) {}
+    explicit EventListenerComponent(Object& owner, EventManager& eventManager) : Component(owner), eventManager_(eventManager) {}
 
     ~EventListenerComponent() {
         if (!&eventManager_) return;

@@ -3,4 +3,6 @@ PRIVATE
     AnimationManager.cpp
     TextManager.cpp
     TextureManager.cpp
+    AnimationSystem.cpp
+    PlayerAnimationControlSystem.cpp
 )

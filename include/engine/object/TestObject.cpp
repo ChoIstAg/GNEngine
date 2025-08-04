@@ -2,71 +2,45 @@
 #include <iostream>
 #include <filesystem>
 
-TestObject::TestObject(EventManager& eventManager, TextureManager& textureManager, RenderManager& renderManager, SoundManager& soundManager)
-{
-    transform_ = &addComponent<TransformComponent>(100.0f, 100.0f);
+// TestObject는 더 이상 Object를 상속받지 않으므로, 컴포넌트 추가 로직을 직접 구현해야 합니다.
+// 이 단계에서는 EntityManager를 통해 컴포넌트를 추가합니다.
 
-    std::filesystem::path texturePath = std::filesystem::path(IMAGE_ASSET_ROOT_PATH) / "example_png.png";
-    if (textureManager.loadTexture(texturePath)) {
-        render_ = &addComponent<RenderComponent>(renderManager, *textureManager.getTexture(texturePath), *transform_);
+TestObject::TestObject(EntityManager& entityManager, EventManager& eventManager, TextureManager& textureManager, RenderManager& renderManager, SoundManager& soundManager, AnimationManager& animationManager)
+    : entityId_(entityManager.createEntity())
+{
+    // TransformComponent 추가
+    entityManager.addComponent<TransformComponent>(entityId_, 100.0f, 100.0f);
+    // VelocityComponent 추가
+    entityManager.addComponent<VelocityComponent>(entityId_, 0.0f, 0.0f);
+    // AccelerationComponent 추가
+    entityManager.addComponent<AccelerationComponent>(entityId_, 0.0f, 0.0f);
+
+    // PlayerAnimationControllerComponent 추가
+    // 애니메이션 데이터 로드
+    std::filesystem::path walkAnimationJsonPath = std::filesystem::path(ANIMATION_SHEET_ASSET_ROOT_PATH) / "walk" / "walk.json";
+    if (!animationManager.loadAnimation(walkAnimationJsonPath)) {
+        std::cerr << "Error: Failed to load animation JSON: " << walkAnimationJsonPath << std::endl;
     }
-    
-    // 1. SoundManager로부터 Sound 자원을 얻음
+    std::shared_ptr<Animation> walkAnimationData = animationManager.getAnimation("walk");
+
+    std::filesystem::path jumpAnimationJsonPath = std::filesystem::path(ANIMATION_SHEET_ASSET_ROOT_PATH) / "jump" / "jump.json";
+    if (!animationManager.loadAnimation(jumpAnimationJsonPath)) {
+        std::cerr << "Error: Failed to load animation JSON: " << jumpAnimationJsonPath << std::endl;
+    }
+    std::shared_ptr<Animation> jumpAnimationData = animationManager.getAnimation("jump");
+
+    entityManager.addComponent<PlayerAnimationControllerComponent>(entityId_, walkAnimationData, jumpAnimationData);
+
+    // SoundComponent 추가
     std::filesystem::path soundPath = std::filesystem::path(SOUND_EFFECT_ASSET_ROOT_PATH) / "hit01.flac";
     std::shared_ptr<Sound> hitSound = soundManager.getSound(soundPath);
 
-    // 2. Sound 자원을 사용하여 SoundComponent를 생성
     if (hitSound) {
-        sound_ = &addComponent<SoundComponent>(soundManager, hitSound);
-        // 3. 컴포넌트의 속성을 설정
-        sound_->setSpatialized(true);
-        sound_->setAttenuation(true);
-        sound_->setRolloffFactor(1.0f);
-        sound_->setReferenceDistance(5.0f);
+        entityManager.addComponent<SoundComponent>(entityId_, soundManager, hitSound);
     }
 
-    eventListener_ = &addComponent<EventListenerComponent>(eventManager);
-    eventListener_->addListener<KeyPressedEvent>([this](const KeyPressedEvent& event) { this->onPressEvent(event); });
-    eventListener_->addListener<KeysHeldEvent>([this](const KeysHeldEvent& event) { this->onKeysHeldEvent(event); });
+    // PlayerMovementComponent 추가
+    entityManager.addComponent<PlayerMovementComponent>(entityId_);
 }
 
-void TestObject::update(float deltaTime) {
-    if (sound_) {
-        sound_->setPosition(transform_->positionX_, transform_->positionY_, 0.0f);
-    }
-}
 
-void TestObject::render() {
-    render_->render();
-}
-
-void TestObject::onPressEvent(const KeyPressedEvent& event) {
-    if (event.keyCode == SDL_SCANCODE_H && sound_) {
-        std::cout << "'h' key pressed. Playing hit sound." << std::endl;
-        // 기존에 설정된 속성으로 그냥 재생만 요청 (Fire-and-Forget)
-        sound_->play();
-    }
-}
-
-void TestObject::onKeysHeldEvent(const KeysHeldEvent& event) {
-    float moveSpeed = 5.0f;
-    for (const auto& keyInfo : event.heldKeys) {
-        switch (keyInfo.scancode) {
-            case SDL_SCANCODE_W:
-                transform_->positionY_ -= moveSpeed;
-                break;
-            case SDL_SCANCODE_A:
-                transform_->positionX_ -= moveSpeed;
-                break;
-            case SDL_SCANCODE_S:
-                transform_->positionY_ += moveSpeed;
-                break;
-            case SDL_SCANCODE_D:
-                transform_->positionX_ += moveSpeed;
-                break;
-            default:
-                break;
-        }
-    }
-    // 위치 업데이트는 이제 update() 함수에서 처리
-}

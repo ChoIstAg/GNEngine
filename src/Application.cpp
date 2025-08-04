@@ -1,4 +1,5 @@
 #include "Application.h"
+#include <chrono>
 #include <iostream>
 
 #include "scene/TestScene.h" 
@@ -27,31 +28,48 @@ int Application::init(){
     
     /* 매니저 초기화*/
     eventManager_ = std::make_unique<EventManager>();
+    entityManager_ = std::make_unique<EntityManager>();
+
+    // 모든 컴포넌트 타입 등록
+    entityManager_->registerComponentType<TransformComponent>();
+    entityManager_->registerComponentType<VelocityComponent>();
+    entityManager_->registerComponentType<AccelerationComponent>();
+    entityManager_->registerComponentType<RenderComponent>();
+    entityManager_->registerComponentType<AnimationComponent>();
+    entityManager_->registerComponentType<SoundComponent>();
+    entityManager_->registerComponentType<TextComponent>();
+    entityManager_->registerComponentType<PlayerAnimationControllerComponent>();
+    entityManager_->registerComponentType<PlayerMovementComponent>();
+
     renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
+    renderSystem_ = std::make_unique<RenderSystem>(*renderManager_);
+    
     inputManager_ = std::make_unique<InputManager>(*eventManager_);
     textureManager_ = std::make_unique<TextureManager>(renderer_);
     textManager_ = std::make_unique<TextManager>(renderer_);
+    
     soundManager_ = std::make_unique<SoundManager>();
+    soundSystem_ = std::make_unique<SoundSystem>(*soundManager_);
+    animationManager_ = std::make_unique<AnimationManager>();
+    animationSystem_ = std::make_unique<AnimationSystem>();
+    movementSystem_ = std::make_unique<MovementSystem>();
+    playerAnimationControlSystem_ = std::make_unique<PlayerAnimationControlSystem>(*animationManager_, *textureManager_, *renderManager_);
+    inputSystem_ = std::make_unique<InputSystem>(*eventManager_, *entityManager_);
     
     sceneManager_ = std::make_unique<SceneManager>(
         eventManager_.get(),
         renderManager_.get(),
         textureManager_.get(),
-        soundManager_.get()
+        soundManager_.get(),
+        entityManager_.get()
     );
 
-    // // TestMp3.mp3 파일 로드 및 재생
-    // std::filesystem::path mp3Path = std::filesystem::path(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3"; // Use std::filesystem::path
-    // if (soundManager_->loadSound(mp3Path)) {
-    //     soundManager_->playSound(mp3Path, SoundPriority::CRITICAL, 1.0f, 1.0f, true);
-    //     std::cout << "TestMp3.mp3 loaded and playing." << std::endl;
-    // } else {
-    //     std::cerr << "Failed to load " << mp3Path.string() << "." << std::endl; // Use mp3Path.string()
-    // }
-
     // TestScene 등록 및 전환
-    sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_));
+    sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *animationManager_, *entityManager_));
+    sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *entityManager_));
     sceneManager_->changeScene("TestScene");
+
+    lastFrameTime_ = std::chrono::high_resolution_clock::now();
 
     return 0;
 }
@@ -73,6 +91,9 @@ void Application::quit() {
 void Application::run() {
     isRunning_ = true;
     while(isRunning_){
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        float deltaTime = std::chrono::duration<float>(currentTime - lastFrameTime_).count();
+        lastFrameTime_ = currentTime;
 
         /* Process Input */
         if(!inputManager_->processEvents()){
@@ -82,11 +103,17 @@ void Application::run() {
 
         /* Update */
         inputManager_->updateKeyStates();
-        sceneManager_->update(0.016f); // deltaTime은 나중에 정확하게 계산하도록 수정 필요
+        sceneManager_->update(deltaTime);
+        inputSystem_->update(*entityManager_, deltaTime);
+        animationSystem_->update(*entityManager_, deltaTime);
+        movementSystem_->update(*entityManager_, deltaTime);
+        playerAnimationControlSystem_->update(*entityManager_, deltaTime);
+        soundSystem_->update(*entityManager_);
 
         /* Render */
         renderManager_->clear();
-        sceneManager_->render(renderer_);
+        
+        renderSystem_->update(*entityManager_);
         renderManager_->present();
     }
 }
