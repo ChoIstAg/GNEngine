@@ -8,39 +8,26 @@ Application::Application() {};
 
 int Application::init(){
     
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == 0) { /* Initialize SDL Systems*/
+    if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) { /* Initialize SDL Systems*/
         SDL_Log("SDL_Init Error: %s", SDL_GetError());
         return -1;
     }
     
-    window_ = SDL_CreateWindow("Text main callback", windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
+    window_ = SDL_CreateWindow("Application", windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
     renderer_ = SDL_CreateRenderer(window_, nullptr);
-    
-    
     if(!window_ || !renderer_){
-        SDL_Log("Error occured in SDL_CreateWindow : %s", SDL_GetError());
+        SDL_Log("Error occured in SDL_CreateWindow or SDL_CreateRenderer : %s", SDL_GetError());
         SDL_Quit();
         return -1;
     }
 
     /* Set additional settings */
     SDL_SetRenderVSync(renderer_, true); /* Enable VSync */
-    
-    /* 매니저 초기화*/
+
+
+    /* 매니저, 시스템 초기화*/
     eventManager_ = std::make_unique<EventManager>();
     entityManager_ = std::make_unique<EntityManager>();
-
-    // 모든 컴포넌트 타입 등록
-    entityManager_->registerComponentType<TransformComponent>();
-    entityManager_->registerComponentType<VelocityComponent>();
-    entityManager_->registerComponentType<AccelerationComponent>();
-    entityManager_->registerComponentType<RenderComponent>();
-    entityManager_->registerComponentType<AnimationComponent>();
-    entityManager_->registerComponentType<SoundComponent>();
-    entityManager_->registerComponentType<TextComponent>();
-    entityManager_->registerComponentType<PlayerAnimationControllerComponent>();
-    entityManager_->registerComponentType<PlayerMovementComponent>();
-
     renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
     renderSystem_ = std::make_unique<RenderSystem>(*renderManager_);
     
@@ -56,13 +43,19 @@ int Application::init(){
     playerAnimationControlSystem_ = std::make_unique<PlayerAnimationControlSystem>(*animationManager_, *textureManager_, *renderManager_);
     inputSystem_ = std::make_unique<InputSystem>(*eventManager_, *entityManager_);
     
-    sceneManager_ = std::make_unique<SceneManager>(
-        eventManager_.get(),
-        renderManager_.get(),
-        textureManager_.get(),
-        soundManager_.get(),
-        entityManager_.get()
-    );
+    sceneManager_ = std::make_unique<SceneManager>( eventManager_.get(), renderManager_.get(), textureManager_.get(), soundManager_.get(), entityManager_.get() );
+
+    // 모든 컴포넌트 타입 등록
+    entityManager_->registerComponentType<TransformComponent>();
+    entityManager_->registerComponentType<VelocityComponent>();
+    entityManager_->registerComponentType<AccelerationComponent>();
+    entityManager_->registerComponentType<RenderComponent>();
+    entityManager_->registerComponentType<AnimationComponent>();
+    entityManager_->registerComponentType<SoundComponent>();
+    entityManager_->registerComponentType<TextComponent>();
+    entityManager_->registerComponentType<PlayerAnimationControllerComponent>();
+    entityManager_->registerComponentType<PlayerMovementComponent>();
+
 
     // TestScene 등록 및 전환
     sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *animationManager_, *entityManager_));
@@ -70,7 +63,6 @@ int Application::init(){
     sceneManager_->changeScene("TestScene");
 
     lastFrameTime_ = std::chrono::high_resolution_clock::now();
-
     return 0;
 }
 
@@ -95,13 +87,13 @@ void Application::run() {
         float deltaTime = std::chrono::duration<float>(currentTime - lastFrameTime_).count();
         lastFrameTime_ = currentTime;
 
-        /* Process Input */
+        /* Process all events */
         if(!inputManager_->processEvents()){
             isRunning_ = false;
             break;
         }
 
-        /* Update */
+        /* Update logics */
         inputManager_->updateKeyStates();
         sceneManager_->update(deltaTime);
         inputSystem_->update(*entityManager_, deltaTime);
