@@ -1,5 +1,0 @@
-target_sources(GNEngine
-PRIVATE
-    SoundManager.cpp
-    SoundSystem.cpp
-)

@@ -2,9 +2,9 @@
 
 #include <filesystem>
 #include <memory>
-#include "./Component.h"
-#include "../manager/sound/SoundManager.h"
-#include "../resource/sound/Sound.h"
+#include "engine/core/Component.h"
+#include "engine/manager/SoundManager.h"
+#include "engine/resource/Sound.h"
 
 /*
  * 사운드 재생을 위한 설정 정보를 담고, "Fire-and-Forget" 방식으로 재생을 요청하는 컴포넌트임.

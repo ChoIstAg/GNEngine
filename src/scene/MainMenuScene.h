@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include <iostream>
-#include "engine/ecs/EntityManager.h"
+#include "engine/manager/EntityManager.h"
 
 class MainMenuScene : public Scene {
 public:

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Component.h"
-#include "../resource/animation/Animation.h"
+#include "engine/core/Component.h"
+#include "engine/resource/Animation.h"
 #include <memory>
 
 /*

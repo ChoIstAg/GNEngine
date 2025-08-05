@@ -1,7 +1,7 @@
 #pragma once
 
-#include "engine/component/Component.h"
-#include "engine/resource/text/Text.h"
+#include "engine/core/Component.h"
+#include "engine/resource/Text.h"
 #include <memory>
 
 class TextComponent : public Component {

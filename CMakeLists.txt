@@ -39,21 +39,7 @@ add_subdirectory(
     include
 )
 
-target_sources(GNEngine PRIVATE
-    include/engine/manager/render/RenderSystem.cpp
-    include/engine/manager/resource/AnimationSystem.cpp
-    include/engine/component/SoundComponent.cpp
-    include/engine/component/RenderComponent.cpp
-    include/engine/component/TextComponent.cpp
-    include/engine/component/AnimationComponent.cpp
-    include/engine/component/PlayerAnimationControllerComponent.cpp
-    include/engine/component/PlayerMovementComponent.cpp
-    include/engine/manager/event/MovementSystem.cpp
-    include/engine/manager/resource/PlayerAnimationControlSystem.cpp
-    include/engine/manager/sound/SoundSystem.cpp
-    include/engine/ecs/EntityManager.cpp
-    include/engine/manager/event/InputSystem.cpp
-)
+
 
 # target_include_directories
 target_include_directories(GNEngine
@@ -83,6 +69,9 @@ PUBLIC
     "${OPENAL_DIR}/libs/Win64/OpenAL32.lib"
     stdc++fs
 )
+
+# Remove target_link_directories as it might not be needed with direct target linking
+# target_link_directories(GNEngine PUBLIC ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 # target_compile_definitions
 target_compile_definitions(GNEngine

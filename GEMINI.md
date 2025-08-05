@@ -72,6 +72,7 @@
     - SceneManager
 - Component : 
 - Entity : 
+- Object : Entity를 생성하는 빌드 템플릿.
 
 
 - src/main.cpp: 어플리케이션의 진입점. 단지 메인 콜백을 실행하기 위한 시발점으로 사용됨.

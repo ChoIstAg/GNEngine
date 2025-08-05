@@ -25,5 +25,13 @@
     #endif
 
     #ifndef ANIMATION_SHEET_ASSET_ROOT_PATH
-    #define ANIMATION_SHEET_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/animation/sprite sheet/"
+    #define ANIMATION_SHEET_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/animation/spritesheet/"
     #endif
+
+    // Movement constants
+    #define MOVE_SPEED 100.0f
+    #define ACCELERATION_RATE 500.0f
+    #define DECELERATION_RATE 5.0f // Adjusted for more natural deceleration
+
+    #define WINDOW_WIDTH 1280
+    #define WINDOW_HEIGHT 720

@@ -1,3 +1,6 @@
-add_subdirectory(animation)
-add_subdirectory(text)
-add_subdirectory(sound)
+target_sources(GNEngine
+PUBLIC
+    Animation.cpp
+    Sound.cpp
+    Text.cpp
+)

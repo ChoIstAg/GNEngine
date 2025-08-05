@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Component.h"
+#include "engine/core/Component.h"
 #include "VelocityComponent.h"
 #include "AccelerationComponent.h"
-#include "engine/ecs/Entity.h"
+#include "engine/core/Entity.h"
 
 /*
  * @class PlayerMovementComponent

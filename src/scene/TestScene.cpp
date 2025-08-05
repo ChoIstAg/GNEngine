@@ -1,13 +1,21 @@
 #include "TestScene.h"
-#include <iostream>
 #include <SDL3/SDL.h>
+#include "config.h"
 #include <filesystem>
-#include "engine/ecs/EntityManager.h"
+#include <iostream>
+
+#include "engine/manager/EntityManager.h"
+#include "engine/component/CameraComponent.h"
+#include "engine/component/RenderComponent.h"
+#include "engine/component/TransformComponent.h"
+
+#include "engine/prefab/PlayerPrefab.h"
 
 TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager, AnimationManager& animationManager, EntityManager& entityManager)
-    : Scene(eventManager, renderManager, textureManager, soundManager, entityManager),
-      soundManager_(soundManager),
-      animationManager_(animationManager)
+    : Scene(eventManager, renderManager, textureManager, soundManager, entityManager), 
+        renderManager_(renderManager),
+        soundManager_(soundManager),
+        animationManager_(animationManager)
 {
     // BGM 사운드 로드 및 재생
     std::filesystem::path bgmPath = std::filesystem::path(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3";
@@ -18,38 +26,26 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
         bgm_->setLoop(true);
         bgm_->play();
     }
+
+    EntityId exampleEntityId = entityManager.createEntity();
+    entityManager.addComponent<TransformComponent>(exampleEntityId, 100.0f, 100.0f);
+    textureManager.loadTexture(std::filesystem::path(IMAGE_ASSET_ROOT_PATH) / "example_png.png");
+    entityManager.addComponent<RenderComponent>(exampleEntityId, textureManager.getTexture(std::filesystem::path(IMAGE_ASSET_ROOT_PATH) / "example_png.png"), false);
+    
+
+    // PlayerFactory를 사용하여 플레이어 엔티티 생성
+    EntityId playerEntityId = PlayerPrefab::create(entityManager, eventManager, textureManager, renderManager, soundManager, animationManager);
+
+    // 카메라 엔티티 생성 및 CameraComponent 추가
+    cameraEntityId_ = entityManager.createEntity();
+    // PlayerFactory가 생성한 플레이어 엔티티를 카메라의 타겟으로 설정
+    entityManager.addComponent<CameraComponent>(cameraEntityId_, 0.0f, 0.0f, 2.0f, playerEntityId);
 }
 
 void TestScene::onEnter() {
     std::cout << "TestScene: Entering..." << std::endl;
 
-    // example_png.png 로드
-    std::filesystem::path imagePath = std::filesystem::path(IMAGE_ASSET_ROOT_PATH) / "example_png.png";
-    if (!textureManager_.loadTexture(imagePath)) {
-        std::cerr << "Error: Failed to load example_png.png" << std::endl;
-        return;
-    }
-    Texture* exampleTexture = textureManager_.getTexture(imagePath);
-
-    if (!exampleTexture) {
-        std::cerr << "Error: example_png.png texture is null." << std::endl;
-        return;
-    }
-
-    // 1000개의 엔티티 생성 및 컴포넌트 추가
-    for (int i = 0; i < 1000; ++i) {
-        EntityId entity = entityManager_.createEntity();
-
-        // 무작위 위치 설정 (화면 크기 내에서)
-        float randomX = static_cast<float>(rand() % 1280); // 예시 화면 너비
-        float randomY = static_cast<float>(rand() % 720);  // 예시 화면 높이
-
-        entityManager_.addComponent<TransformComponent>(entity, randomX, randomY);
-        entityManager_.addComponent<RenderComponent>(entity, exampleTexture, false);
-    }
-
-    // 뷰포트 설정: 화면의 왼쪽 절반 (x=0, y=0, width=640, height=720)
-    renderManager_.setViewport(0, 0, 640, 720);
+    renderManager_.setViewport(0, 0, 1280, 720); // 전체 화면 뷰포트 (임시)
 }
 
 void TestScene::onExit() {

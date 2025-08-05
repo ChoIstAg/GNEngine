@@ -1,9 +1,16 @@
 #pragma once
 #include "Scene.h"
-#include "engine/object/TestObject.h" // TestObject is now a helper class
-#include "engine/component/SoundComponent.h"
+
+#include "engine/manager/EventManager.h"
+#include "engine/manager/TextureManager.h"
+#include "engine/manager/RenderManager.h"
+#include "engine/manager/SoundManager.h"
+#include "engine/manager/AnimationManager.h"
+#include "engine/core/Entity.h"
 #include <iostream>
 #include <memory>
+
+#include "engine/component/SoundComponent.h"
 
 class TestScene : public Scene {
 public:
@@ -19,5 +26,7 @@ public:
 private:
     SoundManager& soundManager_;
     AnimationManager& animationManager_;
+    RenderManager& renderManager_;
     std::unique_ptr<SoundComponent> bgm_;
+    EntityId cameraEntityId_;
 };

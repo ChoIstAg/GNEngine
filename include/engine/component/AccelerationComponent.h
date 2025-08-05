@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "engine/core/Component.h"
 
 /*
  * @brief 오브젝트의 가속도를 나타내는 컴포넌트임.

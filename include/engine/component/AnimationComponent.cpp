@@ -1,4 +1,5 @@
 #include "AnimationComponent.h"
+#include <iostream>
 
 /*
  * @brief AnimationComponent 생성자.
@@ -12,13 +13,16 @@ AnimationComponent::AnimationComponent(std::shared_ptr<Animation> animation, boo
       isPlaying_(playOnAwake),
       isFinished_(false) {}
 
-
-
 /*
  * @brief 애니메이션 재생을 시작함.
  */
 void AnimationComponent::play() {
     isPlaying_ = true;
+    // If the animation was finished, reset to the first frame
+    if (isFinished_) {
+        currentFrame_ = 0;
+        frameTimer_ = 0.0f;
+    }
     isFinished_ = false;
 }
 

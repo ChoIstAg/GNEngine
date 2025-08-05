@@ -1,37 +1,24 @@
 # engine 디렉토리와 그 하위의 모든 .cpp 파일들을 찾아서 ENGINE_SOURCES 변수에 저장
+file(GLOB_RECURSE ENGINE_SYSTEM_SOURCES "${CMAKE_SOURCE_DIR}/include/engine/system/*.cpp")
+file(GLOB_RECURSE ENGINE_MANAGER_SOURCES "${CMAKE_SOURCE_DIR}/include/engine/manager/*.cpp")
+file(GLOB_RECURSE ENGINE_COMPONENT_SOURCES "${CMAKE_SOURCE_DIR}/include/engine/component/*.cpp")
+file(GLOB ENGINE_RESOURCE_SOURCES "${CMAKE_SOURCE_DIR}/include/engine/resource/*.cpp")
+file(GLOB_RECURSE ENGINE_PREFAB_SOURCES "${CMAKE_SOURCE_DIR}/include/engine/prefab/*.cpp")
+
 add_executable(GNEngine 
     main.cpp
     Application.cpp
     
     # Scenes
     scene/TestScene.cpp
-
+    scene/MainMenuScene.cpp
 
     # engine의 모든 소스 파일 추가
-    #${ENGINE_SOURCES} 주석화 사유: 오류가 해결 안된 소스 파일 때문에 컴파일 에러 발생함.
-    ../include/engine/manager/event/InputManager.cpp
-    ../include/engine/manager/render/RenderManager.cpp
-    
-    ../include/engine/manager/sound/SoundManager.cpp
-    ../include/engine/manager/resource/TextureManager.cpp
-    ../include/engine/manager/resource/TextManager.cpp
-    ../include/engine/manager/scene/SceneManager.cpp
-    ../include/engine/manager/resource/AnimationManager.cpp
-    
-    ../include/engine/component/SoundComponent.cpp
-    ../include/engine/component/RenderComponent.cpp
-    ../include/engine/component/TextComponent.cpp
-    ../include/engine/component/AnimationComponent.cpp
-
-    ../include/engine/resource/text/Text.cpp
-    ../include/engine/resource/sound/Sound.cpp
-    ../include/engine/resource/animation/Animation.cpp
-    
-    ../include/engine/object/TestObject.cpp
-    ../include/engine/object/TextObject.cpp
-
-    ../include/engine/component/PlayerAnimationControllerComponent.cpp
-    ../include/engine/component/PlayerMovementComponent.cpp
+    ${ENGINE_SYSTEM_SOURCES}
+    ${ENGINE_MANAGER_SOURCES}
+    ${ENGINE_COMPONENT_SOURCES}
+    ${ENGINE_RESOURCE_SOURCES}
+    ${ENGINE_PREFAB_SOURCES}
 )
 
 add_subdirectory(scene)
@@ -40,6 +27,13 @@ add_subdirectory(scene)
 target_include_directories(GNEngine PRIVATE 
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/engine/core
+    ${CMAKE_SOURCE_DIR}/include/engine/system
+    ${CMAKE_SOURCE_DIR}/include/engine/manager
+    ${CMAKE_SOURCE_DIR}/include/engine/component
+    ${CMAKE_SOURCE_DIR}/include/engine/resource
+    ${CMAKE_SOURCE_DIR}/include/engine/prefab
+
     ${SDL3_INCLUDE_DIR}
     ${SDL3_image_INCLUDE_DIR}
     ${SDL3_ttf_INCLUDE_DIR}

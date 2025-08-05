@@ -5,7 +5,7 @@
  * 위치, 회전, 크기를 나타내는 데이터 집합임.
  * 이 컴포넌트는 순수 데이터(POD) 컨테이너 역할을 함.
  */
-#include "Component.h"
+#include "engine/core/Component.h"
 
 struct TransformComponent : public Component {
 

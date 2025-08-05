@@ -1,4 +1,5 @@
-target_sources(GNEngine PRIVATE
+target_sources(GNEngine 
+PUBLIC
     TestScene.cpp
     MainMenuScene.cpp
 )

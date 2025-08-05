@@ -38,7 +38,6 @@ SoundComponent& SoundComponent::operator=(SoundComponent&& other) noexcept {
         rolloffFactor_ = other.rolloffFactor_;
         referenceDistance_ = other.referenceDistance_;
         maxDistance_ = other.maxDistance_;
-        // soundManager_는 참조이므로 이동할 수 없음 (그대로 둠)
     }
     return *this;
 }
@@ -49,7 +48,7 @@ SoundComponent& SoundComponent::operator=(SoundComponent&& other) noexcept {
  */
 void SoundComponent::play() {
     if (!sound_) {
-        return; // 참조하는 사운드 자원이 없음
+        return;
     }
 
     soundManager_.playSound(sound_.get(), {x_, y_, z_}, priority_, volume_, pitch_, 
