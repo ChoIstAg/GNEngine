@@ -8,7 +8,7 @@
  * @class AnimationSystem
  * @brief AnimationComponent를 가진 모든 엔티티의 애니메이션 프레임을 업데이트하는 시스템임.
 */
-class AnimationSystem {
+class AnimationSystem{
 public:
     AnimationSystem() = default;
 

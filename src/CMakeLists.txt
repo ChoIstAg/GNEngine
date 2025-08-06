@@ -58,7 +58,7 @@ add_custom_command(TARGET GNEngine POST_BUILD
     $<TARGET_FILE_DIR:GNEngine>
 )
 
-# 빌드 후 OpenAL DLL과 구현 DLL을 실행 파일 디렉토리로 복사합니다.
+# OpenAL DLL을 빌드 파일에 복사
 add_custom_command(TARGET GNEngine POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${OPENAL_DIR}/router/Win64/OpenAL32.dll"

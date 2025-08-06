@@ -1,23 +1,33 @@
 #pragma once
 
 #include "engine/manager/EntityManager.h"
-#include "engine/component/InputControlComponent.h"
+#include "engine/manager/EventManager.h"
+#include "engine/core/EventInterface.h"
 #include "engine/component/AccelerationComponent.h"
-#include "config.h"
 
-/*
+/**
  * @class InputToAccelerationSystem
- * @brief InputControlComponent의 의도된 입력을 AccelerationComponent로 변환하는 시스템임.
- *        이 시스템은 입력 의도를 기반으로 엔티티에 가속도를 적용함.
+ * @brief ActionEvent를 받아 엔티티의 가속도를 조절하는 시스템.
+ * 
+ * 이 시스템은 EventManager로부터 ActionEvent를 구독함.
+ * "move_"로 시작하는 액션 이벤트를 감지하면, 해당 엔티티의
+ * AccelerationComponent를 수정하여 물리적 움직임을 발생시킴.
 */
 class InputToAccelerationSystem {
 public:
-    InputToAccelerationSystem() = default;
+    InputToAccelerationSystem(EventManager& eventManager, EntityManager& entityManager);
+    ~InputToAccelerationSystem();
 
-    /*
-     * @brief InputControlComponent를 가진 모든 엔티티의 AccelerationComponent를 업데이트함.
-     * @param entityManager - 엔티티와 컴포넌트를 관리하는 EntityManager.
-     * @param deltaTime - 이전 프레임으로부터 경과된 시간 (초).
+    void update(EntityManager& entityManager);
+
+private:
+    EventManager& eventManager_;
+    EntityManager& entityManager_;
+    EventManager::SubscriptionId actionEventSubId_;
+
+    /**
+     * @brief ActionEvent를 처리하는 핸들러 함수.
+     * @param event 게임 내 논리적 액션 정보를 담은 이벤트 객체.
      */
-    void update(EntityManager& entityManager, float deltaTime);
+    void onActionEvent(const ActionEvent& event);
 };

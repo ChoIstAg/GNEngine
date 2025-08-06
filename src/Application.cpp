@@ -44,7 +44,7 @@ int Application::init(){
     
     movementSystem_ = std::make_unique<MovementSystem>();
     playerAnimationControlSystem_ = std::make_unique<PlayerAnimationControlSystem>(*animationManager_, *textureManager_, *renderManager_);
-    inputToAccelerationSystem_ = std::make_unique<InputToAccelerationSystem>(); // InputToAccelerationSystem 인스턴스화
+    inputToAccelerationSystem_ = std::make_unique<InputToAccelerationSystem>(*eventManager_, *entityManager_); // InputToAccelerationSystem 인스턴스화
     
     sceneManager_ = std::make_unique<SceneManager>( eventManager_.get(), renderManager_.get(), textureManager_.get(), soundManager_.get(), entityManager_.get() );
 
@@ -100,10 +100,9 @@ void Application::run() {
         }
 
         /* Update logics */
+        inputToAccelerationSystem_->update(*entityManager_); // 입력 가속도 초기화
         inputManager_->updateKeyStates();
         sceneManager_->update(deltaTime);
-        inputToAccelerationSystem_->update(*entityManager_, deltaTime); // InputToAccelerationSystem 업데이트
-        inputSystem_->update(*entityManager_, deltaTime);
         animationSystem_->update(*entityManager_, deltaTime);
         movementSystem_->update(*entityManager_, deltaTime);
         playerAnimationControlSystem_->update(*entityManager_, deltaTime);

@@ -55,19 +55,19 @@ public:
     /* Managers */
     std::unique_ptr<EventManager> eventManager_;
     std::unique_ptr<EntityManager> entityManager_;
-    std::unique_ptr<InputSystem> inputSystem_;
     std::unique_ptr<InputManager> inputManager_;
+    std::unique_ptr<InputSystem> inputSystem_;
     std::unique_ptr<RenderManager> renderManager_;
     std::unique_ptr<RenderSystem> renderSystem_;
     std::unique_ptr<SceneManager> sceneManager_;
     std::unique_ptr<TextureManager> textureManager_;
     std::unique_ptr<TextManager> textManager_;
+    std::unique_ptr<AnimationManager> animationManager_;
+    std::unique_ptr<AnimationSystem> animationSystem_;
     std::unique_ptr<SoundSystem> soundSystem_;
     std::unique_ptr<SoundManager> soundManager_;
-    std::unique_ptr<AnimationSystem> animationSystem_;
-    std::unique_ptr<AnimationManager> animationManager_;
+    std::unique_ptr<CameraSystem> cameraSystem_;
     std::unique_ptr<MovementSystem> movementSystem_;
     std::unique_ptr<PlayerAnimationControlSystem> playerAnimationControlSystem_;
-    std::unique_ptr<CameraSystem> cameraSystem_;
-    std::unique_ptr<InputToAccelerationSystem> inputToAccelerationSystem_; // InputToAccelerationSystem 추가
+    std::unique_ptr<InputToAccelerationSystem> inputToAccelerationSystem_;
 };

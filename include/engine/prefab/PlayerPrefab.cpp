@@ -13,7 +13,7 @@
 #include "engine/component/SoundComponent.h"
 #include "engine/component/PlayerAnimationControllerComponent.h"
 #include "engine/component/PlayerMovementComponent.h"
-#include "engine/component/InputControlComponent.h" // InputControlComponent.h 추가
+#include "engine/component/InputControlComponent.h"
 #include <iostream>
 #include <filesystem>
 
@@ -79,8 +79,12 @@ EntityId PlayerPrefab::create(EntityManager& entityManager, EventManager& eventM
     // PlayerMovementComponent 제거 (PlayerInputComponent와 MovementSystem이 대체)
     // entityManager.removeComponent<PlayerMovementComponent>(entityId); // 이전에 추가된 경우 제거
 
-    // InputControlComponent 추가
-    entityManager.addComponent<InputControlComponent>(entityId);
+    // InputControlComponent 추가 및 키 매핑 설정
+    auto& inputControl = entityManager.addComponent<InputControlComponent>(entityId);
+    inputControl.keyActions[SDL_SCANCODE_W] = "move_forward";
+    inputControl.keyActions[SDL_SCANCODE_S] = "move_backward";
+    inputControl.keyActions[SDL_SCANCODE_A] = "move_left";
+    inputControl.keyActions[SDL_SCANCODE_D] = "move_right";
 
     return entityId;
 }

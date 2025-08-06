@@ -2,6 +2,7 @@
 #include <SDL3/SDL.h>
 #include <string>
 #include <vector>
+#include "engine/core/Entity.h"
 
 /**
  * @brief 모든 이벤트의 기반이 되는 기본 구조체.
@@ -144,5 +145,26 @@ struct MouseButtonPressedEvent : public MouseButtonEvent {
  */
 struct MouseButtonReleasedEvent : public MouseButtonEvent {
     MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
+};
+
+
+// --- 게임 로직 관련 이벤트 ---
+
+/**
+ * @brief 키 입력 등 사용자 액션에 의해 발생하는 게임 내 논리적 이벤트를 나타냄.
+ * 
+ * InputSystem이 키 입력을 감지하고 InputControlComponent의 매핑을 기반으로 이 이벤트를 생성함.
+ * 다른 게임 시스템(예: MovementSystem, AbilitySystem)이 이 이벤트를 구독하여
+ * 실제 게임 로직을 처리함.
+ * 
+ * @field targetEntityId 액션의 대상이 되는 엔티티의 ID.
+ * @field actionName 액션의 종류를 나타내는 문자열 (예: "move_forward", "jump", "fire").
+ */
+struct ActionEvent : public Event {
+    EntityId targetEntityId;
+    std::string actionName;
+
+    ActionEvent(EntityId entityId, const std::string& action)
+        : targetEntityId(entityId), actionName(action) {}
 };
 
