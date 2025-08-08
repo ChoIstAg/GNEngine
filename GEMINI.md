@@ -23,9 +23,9 @@
     ```
 
 3.  **실행 (Run):**
-    빌드가 완료되면 실행 파일은 `out/build/Custom configure preset/` 디렉터리에 생성됩니다.
+    빌드가 완료되면 실행 파일은 `out/build/Custom configure preset/Debug/` 디렉터리에 생성됩니다.
     ```bash
-    ./out/build/"Custom configure preset"/GNEngine.exe
+    ./out/build/"Custom configure preset"/Debug/GNEngine.exe
     ```
 
 ## 3. 의존성 (Dependencies)
@@ -70,18 +70,18 @@
     - InputManager
     - TextureManager, TextManager, AnimationManger, SoundManager
     - SceneManager
-- Component : 
+- Component : 각 Entity가 기능을 사용하기 위해 갖는 객체.
 - Entity : 
-- Object : Entity를 생성하는 빌드 템플릿.
+- prefab : Entity를 생성하는 빌드 템플릿.
 
 
-- src/main.cpp: 어플리케이션의 진입점. 단지 메인 콜백을 실행하기 위한 시발점으로 사용됨.
-- src/Application.cpp: 메인 콜백 함수와 어플리케이션에서 필요한 각 매니저와 부가 요소들을 멤버 변수로 정의함.
+- app/main.cpp: 어플리케이션의 진입점. 단지 메인 콜백을 실행하기 위한 시발점으로 사용됨.
+- app/Application.cpp: 메인 콜백 함수와 어플리케이션에서 필요한 각 매니저와 부가 요소들을 멤버 변수로 정의함.
 - engine/event/EventInterface.h: 이벤트 객체들을 정의해놓음. 새 이벤트를 만들 때 여기서 타입을 추가하기.
-- engine/component/: 오브젝트가 Manager의 기능을 사용하기 위해 갖는 객체.
-- engine/manager/: 각 매니저
+- engine/component/: 각 Entity가 기능을 사용하기 위해 갖는 객체.
+- engine/manager/: 각 매니저.
 - engine/resource/: 텍스처, 사운드 등 하나의 리소스 객체.
-- src/scene/: 각 장면
+- app/scene/: 각 장면. 여기서 Entity
 
 ## 6. 코딩 스타일 및 규칙 (Coding Style & Conventions)
 
@@ -119,3 +119,4 @@
 
 - SDL3 공식 문서 : https://wiki.libsdl.org/wiki/index
     SDL3는 릴리즈한지 얼마 되지 않아서 정보가 빈약해. 반드시 공식 문서를 잘 살펴보고 사용할 함수가 SDL3에 존재하는지 찾고 함수의 인자를 잘 살펴보고 사용해줘.
+- 아부는 하지 말아줘. 나는 매우 현실적인 사람이야.

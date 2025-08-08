@@ -1,9 +1,10 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include "engine/core/Component.h"
 #include "engine/core/Entity.h"
 
-struct CameraComponent : public Component {
+struct GNEngine_API CameraComponent : public Component {
     float x, y;
     float zoom;
     EntityId targetEntityId; // 카메라가 따라갈 엔티티 ID

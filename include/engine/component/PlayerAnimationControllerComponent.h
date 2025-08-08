@@ -1,16 +1,18 @@
 #pragma once
+#include "../../GNEngine_API.h"
+
+#include <memory>
+#include <filesystem>
 
 #include "engine/core/Component.h"
 #include "engine/resource/Animation.h"
-#include <memory>
-#include <filesystem>
 
 /*
  * @class PlayerAnimationControllerComponent
  * @brief 플레이어 캐릭터의 애니메이션 로딩, 관리 및 전환을 위한 데이터를 담는 컴포넌트임.
  *        로직은 PlayerAnimationControlSystem에서 처리함.
-*/
-struct PlayerAnimationControllerComponent : public Component {
+*/ 
+class GNEngine_API PlayerAnimationControllerComponent : public Component {
 public:
     std::shared_ptr<Animation> walkAnimationData_;
     std::shared_ptr<Animation> jumpAnimationData_;

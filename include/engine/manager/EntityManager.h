@@ -1,7 +1,6 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
-#include "engine/core/Entity.h"
-#include "engine/core/ComponentArray.h"
 #include <vector>
 #include <memory>
 #include <typeindex>
@@ -9,12 +8,15 @@
 #include <stdexcept>
 #include <queue>
 
+#include "engine/core/Entity.h"
+#include "engine/core/ComponentArray.h"
+
 /*
  * @class EntityManager
  * @brief ECS에서 엔티티와 컴포넌트의 관계를 관리하는 핵심 클래스임.
  *        엔티티 ID를 생성하고, 엔티티에 컴포넌트를 추가/제거/조회하는 기능을 제공함.
-*/
-class EntityManager {
+*/ 
+class GNEngine_API EntityManager {
 public:
     EntityManager() = default;
     ~EntityManager() = default;

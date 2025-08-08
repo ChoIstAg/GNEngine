@@ -1,8 +1,9 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include "engine/core/Entity.h"
 
-// 순환참조 방지
+// 순환참조 방지용 전방선언
 class EntityManager;
 class EventManager;
 class TextureManager;
@@ -18,7 +19,7 @@ class AnimationManager;
 * 하나의 완전한 엔티티를 생성하는 역할을 함.
 * 객체를 생성하지 않고 정적 함수 create()를 통해 플레이어를 생성함.
 */
-class PlayerPrefab {
+class GNEngine_API PlayerPrefab {
 public:
     /*
     * @brief 플레이어 엔티티를 생성하고 필요한 모든 컴포넌트를 추가함.

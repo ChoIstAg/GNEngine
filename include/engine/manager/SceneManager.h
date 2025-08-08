@@ -1,17 +1,19 @@
 #pragma once
+#include "../../GNEngine_API.h"
+
 #include <memory>
 #include <unordered_map>
 #include <string>
-#include "../../src/scene/Scene.h"
+#include "../core/Scene.h"
 
-// 전방 선언 (Forward Declarations)
+// 순환참조 방지용 전방선언
 class EventManager;
 class RenderManager;
 class TextureManager;
 class SoundManager;
 class EntityManager;
 
-class SceneManager {
+class GNEngine_API SceneManager {
 private:
     std::unordered_map<std::string, std::unique_ptr<Scene>> scenes_;
     Scene* currentScene_ = nullptr;

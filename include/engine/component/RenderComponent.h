@@ -1,4 +1,5 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include "engine/core/Component.h"
 #include "engine/resource/Texture.h"
@@ -6,7 +7,7 @@
 #include "engine/component/TransformComponent.h"
 #include "engine/component/AnimationComponent.h"
 
-class RenderComponent : public Component {
+class GNEngine_API RenderComponent : public Component {
 public:
     RenderComponent(Texture* texture, bool hasAnimation = false, SDL_Rect srcRect = {0,0,0,0}, bool flipX = false, bool flipY = false);
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -7,8 +8,8 @@
 /*
  * @brief 텍스트 객체를 나타내는 클래스임.
  * TextManager에 의해 생성되고 관리됨.
-*/
-class Text {
+*/ 
+class GNEngine_API Text {
 public:
     /*
      * @brief Text 객체를 생성함.

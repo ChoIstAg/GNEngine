@@ -1,4 +1,5 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include <map>
 #include <typeindex>
@@ -7,7 +8,7 @@
 #include "engine/core/EventInterface.h"
 #include "engine/manager/EventManager.h"
 
-class EventListenerComponent : public Component {
+struct GNEngine_API EventListenerComponent : public Component {
 private:
     EventManager& eventManager_;
     std::map<std::type_index, EventManager::SubscriptionId> subscriptionIds_;

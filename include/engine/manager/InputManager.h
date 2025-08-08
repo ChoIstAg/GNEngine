@@ -1,4 +1,5 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include <SDL3/SDL.h>
 #include <set>
@@ -9,7 +10,7 @@
 #include "EventManager.h"
 #include "engine/core/EventInterface.h"
 
-class InputManager {
+class GNEngine_API InputManager {
 private: 
     const bool* currentKeyStates_;
     std::bitset<SDL_SCANCODE_COUNT> previousKeyStates_; // Changed to std::bitset

@@ -1,4 +1,10 @@
 #pragma once
+#include "../../GNEngine_API.h"
+
+#include <vector>
+#include <memory>
+#include <iostream>
+#include <filesystem>
 
 #include "engine/manager/AnimationManager.h"
 #include "engine/manager/TextureManager.h"
@@ -8,17 +14,14 @@
 #include "engine/component/AnimationComponent.h"
 #include "engine/component/VelocityComponent.h"
 #include "engine/component/RenderComponent.h"
-#include <vector>
-#include <memory>
-#include <iostream>
-#include <filesystem>
+#include "engine/core/SystemInterface.h"
 
 /*
  * @class PlayerAnimationControlSystem
  * @brief PlayerAnimationControllerComponent를 가진 엔티티의 애니메이션 상태를 제어하는 시스템임.
  *        주로 이동 상태에 따라 걷기, 점프 애니메이션을 전환함.
-*/
-class PlayerAnimationControlSystem {
+*/ 
+class GNEngine_API PlayerAnimationControlSystem : public SystemInterface {
 public:
     PlayerAnimationControlSystem(
         AnimationManager& animationManager,
@@ -31,7 +34,7 @@ public:
      * @param entityManager - 엔티티와 컴포넌트를 관리하는 EntityManager.
      * @param deltaTime - 이전 프레임으로부터 경과된 시간 (초).
      */
-    void update(EntityManager& entityManager, float deltaTime);
+    void update(EntityManager& entityManager, float deltaTime) override;
 
 private:
     AnimationManager& animationManager_;

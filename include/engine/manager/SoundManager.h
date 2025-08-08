@@ -1,4 +1,5 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -8,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <functional>
+
 #include "engine/resource/Sound.h"
 
 #define AL_CHECK_ERROR() checkAlErrors(__FILE__, __LINE__)
@@ -23,7 +25,7 @@ enum class SoundPriority {
     CRITICAL
 };
 
-class SoundManager {
+class GNEngine_API SoundManager {
 public:
     SoundManager();
     ~SoundManager();

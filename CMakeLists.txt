@@ -27,42 +27,65 @@ set(OPENAL_DIR "${CMAKE_SOURCE_DIR}/lib/openal-soft-1.24.3-bin")
 configure_file(${CMAKE_SOURCE_DIR}/include/config.h.in ${CMAKE_BINARY_DIR}/config.h @ONLY)
 include_directories(${CMAKE_BINARY_DIR})
 
-
-
 # SDL 패키지 찾기
 find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image CONFIG REQUIRED)
 find_package(SDL3_ttf CONFIG REQUIRED)
 
-add_subdirectory(
-    src
-    include
+# GNEngine 라이브러리 정의
+add_library(GNEngine SHARED
+    # 엔진 소스 파일들을 여기에 추가
+    src/engine/component/AnimationComponent.cpp
+    src/engine/component/PlayerAnimationControllerComponent.cpp
+    src/engine/component/PlayerMovementComponent.cpp
+    src/engine/component/RenderComponent.cpp
+    src/engine/component/SoundComponent.cpp
+    src/engine/component/TextComponent.cpp
+    src/engine/manager/AnimationManager.cpp
+    src/engine/manager/EntityManager.cpp
+    src/engine/manager/InputManager.cpp
+    src/engine/manager/RenderManager.cpp
+    src/engine/manager/SceneManager.cpp
+    src/engine/manager/SoundManager.cpp
+    src/engine/manager/SystemManager.cpp
+    src/engine/manager/TextManager.cpp
+    src/engine/manager/TextureManager.cpp
+    src/engine/prefab/PlayerPrefab.cpp
+    src/engine/resource/Animation.cpp
+    src/engine/resource/Sound.cpp
+    src/engine/resource/Text.cpp
+    src/engine/system/AccelerationResetSystem.cpp
+    src/engine/system/AnimationSystem.cpp
+    src/engine/system/CameraSystem.cpp
+    src/engine/system/InputSystem.cpp
+    src/engine/system/InputToAccelerationSystem.cpp
+    src/engine/system/MovementSystem.cpp
+    src/engine/system/PlayerAnimationControlSystem.cpp
+    src/engine/system/RenderSystem.cpp
+    src/engine/system/SoundSystem.cpp
 )
 
-
-
-# target_include_directories
-target_include_directories(GNEngine
-PUBLIC
+# GNEngine 라이브러리 인클루드 디렉터리 설정
+target_include_directories(GNEngine PUBLIC
     "${CMAKE_SOURCE_DIR}/include"
     "${CMAKE_SOURCE_DIR}/lib"
-
     "${SDL3_INCLUDE_DIR}"
     "${SDL3_image_INCLUDE_DIR}"
     "${SDL3_ttf_INCLUDE_DIR}"
-
-    # OpenAL, dr_libs, stb_vorbis
     "${OPENAL_DIR}/include"
     "${CMAKE_SOURCE_DIR}/lib/dr_libs"
     "${CMAKE_SOURCE_DIR}/lib/ogg"
-
-    # nlohmann/json
     "${CMAKE_SOURCE_DIR}/lib/nlohmann"
+    "${CMAKE_SOURCE_DIR}/src/engine/component"
+    "${CMAKE_SOURCE_DIR}/src/engine/core"
+    "${CMAKE_SOURCE_DIR}/src/engine/manager"
+    "${CMAKE_SOURCE_DIR}/src/engine/prefab"
+    "${CMAKE_SOURCE_DIR}/src/engine/resource"
+    "${CMAKE_SOURCE_DIR}/src/engine/system"
 )
 
-# target_link_libraries
-target_link_libraries(GNEngine 
-PUBLIC 
+# GNEngine 라이브러리 링크 설정
+target_link_libraries(GNEngine PUBLIC
     SDL3::SDL3
     SDL3_image::SDL3_image
     SDL3_ttf::SDL3_ttf
@@ -70,11 +93,16 @@ PUBLIC
     stdc++fs
 )
 
+# GNEngine_EXPORTS 정의 (DLL 빌드 시 필요)
+target_compile_definitions(GNEngine PRIVATE GNEngine_EXPORTS)
+
+# 애플리케이션 디렉터리 추가
+add_subdirectory(app)
+
 # Remove target_link_directories as it might not be needed with direct target linking
 # target_link_directories(GNEngine PUBLIC ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 # target_compile_definitions
-target_compile_definitions(GNEngine
-PUBLIC
+target_compile_definitions(GNEngine PUBLIC
     PROJECT_ROOT_PATH="${CMAKE_SOURCE_DIR}"
 )

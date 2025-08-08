@@ -1,16 +1,17 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include <functional>
 #include <unordered_map>
-#include <list> /* 리스트를 사용하는 이유: 오버헤드 크지만 순회, 값 찾기가 빨라서. */
+#include <list>
 #include <typeindex>
 #include <any>
-#include <utility> /* for std::move. */
+#include <utility>
 #include <iostream>
+
 #include "engine/core/EventInterface.h"
 
-
-class EventManager {
+class GNEngine_API EventManager {
 public:
     using SubscriptionId = int;
     using Callback = std::function<void(const std::any&)>; /* 범용 함수 타입. (void 반환형) */
@@ -36,7 +37,7 @@ public:
         std::cerr << "EventManager destroyed and all subscriptions cleared." << std::endl;
     }
 
-    /* 구독하기 */
+    /* 이벤트 구독하기 */
     template<typename T_Event>
     SubscriptionId subscribe (std::function<void(const T_Event&)> callback) {
         /* 래퍼 람다 객체로 타입을 소거함. ->  하나의 컨테이너(list)에 저장, 유연성 증가. */

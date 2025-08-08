@@ -1,15 +1,17 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include <filesystem>
 #include <memory>
+
 #include "engine/core/Component.h"
 #include "engine/manager/SoundManager.h"
 #include "engine/resource/Sound.h"
 
 /*
  * 사운드 재생을 위한 설정 정보를 담고, "Fire-and-Forget" 방식으로 재생을 요청하는 컴포넌트임.
- */
-class SoundComponent : public Component {
+ */ 
+class GNEngine_API SoundComponent : public Component {
 public:
     SoundComponent(SoundManager& soundManager, std::shared_ptr<Sound> sound);
     virtual ~SoundComponent() = default;

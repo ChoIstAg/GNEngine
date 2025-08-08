@@ -1,16 +1,18 @@
 #pragma once
+#include "../../GNEngine_API.h"
+
+#include <memory>
 
 #include "engine/core/Component.h"
 #include "engine/resource/Animation.h"
-#include <memory>
 
 /*
  * @class AnimationComponent
  * @brief 게임 오브젝트에 애니메이션 기능을 부여하는 컴포넌트임.
  * Animation 데이터(프레임 정보)를 참조하여 현재 재생 상태를 관리하고,
  * 렌더링을 위해 현재 프레임의 SDL_Rect 정보를 제공함.
- */
-class AnimationComponent : public Component {
+ */ 
+class GNEngine_API AnimationComponent : public Component {
 public:
     /*
      * @brief AnimationComponent 생성자.

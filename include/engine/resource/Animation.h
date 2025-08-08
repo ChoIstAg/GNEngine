@@ -1,4 +1,5 @@
 #pragma once
+#include "../../GNEngine_API.h" 
 
 #include <vector>
 #include <string>
@@ -11,7 +12,7 @@
  * 텍스처 경로, 각 프레임의 영역과 지속 시간, 반복 여부 등의 정보를 담고 있음.
  * 이 클래스는 데이터 컨테이너 역할을 하며, 실제 애니메이션 로직은 AnimationComponent에서 처리함.
  */
-class Animation {
+class GNEngine_API Animation {
 public:
     /*
      * @brief Animation 생성자.

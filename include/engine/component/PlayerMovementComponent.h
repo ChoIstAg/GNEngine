@@ -1,4 +1,5 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include "engine/core/Component.h"
 #include "VelocityComponent.h"
@@ -8,8 +9,8 @@
 /*
  * @class PlayerMovementComponent
  * @brief 플레이어의 이동 관련 데이터를 저장하는 컴포넌트임.
-*/
-class PlayerMovementComponent : public Component {
+*/ 
+class GNEngine_API PlayerMovementComponent : public Component {
 public:
     PlayerMovementComponent() = default;
     ~PlayerMovementComponent() = default;

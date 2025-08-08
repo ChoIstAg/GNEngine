@@ -1,4 +1,5 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -15,8 +16,8 @@
 
 /*
  * @brief 폰트를 로드하고 Text 객체를 생성 및 관리하는 클래스.
-*/
-class TextManager {
+*/ 
+class GNEngine_API TextManager {
 public:
     /*
      * @brief TextManager를 초기화함.

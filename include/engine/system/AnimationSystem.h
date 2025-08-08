@@ -1,14 +1,17 @@
 #pragma once
+#include "../../GNEngine_API.h"
+
+#include <vector>
 
 #include "engine/manager/EntityManager.h"
 #include "engine/component/AnimationComponent.h"
-#include <vector>
+#include "engine/core/SystemInterface.h"
 
 /*
  * @class AnimationSystem
  * @brief AnimationComponent를 가진 모든 엔티티의 애니메이션 프레임을 업데이트하는 시스템임.
 */
-class AnimationSystem{
+class GNEngine_API AnimationSystem : public SystemInterface {
 public:
     AnimationSystem() = default;
 
@@ -17,5 +20,5 @@ public:
      * @param entityManager - 엔티티와 컴포넌트를 관리하는 EntityManager.
      * @param deltaTime - 이전 프레임으로부터 경과된 시간 (초).
      */
-    void update(EntityManager& entityManager, float deltaTime);
+    void update(EntityManager& entityManager, float deltaTime) override;
 };

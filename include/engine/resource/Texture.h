@@ -1,7 +1,9 @@
 #pragma once
+#include "../../GNEngine_API.h"
+
 #include <SDL3/SDL.h>
 
-class Texture {
+class GNEngine_API Texture {
 public:
     SDL_Texture* sdlTexture_;
     int width_;

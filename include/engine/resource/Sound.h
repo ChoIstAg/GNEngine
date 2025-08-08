@@ -1,4 +1,5 @@
 #pragma once
+#include "../../GNEngine_API.h"
 
 #include <AL/al.h>
 
@@ -7,7 +8,7 @@
  * OpenAL 버퍼 ID와 스테레오 여부 등의 정보를 담고 있음.
  * SoundManager에 의해 관리되며, SoundComponent에서 이 객체를 참조하여 사용함.
  */
-class Sound {
+class GNEngine_API Sound {
 public:
     /*
      * Sound 객체를 생성하고 멤버 변수를 초기화함.

@@ -1,13 +1,14 @@
 #pragma once
+#include "../../GNEngine_API.h"
+
+#include "engine/core/Component.h"
 
 /*
  * TransformComponent는 게임 오브젝트의 2D 공간에서의
  * 위치, 회전, 크기를 나타내는 데이터 집합임.
  * 이 컴포넌트는 순수 데이터(POD) 컨테이너 역할을 함.
- */
-#include "engine/core/Component.h"
-
-struct TransformComponent : public Component {
+ */ 
+struct GNEngine_API TransformComponent : public Component {
 
     /*
      * @brief TransformComponent의 생성자.

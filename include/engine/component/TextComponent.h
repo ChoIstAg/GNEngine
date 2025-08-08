@@ -1,10 +1,12 @@
 #pragma once
+#include "../../GNEngine_API.h"
+
+#include <memory>
 
 #include "engine/core/Component.h"
 #include "engine/resource/Text.h"
-#include <memory>
 
-class TextComponent : public Component {
+class GNEngine_API TextComponent : public Component {
 public:
     TextComponent(std::unique_ptr<Text> text);
 
