@@ -1,11 +1,11 @@
 #pragma once
-#include "../../GNEngine_API.h"
 
+#include "../../GNEngine_API.h"
 #include <vector>
 #include <memory>
 #include <map>
-
-#include "engine/core/SystemInterface.h"
+#include <functional>
+#include "engine/manager/EntityManager.h"
 
 // 시스템 실행 단계를 정의하는 열거형
 enum class SystemPhase {
@@ -23,17 +23,24 @@ enum class SystemPhase {
  * 시스템들을 정해진 실행 단계(SystemPhase)에 따라 그룹화하고,
  * 매 프레임 정해진 순서대로 모든 시스템의 update 함수를 호출함.
  */
-
 class GNEngine_API SystemManager {
 public:
     SystemManager(EntityManager& entityManager);
 
-    /**7
+    /**
      * @brief 시스템을 특정 실행 단계에 등록함.
-     * @param system 등록할 시스템의 unique_ptr.
+     * @tparam T 등록할 시스템의 타입.
      * @param phase 시스템이 속할 실행 단계.
      */
-    void registerSystem(std::unique_ptr<SystemInterface> system, SystemPhase phase);
+    template<typename T, typename... Args>
+    void registerSystem(SystemPhase phase, Args&&... args) {
+        auto system = std::make_shared<T>(std::forward<Args>(args)...);
+        systems_[phase].push_back(
+            [this, system](float deltaTime) {
+                system->update(entityManager_, deltaTime);
+            }
+        );
+    }
 
     /**
      * @brief 등록된 모든 시스템을 단계 순서에 따라 업데이트함.
@@ -43,5 +50,5 @@ public:
 
 private:
     EntityManager& entityManager_;
-    std::map<SystemPhase, std::vector<std::unique_ptr<SystemInterface>>> systems_;
+    std::map<SystemPhase, std::vector<std::function<void(float)>>> systems_;
 };

@@ -52,18 +52,18 @@ int Application::init(){
 
     // 시스템 등록
     
-    systemManager_->registerSystem(std::make_unique<InputSystem>(*eventManager_, *entityManager_), SystemPhase::PRE_UPDATE);
-    systemManager_->registerSystem(std::make_unique<InputToAccelerationSystem>(*eventManager_, *entityManager_), SystemPhase::PRE_UPDATE); // 가속도 설정 시스템
+    systemManager_->registerSystem<InputSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_);
+    systemManager_->registerSystem<InputToAccelerationSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_); // 가속도 설정 시스템
     
-    systemManager_->registerSystem(std::make_unique<PlayerAnimationControlSystem>(*animationManager_, *textureManager_, *renderManager_), SystemPhase::LOGIC_UPDATE);
-    systemManager_->registerSystem(std::make_unique<SoundSystem>(*soundManager_), SystemPhase::LOGIC_UPDATE);
+    systemManager_->registerSystem<PlayerAnimationControlSystem>(SystemPhase::LOGIC_UPDATE, *animationManager_, *textureManager_, *renderManager_);
+    systemManager_->registerSystem<SoundSystem>(SystemPhase::LOGIC_UPDATE, *soundManager_);
 
-    systemManager_->registerSystem(std::make_unique<MovementSystem>(), SystemPhase::PHYSICS_UPDATE);
+    systemManager_->registerSystem<MovementSystem>(SystemPhase::PHYSICS_UPDATE);
 
-    systemManager_->registerSystem(std::make_unique<AnimationSystem>(), SystemPhase::POST_UPDATE);
-    systemManager_->registerSystem(std::make_unique<CameraSystem>(*renderManager_), SystemPhase::POST_UPDATE);
+    systemManager_->registerSystem<AnimationSystem>(SystemPhase::POST_UPDATE);
+    systemManager_->registerSystem<CameraSystem>(SystemPhase::POST_UPDATE, *renderManager_);
 
-    systemManager_->registerSystem(std::make_unique<RenderSystem>(*renderManager_), SystemPhase::RENDER);
+    systemManager_->registerSystem<RenderSystem>(SystemPhase::RENDER, *renderManager_);
 
     sceneManager_ = std::make_unique<SceneManager>( eventManager_.get(), renderManager_.get(), textureManager_.get(), soundManager_.get(), entityManager_.get() );
 

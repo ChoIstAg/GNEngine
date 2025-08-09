@@ -5,8 +5,6 @@
 #include "engine/manager/EventManager.h"
 #include "engine/core/EventInterface.h"
 #include "engine/component/AccelerationComponent.h"
-#include "engine/core/SystemInterface.h" // SystemInterface 추가
-
 /**
  * @class InputToAccelerationSystem
  * @brief ActionEvent를 받아 엔티티의 가속도를 조절하는 시스템.
@@ -15,7 +13,7 @@
  * "move_"로 시작하는 액션 이벤트를 감지하면, 해당 엔티티의
  * AccelerationComponent를 수정하여 물리적 움직임을 발생시킴.
 */
-class GNEngine_API InputToAccelerationSystem : public SystemInterface { // SystemInterface 상속
+class GNEngine_API InputToAccelerationSystem {
 public:
     InputToAccelerationSystem(EventManager& eventManager, EntityManager& entityManager);
     ~InputToAccelerationSystem();
@@ -23,7 +21,7 @@ public:
     /**
      * @brief 매 프레임 입력으로 인한 가속도를 0으로 초기화함.
      */
-    void update(EntityManager& entityManager, float deltaTime) override;
+    void update(EntityManager& entityManager, float deltaTime);
 
 private:
     EventManager& eventManager_;

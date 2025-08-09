@@ -11,6 +11,13 @@
 
 #include "engine/core/EventInterface.h"
 
+/**
+ * @class EventManager
+ * @brief 이벤트 시스템을 관리하는 매니저 클래스.
+ * 
+ * 이벤트 구독, 발행 및 구독 해지를 처리함.
+ * 이벤트 타입에 따라 구독자 목록을 관리하고, 이벤트 발생 시 해당 이벤트를 등록한 EventListenerComponent의 콜백 함수를 호출함.
+ */
 class GNEngine_API EventManager {
 public:
     using SubscriptionId = int;
@@ -34,7 +41,7 @@ public:
     
     ~EventManager() {
         subscribers_.clear(); /* 모든 구독자 목록을 비움. */
-        std::cerr << "EventManager destroyed and all subscriptions cleared." << std::endl;
+        std::cerr << "EventManager destroyed and all subscriptions cleared.\n";
     }
 
     /* 이벤트 구독하기 */
@@ -46,7 +53,6 @@ public:
                 cb(*event);
             }
         };
-        
         SubscriptionId id = nextId_++; /* Assign next id into corrunt id and increase next id by 1 */
         subscribers_[typeid(T_Event)].push_back({id, wrapper});
 

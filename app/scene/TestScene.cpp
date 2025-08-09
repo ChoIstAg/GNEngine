@@ -27,6 +27,7 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
         bgm_->play();
     } else { std::cerr << "TestScene: Failed to load BGM sound from " << bgmPath << "\n"; }
 
+    // Exampel 엔티티 생성
     EntityId exampleEntityId = entityManager.createEntity();
     entityManager.addComponent<TransformComponent>(exampleEntityId, 0.0f, 0.0f);
     std::filesystem::path examplePngPath = std::filesystem::path(IMAGE_ASSET_ROOT_PATH) / "example_png.png";
