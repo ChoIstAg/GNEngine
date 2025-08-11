@@ -32,6 +32,8 @@ public:
     /* 텍스처를 화면에 그리는 함수 */
     void renderTexture(Texture* texture, float x, float y, float w, float h, SDL_FlipMode flip = SDL_FLIP_NONE);
     void renderTexture(Texture* texture, float x, float y, const SDL_Rect* srcRect, float w, float h, SDL_FlipMode flip = SDL_FLIP_NONE);
+    void renderTexture(SDL_Texture* texture, float x, float y, const SDL_Rect* srcRect, float w, float h, SDL_FlipMode flip = SDL_FLIP_NONE);
+
 
     /*
      * @brief 렌더링 뷰포트를 설정함.

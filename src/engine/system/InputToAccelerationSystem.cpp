@@ -18,24 +18,25 @@ void InputToAccelerationSystem::update(EntityManager& entityManager, float delta
 
 void InputToAccelerationSystem::onActionEvent(const ActionEvent& event) {
     SDL_Log("InputToAccSystem: ActionEvent '%s' received for entity %u.", event.actionName.c_str(), event.targetEntityId);
-    // 대상 엔티티가 AccelerationComponent를 가지고 있는지 확인
-    if (!entityManager_.hasComponent<AccelerationComponent>(event.targetEntityId)) {
-        SDL_Log("InputToAccSystem: Entity %u does not have AccelerationComponent.", event.targetEntityId);
+    
+    auto accelArray = entityManager_.getComponentArray<AccelerationComponent>();
+    if (!accelArray || !accelArray->hasComponent(event.targetEntityId)) {
+        SDL_Log("InputToAccSystem: Entity %u does not have AccelerationComponent or array not found.", event.targetEntityId);
         return;
     }
 
-    auto* acceleration = entityManager_.getComponent<AccelerationComponent>(event.targetEntityId);
+    const size_t i = accelArray->getEntityToIndexMap().at(event.targetEntityId);
     const float ACCELERATION_VALUE = 200.0f; // 예시 가속도 값
 
     // 액션 이름에 따라 가속도를 직접 설정
     if (event.actionName == "move_forward") {
-        acceleration->ay = -ACCELERATION_VALUE;
+        accelArray->ay[i] = -ACCELERATION_VALUE;
     } else if (event.actionName == "move_backward") {
-        acceleration->ay = ACCELERATION_VALUE;
+        accelArray->ay[i] = ACCELERATION_VALUE;
     } else if (event.actionName == "move_left") {
-        acceleration->ax = -ACCELERATION_VALUE;
+        accelArray->ax[i] = -ACCELERATION_VALUE;
     } else if (event.actionName == "move_right") {
-        acceleration->ax = ACCELERATION_VALUE;
+        accelArray->ax[i] = ACCELERATION_VALUE;
     }
-    SDL_Log("InputToAccSystem: Entity %u acceleration set to (%.2f, %.2f)", event.targetEntityId, acceleration->ax, acceleration->ay);
+    SDL_Log("InputToAccSystem: Entity %u acceleration set to (%.2f, %.2f)", event.targetEntityId, accelArray->ax[i], accelArray->ay[i]);
 }

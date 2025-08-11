@@ -3,22 +3,23 @@
 
 #include "engine/manager/RenderManager.h"
 #include "engine/manager/EntityManager.h"
+#include "engine/manager/TextManager.h"
 #include "engine/component/TransformComponent.h"
 #include "engine/component/RenderComponent.h"
 #include "engine/component/AnimationComponent.h"
+#include "engine/component/TextComponent.h"
 #include "engine/resource/Texture.h"
 #include "engine/component/CameraComponent.h"
-#include "engine/manager/RenderManager.h"
 
 
 /*
  * @class RenderSystem
- * @brief TransformComponent와 RenderComponent를 가진 모든 엔티티를 렌더링하는 시스템임.
+ * @brief 엔티티의 RenderComponent와 TextComponent를 화면에 렌더링하는 시스템임.
  */
 
 class GNEngine_API RenderSystem {
 public:
-    RenderSystem(RenderManager& renderManager);
+    RenderSystem(RenderManager& renderManager, TextManager& textManager);
 
     /*
      * @brief 모든 렌더링 가능한 엔티티를 업데이트하고 그림.
@@ -30,4 +31,5 @@ public:
 
 private:
     RenderManager& renderManager_;
+    TextManager& textManager_;
 };

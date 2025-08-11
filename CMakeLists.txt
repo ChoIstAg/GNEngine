@@ -23,6 +23,9 @@ set(SDL3_ttf_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/SDL3_ttf-3.2.2/x86_64-w64-ming
 # OpenAL Soft 경로 설정
 set(OPENAL_DIR "${CMAKE_SOURCE_DIR}/lib/openal-soft-1.24.3-bin")
 
+# MinGW 런타임 경로 설정
+set(MINGW_BIN_DIR "C:/Development_Environment/code/MSYS2/ucrt64/bin")
+
 # config.h 생성. 소스에서 프로젝트 경로 지정용.
 configure_file(${CMAKE_SOURCE_DIR}/include/config.h.in ${CMAKE_BINARY_DIR}/config.h @ONLY)
 include_directories(${CMAKE_BINARY_DIR})
@@ -40,7 +43,6 @@ add_library(GNEngine SHARED
     src/engine/component/PlayerMovementComponent.cpp
     src/engine/component/RenderComponent.cpp
     src/engine/component/SoundComponent.cpp
-    src/engine/component/TextComponent.cpp
     src/engine/manager/AnimationManager.cpp
     src/engine/manager/EntityManager.cpp
     src/engine/manager/InputManager.cpp
@@ -95,6 +97,33 @@ target_link_libraries(GNEngine PUBLIC
 
 # GNEngine_EXPORTS 정의 (DLL 빌드 시 필요)
 target_compile_definitions(GNEngine PRIVATE GNEngine_EXPORTS)
+
+# DLL 복사
+add_custom_command(TARGET GNEngine POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${SDL3_DLL_DIR}/SDL3.dll"
+    $<TARGET_FILE_DIR:GNEngine>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${SDL3_image_DLL_DIR}/SDL3_image.dll"
+    $<TARGET_FILE_DIR:GNEngine>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${SDL3_ttf_DLL_DIR}/SDL3_ttf.dll"
+    $<TARGET_FILE_DIR:GNEngine>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${OPENAL_DIR}/bin/Win64/soft_oal.dll"
+    $<TARGET_FILE_DIR:GNEngine>/OpenAL32.dll
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${MINGW_BIN_DIR}/libgcc_s_seh-1.dll"
+    $<TARGET_FILE_DIR:GNEngine>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${MINGW_BIN_DIR}/libstdc++-6.dll"
+    $<TARGET_FILE_DIR:GNEngine>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${MINGW_BIN_DIR}/libwinpthread-1.dll"
+    $<TARGET_FILE_DIR:GNEngine>
+    COMMENT "Copying dependent DLLs for GNEngine library."
+)
+
 
 # 애플리케이션 디렉터리 추가
 add_subdirectory(app)

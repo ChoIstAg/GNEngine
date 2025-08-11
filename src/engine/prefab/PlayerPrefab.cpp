@@ -67,13 +67,14 @@ EntityId PlayerPrefab::create(EntityManager& entityManager, EventManager& eventM
     entityManager.addComponent<PlayerAnimationControllerComponent>(entityId, tcWalkAnimationData, tcJumpAnimationData, tcIdleAnimationData);
 
     // AnimationComponent 추가: PlayerAnimationControllerComponent에서 사용할 기본 애니메이션으로 초기화
-    AnimationComponent& animComp = entityManager.addComponent<AnimationComponent>(entityId, tcWalkAnimationData);
+    entityManager.addComponent<AnimationComponent>(entityId, tcWalkAnimationData);
 
     // SoundComponent 추가
     std::filesystem::path soundPath = std::filesystem::path(SOUND_EFFECT_ASSET_ROOT_PATH) / "hit01.flac";
     std::shared_ptr<Sound> hitSound = soundManager.getSound(soundPath);
     if (hitSound) {
-        entityManager.addComponent<SoundComponent>(entityId, soundManager, hitSound);
+        auto& soundComp = entityManager.addComponent<SoundComponent>(entityId); // addComponent가 참조를 반환
+        soundComp.addSound("hit", hitSound, false, 1.0f); // addSound 호출
     }
 
     // PlayerMovementComponent 제거 (PlayerInputComponent와 MovementSystem이 대체)

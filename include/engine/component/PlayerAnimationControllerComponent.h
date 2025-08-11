@@ -20,8 +20,8 @@ public:
 
     // 생성자 (데이터 초기화용)
     PlayerAnimationControllerComponent(
-        std::shared_ptr<Animation> walkAnim,
-        std::shared_ptr<Animation> jumpAnim,
-        std::shared_ptr<Animation> idleAnim
-    ) : walkAnimationData_(walkAnim), jumpAnimationData_(jumpAnim), idleAnimationData_(idleAnim) {}
+        std::shared_ptr<Animation> walkAnimation,
+        std::shared_ptr<Animation> jumpAnimation,
+        std::shared_ptr<Animation> idleAnimation
+    ) : walkAnimationData_(walkAnimation), jumpAnimationData_(jumpAnimation), idleAnimationData_(idleAnimation) {}
 };

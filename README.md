@@ -46,7 +46,7 @@ This project is built using CMake and `CMakePresets.json`.
 
 3.  **Run:**
     ```bash
-    ./out/build/"Custom configure preset"/GNEngine.exe
+    ./out/build/"Custom configure preset"/Debug/GNEngineApp.exe
     ```
 
 ## Directory Structure

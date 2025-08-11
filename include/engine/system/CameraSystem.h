@@ -4,8 +4,7 @@
 #include "engine/manager/EntityManager.h"
 #include "engine/component/CameraComponent.h"
 #include "engine/component/TransformComponent.h"
-#include "engine/manager/RenderManager.h" // RenderManager.h 추가
-
+#include "engine/manager/RenderManager.h"
 
 /*
  * @class CameraSystem

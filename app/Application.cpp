@@ -2,7 +2,7 @@
 #include <chrono>
 #include <iostream>
 
-// 필요한 시스템 헤더들을 포함
+/* --Include all required systems--*/
 #include "engine/system/InputSystem.h"
 #include "engine/system/InputToAccelerationSystem.h"
 #include "engine/system/MovementSystem.h"
@@ -13,13 +13,13 @@
 #include "engine/system/RenderSystem.h"
 #include "engine/system/AccelerationResetSystem.h"
 
-#include "scene/TestScene.h"
+#include "engine/component/CameraComponent.h"
 #include "engine/component/InputControlComponent.h"
+#include "scene/TestScene.h"
 
 Application::Application() {};
 
 int Application::init(){
-    
     if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) { /* Initialize SDL Systems*/
         SDL_Log("SDL_Init Error: %s", SDL_GetError());
         return -1;
@@ -33,11 +33,11 @@ int Application::init(){
         return -1;
     }
 
-    /* Set additional settings */
+    /* --Set additional settings-- */
     SDL_SetRenderVSync(renderer_, true); /* Enable VSync */
 
 
-    /* 매니저 초기화 */
+    /* Init Managers */
     eventManager_ = std::make_unique<EventManager>();
     entityManager_ = std::make_unique<EntityManager>();
     inputManager_ = std::make_unique<InputManager>(*eventManager_);
@@ -47,11 +47,10 @@ int Application::init(){
     soundManager_ = std::make_unique<SoundManager>();
     animationManager_ = std::make_unique<AnimationManager>();
     
-    // SystemManager 초기화
     systemManager_ = std::make_unique<SystemManager>(*entityManager_);
+    sceneManager_ = std::make_unique<SceneManager>( eventManager_.get(), renderManager_.get(), textureManager_.get(), soundManager_.get(), entityManager_.get() );
 
-    // 시스템 등록
-    
+    /* Registe all system to use*/
     systemManager_->registerSystem<InputSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_);
     systemManager_->registerSystem<InputToAccelerationSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_); // 가속도 설정 시스템
     
@@ -63,11 +62,10 @@ int Application::init(){
     systemManager_->registerSystem<AnimationSystem>(SystemPhase::POST_UPDATE);
     systemManager_->registerSystem<CameraSystem>(SystemPhase::POST_UPDATE, *renderManager_);
 
-    systemManager_->registerSystem<RenderSystem>(SystemPhase::RENDER, *renderManager_);
+    systemManager_->registerSystem<RenderSystem>(SystemPhase::RENDER, *renderManager_, *textManager_);
 
-    sceneManager_ = std::make_unique<SceneManager>( eventManager_.get(), renderManager_.get(), textureManager_.get(), soundManager_.get(), entityManager_.get() );
 
-    // 모든 컴포넌트 타입 등록
+    /* -- Regist all compontent to use. */
     entityManager_->registerComponentType<RenderComponent>();
     entityManager_->registerComponentType<AnimationComponent>();
     entityManager_->registerComponentType<SoundComponent>();
@@ -85,6 +83,7 @@ int Application::init(){
     sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *entityManager_));
     sceneManager_->changeScene("TestScene");
 
+    std::cout << "Application successfully initialized!" << std::endl;
     lastFrameTime_ = std::chrono::high_resolution_clock::now();
     return 0;
 }

@@ -21,10 +21,10 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
     std::filesystem::path bgmPath = std::filesystem::path(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3";
     auto bgmSound = soundManager_.getSound(bgmPath);
     if (bgmSound) {
-        bgm_ = std::make_unique<SoundComponent>(soundManager_, bgmSound);
-        bgm_->setVolume(1.0f);
-        bgm_->setLoop(true);
-        bgm_->play();
+        auto bgmEntity = entityManager.createEntity();
+        auto& soundComp = entityManager.addComponent<SoundComponent>(bgmEntity);
+        soundComp.addSound("bgm", bgmSound, true, 0.5f); // loop, volume
+        soundComp.play("bgm");
     } else { std::cerr << "TestScene: Failed to load BGM sound from " << bgmPath << "\n"; }
 
     // Exampel 엔티티 생성
