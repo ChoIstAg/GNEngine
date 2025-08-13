@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <queue>
 #include <optional>
+#include <typeindex>
 
 #include "engine/core/Entity.h"
 #include "engine/core/ComponentArray.h"
@@ -58,7 +59,7 @@ public:
         }
 
         auto componentArray = getComponentArray<T>();
-        if (!componentArray) {
+        if (!componentArray) { /* If getComponentArray returned false */
             componentArrays_[type] = std::make_shared<ComponentArray<T>>();
             componentArray = static_cast<ComponentArray<T>*>(componentArrays_[type].get());
         }
@@ -66,6 +67,7 @@ public:
 
         entitySignatures_[entity].set(componentTypes_[type]);
 
+        // If T component type is SoA
         if constexpr (!std::is_same_v<T, TransformComponent> && !std::is_same_v<T, RenderComponent> && !std::is_same_v<T, AnimationComponent> && !std::is_same_v<T, TextComponent> && !std::is_same_v<T, CameraComponent> && !std::is_same_v<T, VelocityComponent> && !std::is_same_v<T, AccelerationComponent>) {
             return componentArray->getComponent(entity);
         }
@@ -136,11 +138,10 @@ public:
     template<typename T>
     ComponentArray<T>* getComponentArray() {
         auto it = componentArrays_.find(typeid(T));
-        if (it != componentArrays_.end()) {
+        if (it != componentArrays_.end()) { 
             return static_cast<ComponentArray<T>*>(it->second.get());
         }
-        std::cerr << "EntityManager::getCopmonentArray에서 nullptr 반환중. \n"; 
-        return nullptr;
+        return nullptr; /* Yet there is no component to perform */
     }
 
 private:

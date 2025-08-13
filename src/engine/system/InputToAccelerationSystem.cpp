@@ -17,11 +17,11 @@ void InputToAccelerationSystem::update(EntityManager& entityManager, float delta
 }
 
 void InputToAccelerationSystem::onActionEvent(const ActionEvent& event) {
-    SDL_Log("InputToAccSystem: ActionEvent '%s' received for entity %u.", event.actionName.c_str(), event.targetEntityId);
+    // SDL_Log("InputToAccSystem: ActionEvent '%s' received for entity %u.", event.actionName.c_str(), event.targetEntityId);
     
     auto accelArray = entityManager_.getComponentArray<AccelerationComponent>();
     if (!accelArray || !accelArray->hasComponent(event.targetEntityId)) {
-        SDL_Log("InputToAccSystem: Entity %u does not have AccelerationComponent or array not found.", event.targetEntityId);
+        // SDL_Log("InputToAccSystem: Entity %u does not have AccelerationComponent or array not found.", event.targetEntityId);
         return;
     }
 
@@ -38,5 +38,5 @@ void InputToAccelerationSystem::onActionEvent(const ActionEvent& event) {
     } else if (event.actionName == "move_right") {
         accelArray->ax[i] = ACCELERATION_VALUE;
     }
-    SDL_Log("InputToAccSystem: Entity %u acceleration set to (%.2f, %.2f)", event.targetEntityId, accelArray->ax[i], accelArray->ay[i]);
+    // SDL_Log("InputToAccSystem: Entity %u acceleration set to (%.2f, %.2f)", event.targetEntityId, accelArray->ax[i], accelArray->ay[i]);
 }

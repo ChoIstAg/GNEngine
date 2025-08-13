@@ -65,22 +65,23 @@ int Application::init(){
     systemManager_->registerSystem<RenderSystem>(SystemPhase::RENDER, *renderManager_, *textManager_);
 
 
-    /* -- Regist all compontent to use. */
+    /* -- Registe all compontent to use. */
     entityManager_->registerComponentType<RenderComponent>();
-    entityManager_->registerComponentType<AnimationComponent>();
+    entityManager_->registerComponentType<CameraComponent>();
     entityManager_->registerComponentType<SoundComponent>();
-    entityManager_->registerComponentType<TextComponent>();
     entityManager_->registerComponentType<TransformComponent>();
     entityManager_->registerComponentType<VelocityComponent>();
     entityManager_->registerComponentType<AccelerationComponent>();
-    entityManager_->registerComponentType<PlayerAnimationControllerComponent>();
+    entityManager_->registerComponentType<TextComponent>();
+    entityManager_->registerComponentType<AnimationComponent>();
     entityManager_->registerComponentType<InputControlComponent>();
-    entityManager_->registerComponentType<CameraComponent>();
+    entityManager_->registerComponentType<PlayerAnimationControllerComponent>();
+    entityManager_->registerComponentType<PlayerMovementComponent>();
 
 
     // TestScene 등록 및 전환
     sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *animationManager_, *entityManager_));
-    sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *entityManager_));
+    //sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *entityManager_));
     sceneManager_->changeScene("TestScene");
 
     std::cout << "Application successfully initialized!" << std::endl;
@@ -103,29 +104,32 @@ void Application::quit() {
  * 이벤트 처리, 업데이트, 렌더링을 반복함.
  */
 void Application::run() {
-    // SDL_Log("Application::run() - Entered run loop function.");
+    //SDL_Log("Application::run() - Entered run loop function.");
     isRunning_ = true;
     while(isRunning_){
-        // SDL_Log("Application::run() - Top of the main loop.");
+        //SDL_Log("Application::run() - Top of the main loop.");
         auto currentTime = std::chrono::high_resolution_clock::now();
         float deltaTime = std::chrono::duration<float>(currentTime - lastFrameTime_).count();
         lastFrameTime_ = currentTime;
 
         /* Process all events */
         if(!inputManager_->processEvents()){
-            // SDL_Log("Application::run() - processEvents() returned false. Exiting loop.");
+            //SDL_Log("Application::run() - processEvents() returned false. Exiting loop.");
             isRunning_ = false;
             break;
         }
         inputManager_->updateKeyStates();
+        //SDL_Log("Application::run() - inputManager_->updateKeyStates complete");
 
-        /* Update all systems */
         sceneManager_->update(deltaTime);
 
         renderManager_->clear();
-        // SDL_Log("Application::run() - Calling systemManager_->updateAll().");
+
+        //SDL_Log("Application::run() - Calling systemManager_->updateAll().");
         systemManager_->updateAll(deltaTime);
-        // SDL_Log("Application::run() - Finished systemManager_->updateAll().");
+        //SDL_Log("Application::run() - Finished systemManager_->updateAll().");
+
         renderManager_->present();
+        //SDL_Log("Application::run() - Finished renderManager_->present() ");
     }
 }

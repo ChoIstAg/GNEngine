@@ -46,14 +46,15 @@ This project is built using CMake and `CMakePresets.json`.
 
 3.  **Run:**
     ```bash
-    ./out/build/"Custom configure preset"/Debug/GNEngineApp.exe
+    out/build/custom-preset/Debug/GNEngineApp.exe
     ```
 
 ## Directory Structure
 
-- `src/`: Main application source code
-- `include/engine/`: Core engine logic
+- `app/`: Main application source code (Corrent example application).
+- `src/`: All source codes of headers.
+- `include/engine/system`: Perform engine logics
 - `include/engine/manager`: Contains various manager classes for core engine functionalities.
 - `include/engine/component`: Defines the base component and other concrete components like TransformComponent.
 - `asset/`: Game resources (images, fonts, sounds, etc.)
-- `lib/`: External libraries
+- `lib/`: Used external libraries 

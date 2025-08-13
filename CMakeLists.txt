@@ -43,6 +43,7 @@ add_library(GNEngine SHARED
     src/engine/component/PlayerMovementComponent.cpp
     src/engine/component/RenderComponent.cpp
     src/engine/component/SoundComponent.cpp
+    src/engine/core/ComponentArray.cpp
     src/engine/manager/AnimationManager.cpp
     src/engine/manager/EntityManager.cpp
     src/engine/manager/InputManager.cpp
@@ -112,16 +113,6 @@ add_custom_command(TARGET GNEngine POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${OPENAL_DIR}/bin/Win64/soft_oal.dll"
     $<TARGET_FILE_DIR:GNEngine>/OpenAL32.dll
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${MINGW_BIN_DIR}/libgcc_s_seh-1.dll"
-    $<TARGET_FILE_DIR:GNEngine>
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${MINGW_BIN_DIR}/libstdc++-6.dll"
-    $<TARGET_FILE_DIR:GNEngine>
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${MINGW_BIN_DIR}/libwinpthread-1.dll"
-    $<TARGET_FILE_DIR:GNEngine>
-    COMMENT "Copying dependent DLLs for GNEngine library."
 )
 
 

@@ -2,6 +2,7 @@
 #include <cmath>
 #include "config.h" // Include config.h for DECELERATION_RATE, ACCELERATION_RATE, MOVE_SPEED
 
+#include <iostream>
 
 void MovementSystem::update(EntityManager& entityManager, float deltaTime) {
     // 1. 필요한 컴포넌트 배열에 대한 포인터를 가져옴
@@ -11,6 +12,7 @@ void MovementSystem::update(EntityManager& entityManager, float deltaTime) {
 
     // 컴포넌트 배열이 없으면 시스템을 실행할 수 없음
     if (!transformArray || !velocityArray || !accelerationArray) {
+        std::cerr << "[Error] MovementSystem - ComponentArray is nullptr.\n";
         return;
     }
 

@@ -5,7 +5,6 @@ CameraSystem::CameraSystem(RenderManager& renderManager)
     : renderManager_(renderManager) {}
 
 void CameraSystem::update(EntityManager& entityManager, float deltaTime) {
-    SDL_Log("CameraSystem: update called.");
     int windowWidth = renderManager_.getWindowWidth();
     int windowHeight = renderManager_.getWindowHeight();
 
@@ -29,7 +28,7 @@ void CameraSystem::update(EntityManager& entityManager, float deltaTime) {
 
         EntityId targetId = targetEntityIds[cameraIndex];
         if (targetId != 0) {
-            SDL_Log("CameraSystem: Target entity ID is %u.", targetId);
+            // SDL_Log("CameraSystem: Target entity ID is %u.", targetId);
             
             if (transformArray->hasComponent(targetId)) {
                 const size_t targetTransformIndex = transformArray->getEntityToIndexMap().at(targetId);
@@ -41,14 +40,14 @@ void CameraSystem::update(EntityManager& entityManager, float deltaTime) {
                 // RenderManager에 카메라 위치 업데이트
                 renderManager_.setCameraPosition(cameraX[cameraIndex], cameraY[cameraIndex]);
                 renderManager_.setZoomLevel(cameraZoom[cameraIndex]);
-                SDL_Log("CameraSystem: Camera position set to (%.2f, %.2f) and zoom set to %.2f for target entity %u at (%.2f, %.2f).", cameraX[cameraIndex], cameraY[cameraIndex], cameraZoom[cameraIndex], targetId, transformX[targetTransformIndex], transformY[targetTransformIndex]);
+                // SDL_Log("CameraSystem: Camera position set to (%.2f, %.2f) and zoom set to %.2f for target entity %u at (%.2f, %.2f).", cameraX[cameraIndex], cameraY[cameraIndex], cameraZoom[cameraIndex], targetId, transformX[targetTransformIndex], transformY[targetTransformIndex]);
 
                 // TODO: 부드러운 카메라 이동, 경계 처리, 줌 레벨 조정 등 추가 로직 구현
             } else {
-                SDL_Log("CameraSystem: Target entity %u does not have TransformComponent.", targetId);
+                //SDL_Log("CameraSystem: Target entity %u does not have TransformComponent.", targetId);
             }
         } else {
-            SDL_Log("CameraSystem: No target entity set for camera %u.", entity);
+            //SDL_Log("CameraSystem: No target entity set for camera %u.", entity);
         }
         // TODO: 줌 레벨 조정 로직 등 추가
     }

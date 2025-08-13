@@ -17,58 +17,57 @@ PlayerAnimationControlSystem::PlayerAnimationControlSystem(
 {}
 
 void PlayerAnimationControlSystem::update(EntityManager& entityManager, float deltaTime) {
-    SDL_Log("PlayerAnimationControlSystem: update called. DeltaTime: %.4f", deltaTime);
+    //SDL_Log("PlayerAnimationControlSystem: update called. DeltaTime: %.4f", deltaTime);
     for (EntityId entity : entityManager.getEntitiesWith<PlayerAnimationControllerComponent, AnimationComponent, VelocityComponent, TransformComponent, AccelerationComponent>()) {
         auto animController_opt = entityManager.getComponent<PlayerAnimationControllerComponent>(entity);
         auto animation_opt = entityManager.getComponent<AnimationComponent>(entity);
         auto velocity_opt = entityManager.getComponent<VelocityComponent>(entity);
         auto acceleration_opt = entityManager.getComponent<AccelerationComponent>(entity);
 
-        if (!animController_opt || !animation_opt || !velocity_opt || !acceleration_opt) continue;
+        if (!animController_opt || !animation_opt || !velocity_opt || !acceleration_opt) { continue; }
 
         auto& animController = animController_opt.value();
         auto& animation = animation_opt.value();
         auto& velocity = velocity_opt.value();
         auto& acceleration = acceleration_opt.value();
 
-        SDL_Log("PlayerAnimationControlSystem: Entity %u - Vel(%.2f, %.2f)", entity, velocity.vx, velocity.vy);
+        //SDL_Log("PlayerAnimationControlSystem: Entity %u - Vel(%.2f, %.2f)", entity, velocity.vx, velocity.vy);
 
         // 이동 상태에 따른 애니메이션 전환 로직
         if (std::abs(velocity.vx) > 0.1f || std::abs(velocity.vy) > 0.1f) {
-            // 움직이고 있다면 걷기 애니메이션 재생
+            // 움직이고 있다면 wal 애니메이션 재생
             if (animation.getAnimation() != animController.walkAnimationData_) {
-                SDL_Log("PlayerAnimationControlSystem: Switching to walk animation for entity %u.", entity);
+                //SDL_Log("PlayerAnimationControlSystem: Switching to walk animation for entity %u.", entity);
                 setCurrentAnimation(entityManager, entity, animController.walkAnimationData_);
             }
             if (!animation.isPlaying()) {
-                SDL_Log("PlayerAnimationControlSystem: Playing walk animation for entity %u.", entity);
+                //SDL_Log("PlayerAnimationControlSystem: Playing walk animation for entity %u.", entity);
                 // animation.play(); // SoA 컴포넌트의 복사본에 대한 호출은 실제 데이터에 영향 없음
             }
         } else {
             // 멈춰 있다면 idle 애니메이션 재생
             if (animation.getAnimation() != animController.idleAnimationData_) {
-                SDL_Log("PlayerAnimationControlSystem: Switching to idle animation for entity %u.", entity);
+                //SDL_Log("PlayerAnimationControlSystem: Switching to idle animation for entity %u.", entity);
                 setCurrentAnimation(entityManager, entity, animController.idleAnimationData_);
             }
             if (!animation.isPlaying()) {
-                SDL_Log("PlayerAnimationControlSystem: Playing idle animation for entity %u.", entity);
+                //SDL_Log("PlayerAnimationControlSystem: Playing idle animation for entity %u.", entity);
                 // animation.play(); // SoA 컴포넌트의 복사본에 대한 호출은 실제 데이터에 영향 없음
             }
         }
 
         // 방향에 따른 좌우 반전
-        auto render_opt = entityManager.getComponent<RenderComponent>(entity);
-        if (render_opt) {
-            auto& render = render_opt.value();
+        auto renderArray = entityManager.getComponentArray<RenderComponent>();
+        if (renderArray && renderArray->hasComponent(entity)) {
+            const size_t i = renderArray->getEntityToIndexMap().at(entity);
+
             if (acceleration.ax < 0) { // 왼쪽으로 이동 (기본 방향이 왼쪽이므로 반전 없음)
-                if (render.getFlipX() != false) {
-                    SDL_Log("PlayerAnimationControlSystem: Flipping entity %u to left.", entity);
-                    // render.setFlipX(false); // SoA 컴포넌트의 복사본에 대한 호출은 실제 데이터에 영향 없음
+                if (renderArray->flipX[i] != false) {
+                    renderArray->flipX[i] = false;
                 }
             } else if (acceleration.ax > 0) { // 오른쪽으로 이동 (오른쪽을 바라보도록 반전)
-                if (render.getFlipX() != true) {
-                    SDL_Log("PlayerAnimationControlSystem: Flipping entity %u to right.", entity);
-                    // render.setFlipX(true); // SoA 컴포넌트의 복사본에 대한 호출은 실제 데이터에 영향 없음
+                if (renderArray->flipX[i] != true) {
+                    renderArray->flipX[i] = true;
                 }
             }
         }
@@ -91,10 +90,10 @@ void PlayerAnimationControlSystem::setCurrentAnimation(EntityManager& entityMana
     if (!newAnimation) {
         std::cerr << "Error: Attempted to set a null animation for entity " << entityId << std::endl;
         if (entityManager.hasComponent<AnimationComponent>(entityId)) {
-            entityManager.removeComponent<AnimationComponent>(entityId);
+            //entityManager.removeComponent<AnimationComponent>(entityId);
         }
         if (entityManager.hasComponent<RenderComponent>(entityId)) {
-            entityManager.removeComponent<RenderComponent>(entityId);
+            //entityManager.removeComponent<RenderComponent>(entityId);
         }
         return;
     }

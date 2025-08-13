@@ -1,4 +1,5 @@
 #include "engine/system/AnimationSystem.h"
+#include <iostream>
 
 void AnimationSystem::update(EntityManager& entityManager, float deltaTime) {
     auto animArray = entityManager.getComponentArray<AnimationComponent>();
@@ -7,7 +8,7 @@ void AnimationSystem::update(EntityManager& entityManager, float deltaTime) {
         return;
     }
 
-    auto& animations = animArray->animations;
+    auto& animations = animArray->animations;    
     auto& currentFrames = animArray->currentFrames;
     auto& frameTimers = animArray->frameTimers;
     auto& arePlaying = animArray->arePlaying;

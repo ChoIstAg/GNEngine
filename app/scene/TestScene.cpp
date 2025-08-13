@@ -1,6 +1,7 @@
 #include "TestScene.h"
-#include <SDL3/SDL.h>
+
 #include "config.h"
+#include <SDL3/SDL.h>
 #include <filesystem>
 #include <iostream>
 
@@ -46,6 +47,8 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
     cameraEntityId_ = entityManager.createEntity();
     // PlayerFactory가 생성한 플레이어 엔티티를 카메라의 타겟으로 설정
     entityManager.addComponent<CameraComponent>(cameraEntityId_, 0.0f, 0.0f, 10.0f, playerEntityId);
+
+    std::cerr << "TestScene successfully initialized! \n";
 }
 
 void TestScene::onEnter() {
@@ -73,6 +76,4 @@ void TestScene::render(SDL_Renderer* renderer) {
     // std::cout << "TestScene: Rendering..." << std::endl;
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // 검은색 배경
     SDL_RenderClear(renderer);
-
-    
 }
