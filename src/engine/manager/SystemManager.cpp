@@ -1,4 +1,5 @@
 #include "engine/manager/SystemManager.h"
+#include <iostream>
 
 SystemManager::SystemManager(EntityManager& entityManager)
     : entityManager_(entityManager) {}
@@ -12,6 +13,7 @@ void SystemManager::updateAll(float deltaTime) {
             updateFunc(deltaTime);
         }
     }
+    // std::cerr << "SystemManager - Finished PRE_UPDATE \n";
 
     // 2. LOGIC_UPDATE
     if (systems_.count(SystemPhase::LOGIC_UPDATE)) {
@@ -19,6 +21,7 @@ void SystemManager::updateAll(float deltaTime) {
             updateFunc(deltaTime);
         }
     }
+    // std::cerr << "SystemManager - Finished LOGIC_UPDATE \n";
 
     // 3. PHYSICS_UPDATE
     if (systems_.count(SystemPhase::PHYSICS_UPDATE)) {
@@ -26,6 +29,7 @@ void SystemManager::updateAll(float deltaTime) {
             updateFunc(deltaTime);
         }
     }
+    // std::cerr << "SystemManager - Finished PHYSICS_UPDATE \n";
 
     // 4. POST_UPDATE
     if (systems_.count(SystemPhase::POST_UPDATE)) {
@@ -33,6 +37,7 @@ void SystemManager::updateAll(float deltaTime) {
             updateFunc(deltaTime);
         }
     }
+    // std::cerr << "SystemManager - Finished POST_UPDATE \n";
 
     // 5. RENDER
     if (systems_.count(SystemPhase::RENDER)) {
@@ -40,4 +45,5 @@ void SystemManager::updateAll(float deltaTime) {
             updateFunc(deltaTime);
         }
     }
+    // std::cerr << "SystemManager - Finished RENDER \n";
 }

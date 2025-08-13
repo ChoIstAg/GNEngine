@@ -1,62 +1,83 @@
 #pragma once
 #include "../../GNEngine_API.h"
 
-#include <filesystem>
+#include <string>
+#include <unordered_map>
 #include <memory>
+#include <optional>
+#include <AL/al.h>
 
 #include "engine/core/Component.h"
-#include "engine/manager/SoundManager.h"
 #include "engine/resource/Sound.h"
+#include "engine/manager/SoundManager.h" // SoundPriority enum
 
 /*
- * 사운드 재생을 위한 설정 정보를 담고, "Fire-and-Forget" 방식으로 재생을 요청하는 컴포넌트임.
- */ 
+ * @class SoundComponent
+ * @brief 엔티티의 사운드 재생을 관리하는 '사운드 보관함' 컴포넌트임.
+ *        이름(string)으로 여러 사운드를 등록하고, 각 사운드의 상태와 속성을 관리함.
+ *        재생/정지 등은 상태 플래그를 변경하는 방식으로 동작하며, 실제 OpenAL 제어는 SoundSystem이 담당함.
+ */
 class GNEngine_API SoundComponent : public Component {
 public:
-    SoundComponent(SoundManager& soundManager, std::shared_ptr<Sound> sound);
-    virtual ~SoundComponent() = default;
+    /*
+     * @struct SoundData
+     * @brief 개별 사운드의 모든 데이터와 상태를 담는 구조체.
+     */
+    struct SoundData {
+        std::shared_ptr<Sound> resource = nullptr;
+        std::optional<ALuint> sourceId = std::nullopt; // 재생 중일 때 OpenAL 소스 ID
 
-    // 이동 생성자
-    SoundComponent(SoundComponent&& other) noexcept;
-    // 이동 대입 연산자
-    SoundComponent& operator=(SoundComponent&& other) noexcept;
+        // --- 재생 속성(기본값) ---
+        float volume = 1.0f;
+        float pitch = 1.0f;
+        bool loop = false;
+        SoundPriority priority = SoundPriority::NORMAL;
+        bool spatialized = true; // 3D 사운드 여부
 
-    // 복사 생성자 및 복사 대입 연산자 삭제 (참조 멤버 때문)
-    SoundComponent(const SoundComponent&) = delete;
-    SoundComponent& operator=(const SoundComponent&) = delete;
+        // --- 상태 플래그 ---
+        bool wantsToPlay = false;
+        bool wantsToStop = false;
+    };
 
-    /* 현재 설정된 속성으로 사운드를 즉시 재생함 (Fire-and-Forget) */
-    void play();
+    SoundComponent() = default;
 
-    // --- 재생 전 사운드 속성 설정 함수들 ---
-    void setPosition(float x, float y, float z) { x_ = x; y_ = y; z_ = z; }
-    void setVolume(float volume) { volume_ = volume; }
-    void setPitch(float pitch) { pitch_ = pitch; }
-    void setLoop(bool loop) { loop_ = loop; }
-    void setPriority(SoundPriority priority) { priority_ = priority; }
+    /*
+     * @brief 보관함에 새로운 사운드를 추가함.
+     * @param name 사운드를 식별할 고유한 이름 (e.g., "walk", "hit").
+     * @param sound 리소스.
+     * @param loop 반복 여부.
+     * @param volume 볼륨.
+     */
+    void addSound(const std::string& name, std::shared_ptr<Sound> sound, bool loop = false, float volume = 1.0f);
 
-    void setSpatialized(bool spatialized) { spatialized_ = spatialized; }
-    void setAttenuation(bool attenuation) { attenuation_ = attenuation; }
-    void setSplitChannels(bool split) { splitChannels_ = split; }
-    void setRolloffFactor(float factor) { rolloffFactor_ = factor; }
-    void setReferenceDistance(float distance) { referenceDistance_ = distance; }
-    void setMaxDistance(float distance) { maxDistance_ = distance; }
+    /*
+     * @brief 지정된 이름의 사운드 재생을 요청함.
+     *        실제 재생은 SoundSystem이 다음 업데이트에서 처리함.
+     */
+    void play(const std::string& name);
+
+    /*
+     * @brief 지정된 이름의 사운드 정지를 요청함.
+     */
+    void stop(const std::string& name);
+
+    /*
+     * @brief 지정된 이름의 사운드가 현재 재생 중인지 확인함.
+     */
+    bool isPlaying(const std::string& name) const;
+
+    /*
+     * @brief 지정된 이름의 사운드 데이터에 대한 참조를 반환함.
+     *        외부(주로 SoundSystem)에서 상태를 직접 수정할 때 사용.
+     */
+    SoundData* getSoundData(const std::string& name);
+    const SoundData* getSoundData(const std::string& name) const;
+
+    /*
+     * @brief 컴포넌트가 가진 모든 사운드 데이터 맵에 대한 참조를 반환함.
+     */
+    std::unordered_map<std::string, SoundData>& getAllSounds();
 
 private:
-    SoundManager& soundManager_;
-    std::shared_ptr<Sound> sound_;
-
-    // --- 재생 속성 --- 
-    float x_ = 0.0f, y_ = 0.0f, z_ = 0.0f;
-    float volume_ = 1.0f;
-    float pitch_ = 1.0f;
-    bool loop_ = false;
-    SoundPriority priority_ = SoundPriority::NORMAL;
-
-    bool spatialized_ = false;
-    bool attenuation_ = false;
-    bool splitChannels_ = false;
-    float rolloffFactor_ = 1.0f;
-    float referenceDistance_ = 1.0f;
-    float maxDistance_ = 100.0f;
+    std::unordered_map<std::string, SoundData> sounds_;
 };

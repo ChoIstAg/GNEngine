@@ -1,10 +1,18 @@
 #include "engine/system/AccelerationResetSystem.h"
 
 void AccelerationResetSystem::update(EntityManager& entityManager, float deltaTime) {
-    // InputControlComponent를 가진 엔티티의 가속도만 리셋 (입력으로 제어되는 엔티티만 해당)
+    auto accelArray = entityManager.getComponentArray<AccelerationComponent>();
+    if (!accelArray) {
+        std::cerr << "AccelerationResetSystem.cpp에서 accelArray 참조 실패 \n";
+        return;
+    }
+
+    auto& ax = accelArray->ax;
+    auto& ay = accelArray->ay;
+
     for (auto entity : entityManager.getEntitiesWith<InputControlComponent, AccelerationComponent>()) {
-        auto* acceleration = entityManager.getComponent<AccelerationComponent>(entity);
-        acceleration->ax = 0.0f;
-        acceleration->ay = 0.0f;
+        const size_t i = accelArray->getEntityToIndexMap().at(entity);
+        ax[i] = 0.0f;
+        ay[i] = 0.0f;
     }
 }

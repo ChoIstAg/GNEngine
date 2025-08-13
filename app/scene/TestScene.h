@@ -27,6 +27,6 @@ private:
     SoundManager& soundManager_;
     AnimationManager& animationManager_;
     RenderManager& renderManager_;
-    std::unique_ptr<SoundComponent> bgm_;
+    
     EntityId cameraEntityId_;
 };

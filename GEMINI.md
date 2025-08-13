@@ -7,6 +7,7 @@
 - **사용 패러다임:** DOD(Data Oriented Design) + ECS(Entity Component System)
 
 ## 2. 빌드 및 실행 (Build & Run)
+- 현재 운영체재는 Windows 11 Home이고 현재 GEMINI CLI는 VSCODE의 터미널에서 실행중이야.
 
 이 프로젝트는 CMake와 `CMakePresets.json`을 사용하여 빌드합니다. g++ 컴파일러와 Ninja 빌드 시스템을 사용합니다.
 - 현재 환경: vscode
@@ -23,9 +24,9 @@
     ```
 
 3.  **실행 (Run):**
-    빌드가 완료되면 실행 파일은 `out/build/Custom configure preset/Debug/` 디렉터리에 생성됩니다.
+    빌드가 완료되면 실행 파일은 `out/build/custom-preset/Debug/` 디렉터리에 생성됩니다.
     ```bash
-    ./out/build/"Custom configure preset"/Debug/GNEngine.exe
+    out/build/custom-preset/Debug/GNEngineApp.exe
     ```
 
 ## 3. 의존성 (Dependencies)
@@ -45,13 +46,9 @@
 
 ## 4. 디렉터리 구조 (Directory Structure)
 
-- `src/`: 메인 애플리케이션 소스 코드 (`main.cpp`, `Application.cpp` 등)
+- `app/`: 메인 애플리케이션 소스 코드 (`main.cpp`, `Application.cpp` 등)
 - `include/engine/`: 엔진 핵심 로직
-    - `/manager/` : 각 역할을 수행하는 매니저
-        - `event/`: 이벤트 및 입력 관리
-        - `object/`: 게임 오브젝트 관리
-        - `resource/`: 텍스처, 애니메이션, 폰트, 사운드 등 리소스 관리
-        - `scene/`: 씬(Scene) 관리
+    - `/manager/` : 매니저
     - `/component/` : 게임 오브젝트들이 기능을 사용할 수 있도록 함.
 - `asset/`: 게임에 사용될 이미지, 폰트, 텍스트 파일
 - `out/build/`: 빌드 결과물이 저장되는 디렉터리

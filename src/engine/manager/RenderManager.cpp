@@ -1,5 +1,6 @@
 #include "engine/manager/RenderManager.h"
 #include <iostream>
+#include <SDL3/SDL_render.h>
 
 /* 
  * @brief RenderManager의 생성자.
@@ -50,27 +51,20 @@ void RenderManager::setCameraPosition(float x, float y) {
  * @param flip SDL_FlipMode 플래그로 좌우/상하 반전 여부를 지정함. (SDL_FLIP_NONE, SDL_FLIP_HORIZONTAL, SDL_FLIP_VERTICAL)
 */
 void RenderManager::renderTexture(Texture* texture, float x, float y, float w, float h, SDL_FlipMode flip) {
-    // 카메라 위치를 적용하여 화면 좌표 계산
-    float screenX = (x - cameraX_) * zoomLevel_ + (getWindowWidth() / 2.0f);
-    float screenY = (y - cameraY_) * zoomLevel_ + (getWindowHeight() / 2.0f);
-
-    SDL_FRect dstRect = {screenX - (w * zoomLevel_) / 2.0f, screenY - (h * zoomLevel_) / 2.0f, w * zoomLevel_, h * zoomLevel_};
-    if (!SDL_RenderTextureRotated(renderer_, texture->sdlTexture_, nullptr, &dstRect, 0.0, nullptr, flip)) {
-        SDL_Log("RenderManager::renderTexture - Failed to render texture: %s", SDL_GetError());
-    }
+    renderTexture(texture->sdlTexture_, x, y, nullptr, w, h, flip);
 }
 
 void RenderManager::renderTexture(Texture* texture, float x, float y, const SDL_Rect* srcRect, float w, float h, SDL_FlipMode flip) {
+    renderTexture(texture->sdlTexture_, x, y, srcRect, w, h, flip);
+}
+
+void RenderManager::renderTexture(SDL_Texture* texture, float x, float y, const SDL_Rect* srcRect, float w, float h, SDL_FlipMode flip) {
     if (!renderer_) {
         SDL_Log("RenderManager::renderTexture - Renderer is null. : %s", SDL_GetError());
         return;
     }
     if (!texture) {
-        SDL_Log("RenderManager::renderTexture - Texture object is null. : %s", SDL_GetError());
-        return;
-    }
-    if (!texture->sdlTexture_) {
-        SDL_Log("RenderManager::renderTexture - SDL_Texture* inside Texture object is null. : %s", SDL_GetError());
+        SDL_Log("RenderManager::renderTexture - SDL_Texture* is null. : %s", SDL_GetError());
         return;
     }
 
@@ -86,12 +80,14 @@ void RenderManager::renderTexture(Texture* texture, float x, float y, const SDL_
     
     /* 너비와 높이가 0이면 srcRect 또는 텍스처의 원본 크기를 사용 */
     if (w == 0 || h == 0) {
+        float queryW, queryH;
+        SDL_GetTextureSize(texture, &queryW, &queryH);
         if (srcRect) {
             dstRect.w = static_cast<float>(srcRect->w) * zoomLevel_;
             dstRect.h = static_cast<float>(srcRect->h) * zoomLevel_;
         } else {
-            dstRect.w = static_cast<float>(texture->width_) * zoomLevel_;
-            dstRect.h = static_cast<float>(texture->height_) * zoomLevel_;
+            dstRect.w = static_cast<float>(queryW) * zoomLevel_;
+            dstRect.h = static_cast<float>(queryH) * zoomLevel_;
         }
     } else {
         dstRect.w = w * zoomLevel_;
@@ -106,7 +102,7 @@ void RenderManager::renderTexture(Texture* texture, float x, float y, const SDL_
     dstRect.y = screenY - dstRect.h / 2.0f; // Adjust y to center
 
     /* 텍스처 렌더링 */
-    if (!SDL_RenderTextureRotated(renderer_, texture->sdlTexture_, srcRect ? &srcFRect : nullptr, &dstRect, 0.0, nullptr, flip)) {
+    if (!SDL_RenderTextureRotated(renderer_, texture, srcRect ? &srcFRect : nullptr, &dstRect, 0.0, nullptr, flip)) {
         SDL_Log("RenderManager::renderTexture - Failed to render texture: %s", SDL_GetError());
     }
 }
@@ -132,4 +128,4 @@ int RenderManager::getWindowHeight() const {
     int w, h;
     SDL_GetWindowSize(window_, &w, &h);
     return h;
-}   
+}

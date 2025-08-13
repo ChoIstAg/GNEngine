@@ -1,6 +1,7 @@
 #include "TestScene.h"
-#include <SDL3/SDL.h>
+
 #include "config.h"
+#include <SDL3/SDL.h>
 #include <filesystem>
 #include <iostream>
 
@@ -21,10 +22,10 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
     std::filesystem::path bgmPath = std::filesystem::path(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3";
     auto bgmSound = soundManager_.getSound(bgmPath);
     if (bgmSound) {
-        bgm_ = std::make_unique<SoundComponent>(soundManager_, bgmSound);
-        bgm_->setVolume(1.0f);
-        bgm_->setLoop(true);
-        bgm_->play();
+        auto bgmEntity = entityManager.createEntity();
+        auto& soundComp = entityManager.addComponent<SoundComponent>(bgmEntity);
+        soundComp.addSound("bgm", bgmSound, true, 0.5f); // loop, volume
+        soundComp.play("bgm");
     } else { std::cerr << "TestScene: Failed to load BGM sound from " << bgmPath << "\n"; }
 
     // Exampel 엔티티 생성
@@ -46,6 +47,8 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
     cameraEntityId_ = entityManager.createEntity();
     // PlayerFactory가 생성한 플레이어 엔티티를 카메라의 타겟으로 설정
     entityManager.addComponent<CameraComponent>(cameraEntityId_, 0.0f, 0.0f, 10.0f, playerEntityId);
+
+    std::cerr << "TestScene successfully initialized! \n";
 }
 
 void TestScene::onEnter() {
@@ -73,6 +76,4 @@ void TestScene::render(SDL_Renderer* renderer) {
     // std::cout << "TestScene: Rendering..." << std::endl;
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // 검은색 배경
     SDL_RenderClear(renderer);
-
-    
 }

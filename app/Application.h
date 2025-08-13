@@ -12,10 +12,10 @@
 #include "engine/system/RenderSystem.h"
 #include "engine/system/MovementSystem.h"
 #include "engine/system/InputSystem.h"
-#include "engine/system/PlayerAnimationControlSystem.h"
 #include "engine/system/SoundSystem.h"
 #include "engine/system/CameraSystem.h" 
 #include "engine/system/InputToAccelerationSystem.h"
+#include "engine/system/PlayerAnimationControlSystem.h"
 
 #include "engine/manager/EventManager.h"
 #include "engine/manager/InputManager.h"
@@ -24,14 +24,26 @@
 #include "engine/manager/TextureManager.h"
 #include "engine/manager/TextManager.h"
 #include "engine/manager/AnimationManager.h"
-#include "engine/component/TextComponent.h"
 #include "engine/manager/SoundManager.h"
 #include "engine/manager/SceneManager.h"
 #include "engine/manager/SystemManager.h"
 
+#include "engine/component/SoundComponent.h"
 #include "engine/component/CameraComponent.h"
+#include "engine/component/RenderComponent.h"
+#include "engine/component/AccelerationComponent.h"
+#include "engine/component/VelocityComponent.h"
+#include "engine/component/InputControlComponent.h"
+#include "engine/component/TransformComponent.h"
+#include "engine/component/AnimationComponent.h"
+#include "engine/component/TextComponent.h"
+#include "engine/component/PlayerAnimationControllerComponent.h"
+#include "engine/component/PlayerMovementComponent.h"
 
+
+/* --- Include All scenes to use --- */
 #include "scene/MainMenuScene.h"
+#include "scene/TestScene.h"
 
 class Application {
 private:

@@ -81,6 +81,8 @@ public:
      */
     int getHeight() const;
 
+    SDL_Texture* getSDLTexture() const { return texture_; }
+
 private:
     /*
      * @brief 텍스트로부터 SDL_Texture를 생성함.

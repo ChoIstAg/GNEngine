@@ -27,12 +27,14 @@ void InputSystem::onKeysHeld(const KeysHeldEvent& event, EntityManager& entityMa
 
     // InputControlComponent를 가진 모든 엔티티를 순회
     for (EntityId entity : entityManager.getEntitiesWith<InputControlComponent>()) {
-        const auto* inputControl = entityManager.getComponent<InputControlComponent>(entity);
+        auto inputControl_opt = entityManager.getComponent<InputControlComponent>(entity);
+        if (!inputControl_opt) continue;
+        const auto& inputControl = inputControl_opt.value();
 
         // 현재 눌린 키가 엔티티의 keyActions 맵에 있는지 확인
         for (const auto& keyInfo : event.heldKeys) {
-            auto it = inputControl->keyActions.find(keyInfo.scancode);
-            if (it != inputControl->keyActions.end()) {
+            auto it = inputControl.keyActions.find(keyInfo.scancode);
+            if (it != inputControl.keyActions.end()) {
                 // 매핑된 액션을 찾았다면 ActionEvent를 생성하여 dispatch
                 // SDL_Log("InputSystem: Firing ActionEvent '%s' for entity %u.", it->second.c_str(), entity);
                 eventManager_.dispatch(ActionEvent(entity, it->second));
