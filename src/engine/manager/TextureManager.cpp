@@ -46,7 +46,6 @@ bool TextureManager::loadTexture(const std::filesystem::path& filePath){
         return false;
     }
 
-    
     SDL_Texture* sdlTexture = SDL_CreateTextureFromSurface(renderer_, tmpSurface);
     if (sdlTexture == nullptr) {
         SDL_Log("TextureManager::loadTexture - Failed to create texture from surface %s: %s", filePath.string().c_str(), SDL_GetError());

@@ -9,8 +9,13 @@
 
 class GNEngine_API RenderComponent : public Component {
 public:
-    RenderComponent(Texture* texture, bool hasAnimation = false, SDL_Rect srcRect = {0,0,0,0}, bool flipX = false, bool flipY = false);
+    RenderComponent(Texture* texture, bool hasAnimation = false, SDL_Rect srcRect = {0,0,0,0}, bool flipX = false, bool flipY = false)
+        : texture_(texture), hasAnimation_(hasAnimation), srcRect_(srcRect), flipX_(flipX), flipY_(flipY) {}
+        
+    ~RenderComponent() {
 
+    }
+    
     Texture* getTexture() const { return texture_; }
     void setTexture(Texture* texture) { texture_ = texture; }
     bool hasAnimation() const { return hasAnimation_; }

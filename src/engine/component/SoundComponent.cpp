@@ -1,5 +1,6 @@
-
 #include "engine/component/SoundComponent.h"
+
+#include <iostream>
 
 void SoundComponent::addSound(const std::string& name, std::shared_ptr<Sound> sound, bool loop, float volume) {
     if (sounds_.find(name) == sounds_.end()) {

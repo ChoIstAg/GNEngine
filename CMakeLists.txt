@@ -37,35 +37,35 @@ find_package(SDL3_ttf CONFIG REQUIRED)
 
 # GNEngine 라이브러리 정의
 add_library(GNEngine SHARED
-    # 엔진 소스 파일들을 여기에 추가
-    src/engine/component/AnimationComponent.cpp
-    src/engine/component/PlayerAnimationControllerComponent.cpp
-    src/engine/component/PlayerMovementComponent.cpp
-    src/engine/component/RenderComponent.cpp
-    src/engine/component/SoundComponent.cpp
+    # Include All source files.
     src/engine/core/ComponentArray.cpp
-    src/engine/manager/AnimationManager.cpp
-    src/engine/manager/EntityManager.cpp
-    src/engine/manager/InputManager.cpp
-    src/engine/manager/RenderManager.cpp
-    src/engine/manager/SceneManager.cpp
-    src/engine/manager/SoundManager.cpp
-    src/engine/manager/SystemManager.cpp
-    src/engine/manager/TextManager.cpp
-    src/engine/manager/TextureManager.cpp
-    src/engine/prefab/PlayerPrefab.cpp
     src/engine/resource/Animation.cpp
     src/engine/resource/Sound.cpp
     src/engine/resource/Text.cpp
-    src/engine/system/AccelerationResetSystem.cpp
-    src/engine/system/AnimationSystem.cpp
-    src/engine/system/CameraSystem.cpp
-    src/engine/system/InputSystem.cpp
-    src/engine/system/InputToAccelerationSystem.cpp
-    src/engine/system/MovementSystem.cpp
-    src/engine/system/PlayerAnimationControlSystem.cpp
+    src/engine/manager/EntityManager.cpp
+    src/engine/manager/SystemManager.cpp
+    src/engine/manager/RenderManager.cpp
+    src/engine/manager/InputManager.cpp
+    src/engine/manager/FileManager.cpp
+    src/engine/manager/SceneManager.cpp
+    src/engine/manager/SoundManager.cpp
+    src/engine/manager/AnimationManager.cpp
+    src/engine/manager/TextManager.cpp
+    src/engine/manager/TextureManager.cpp
     src/engine/system/RenderSystem.cpp
     src/engine/system/SoundSystem.cpp
+    src/engine/system/InputSystem.cpp
+    src/engine/system/CameraSystem.cpp
+    src/engine/system/AnimationSystem.cpp
+    src/engine/system/MovementSystem.cpp
+    src/engine/system/InputToAccelerationSystem.cpp
+    src/engine/system/PlayerAnimationControlSystem.cpp
+    src/engine/system/AccelerationResetSystem.cpp
+    src/engine/component/AnimationComponent.cpp
+    src/engine/component/PlayerAnimationControllerComponent.cpp
+    src/engine/component/PlayerMovementComponent.cpp
+    src/engine/component/SoundComponent.cpp
+    src/engine/prefab/PlayerPrefab.cpp
 )
 
 # GNEngine 라이브러리 인클루드 디렉터리 설정
@@ -79,6 +79,8 @@ target_include_directories(GNEngine PUBLIC
     "${CMAKE_SOURCE_DIR}/lib/dr_libs"
     "${CMAKE_SOURCE_DIR}/lib/ogg"
     "${CMAKE_SOURCE_DIR}/lib/nlohmann"
+    
+    "${CMAKE_SOURCE_DIR}/include/engine/flatbuffers_generated"
     "${CMAKE_SOURCE_DIR}/src/engine/component"
     "${CMAKE_SOURCE_DIR}/src/engine/core"
     "${CMAKE_SOURCE_DIR}/src/engine/manager"

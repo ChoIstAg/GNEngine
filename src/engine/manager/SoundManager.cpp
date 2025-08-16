@@ -96,6 +96,10 @@ void SoundManager::checkAlErrors(const std::string& filename, int line) {
     }
 }
 
+/*
+ * If the sound is already loaded, return it. 
+ * But sound not loaded yet, Load and return it.
+*/
 std::shared_ptr<Sound> SoundManager::getSound(const std::filesystem::path& filePath) {
     if (auto it = soundCache_.find(filePath); it != soundCache_.end()) {
         return it->second;

@@ -9,6 +9,7 @@
 #include "engine/component/CameraComponent.h"
 #include "engine/component/RenderComponent.h"
 #include "engine/component/TransformComponent.h"
+#
 
 #include "engine/prefab/PlayerPrefab.h"
 
@@ -48,6 +49,12 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
     // PlayerFactory가 생성한 플레이어 엔티티를 카메라의 타겟으로 설정
     entityManager.addComponent<CameraComponent>(cameraEntityId_, 0.0f, 0.0f, 10.0f, playerEntityId);
 
+
+    // for (int i = 0; i < 1000; i++) {
+    //     EntityId testEntity = entityManager.createEntity();
+    //     entityManager.addComponent<RenderComponent>(testEntity);
+    // }
+
     std::cerr << "TestScene successfully initialized! \n";
 }
 
@@ -63,7 +70,7 @@ void TestScene::onExit() {
     
 }
 
-void TestScene::handleEvent(const SDL_Event& event) {
+void TestScene::handleEvent(const Event& event) {
     // std::cout << "TestScene: Handling event..." << std::endl;
 }
 

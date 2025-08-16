@@ -9,7 +9,10 @@
 
 #include "engine/core/Component.h"
 #include "engine/resource/Sound.h"
-#include "engine/manager/SoundManager.h" // SoundPriority enum
+#include "engine/manager/SoundManager.h" // only for SoundPriority enum
+
+// std::filesystem::path로 경로로 저장하지 않고 std::string으로 이름으로 Sound를 저장하는 이유
+// : 같은 경로의 같은 사운드라도 속성을 달리 할 수 있기 때문. 
 
 /*
  * @class SoundComponent
@@ -43,7 +46,7 @@ public:
 
     /*
      * @brief 보관함에 새로운 사운드를 추가함.
-     * @param name 사운드를 식별할 고유한 이름 (e.g., "walk", "hit").
+     * @param name 사운드를 식별할 고유한 이름 (e.g. "walk", "hit").
      * @param sound 리소스.
      * @param loop 반복 여부.
      * @param volume 볼륨.

@@ -1,0 +1,22 @@
+
+namespace GNEngine.data;
+
+table Setting {
+    key:string;
+    value:string;
+}
+
+table Settings {
+    settings:[Setting];
+}
+
+table Log {
+    timestamp:long;
+    message:string;
+}
+
+table Logs {
+    logs:[Log];
+}
+
+root_type Settings;

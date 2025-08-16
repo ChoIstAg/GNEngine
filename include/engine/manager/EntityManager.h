@@ -34,6 +34,10 @@ public:
     EntityId createEntity();
     void destroyEntity(EntityId entity);
 
+    /* 
+     * @brief 사용할 컴포넌트를 등록한다. 
+     * 등록한 컴포넌트만 사용 가능. 
+    */
     template<typename T>
     void registerComponentType() {
         std::type_index type = typeid(T);
@@ -47,8 +51,8 @@ public:
 
     /*
      * @brief 특정 엔티티에 컴포넌트를 추가함.
-     *        TransformComponent(SoA)의 경우, 반환값이 없음.
-     *        다른 컴포넌트(AoS)의 경우, 추가된 컴포넌트의 참조를 반환함.
+     *        SoA 컴포넌트일 경우, 반환값이 없음.
+     *        AoS 컴포넌트일 경우, 추가된 컴포넌트의 참조를 반환함.
     */
     template<typename T, typename... Args>
     auto addComponent(EntityId entity, Args&&... args) -> std::conditional_t<std::is_same_v<T, TransformComponent> || std::is_same_v<T, RenderComponent> || std::is_same_v<T, AnimationComponent> || std::is_same_v<T, TextComponent> || std::is_same_v<T, CameraComponent> || std::is_same_v<T, VelocityComponent> || std::is_same_v<T, AccelerationComponent>, void, T&>

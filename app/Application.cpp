@@ -2,20 +2,35 @@
 #include <chrono>
 #include <iostream>
 
-/* --Include all required systems--*/
-#include "engine/system/InputSystem.h"
-#include "engine/system/InputToAccelerationSystem.h"
-#include "engine/system/MovementSystem.h"
-#include "engine/system/PlayerAnimationControlSystem.h"
-#include "engine/system/AnimationSystem.h"
-#include "engine/system/SoundSystem.h"
-#include "engine/system/CameraSystem.h"
-#include "engine/system/RenderSystem.h"
-#include "engine/system/AccelerationResetSystem.h"
 
+// Managers are included in header file.
+/* --- Include All Systems to use --- */
+#include "engine/system/AnimationSystem.h"
+#include "engine/system/RenderSystem.h"
+#include "engine/system/MovementSystem.h"
+#include "engine/system/InputSystem.h"
+#include "engine/system/SoundSystem.h"
+#include "engine/system/CameraSystem.h" 
+#include "engine/system/InputToAccelerationSystem.h"
+#include "engine/system/PlayerAnimationControlSystem.h"
+
+/* --- Include All Components to use --- */
+#include "engine/component/SoundComponent.h"
 #include "engine/component/CameraComponent.h"
+#include "engine/component/RenderComponent.h"
+#include "engine/component/AccelerationComponent.h"
+#include "engine/component/VelocityComponent.h"
 #include "engine/component/InputControlComponent.h"
+#include "engine/component/TransformComponent.h"
+#include "engine/component/AnimationComponent.h"
+#include "engine/component/TextComponent.h"
+#include "engine/component/PlayerAnimationControllerComponent.h"
+#include "engine/component/PlayerMovementComponent.h"
+
+/* --- Include All Scenes to use --- */
+#include "scene/MainMenuScene.h"
 #include "scene/TestScene.h"
+
 
 Application::Application() {};
 
@@ -25,7 +40,7 @@ int Application::init(){
         return -1;
     }
     
-    window_ = SDL_CreateWindow("Application", windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
+    window_ = SDL_CreateWindow("Application", windowWidth, windowHeight, 0);
     renderer_ = SDL_CreateRenderer(window_, nullptr);
     if(!window_ || !renderer_){
         SDL_Log("Error occured in SDL_CreateWindow or SDL_CreateRenderer : %s", SDL_GetError());
@@ -33,58 +48,58 @@ int Application::init(){
         return -1;
     }
 
-    /* --Set additional settings-- */
+    /* Set additional settings */
     SDL_SetRenderVSync(renderer_, true); /* Enable VSync */
 
 
-    /* Init Managers */
-    eventManager_ = std::make_unique<EventManager>();
+    /* --- Initialize all manager --- */
     entityManager_ = std::make_unique<EntityManager>();
-    inputManager_ = std::make_unique<InputManager>(*eventManager_);
+    systemManager_ = std::make_unique<SystemManager>(*entityManager_);
     renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
+    fileManager_ = std::make_unique<FileManager>();
+    eventManager_ = std::make_unique<EventManager>();
+    inputManager_ = std::make_unique<InputManager>(*eventManager_);
     textureManager_ = std::make_unique<TextureManager>(renderer_);
     textManager_ = std::make_unique<TextManager>(renderer_);
     soundManager_ = std::make_unique<SoundManager>();
     animationManager_ = std::make_unique<AnimationManager>();
-    
-    systemManager_ = std::make_unique<SystemManager>(*entityManager_);
-    sceneManager_ = std::make_unique<SceneManager>( eventManager_.get(), renderManager_.get(), textureManager_.get(), soundManager_.get(), entityManager_.get() );
 
-    /* Registe all system to use*/
+    sceneManager_ = std::make_unique<SceneManager>( *eventManager_, *renderManager_, *textureManager_, *soundManager_, *entityManager_);
+
+    /* --- Regist all systems --- */
+    systemManager_->registerSystem<RenderSystem>(SystemPhase::RENDER, *renderManager_, *textManager_);
     systemManager_->registerSystem<InputSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_);
-    systemManager_->registerSystem<InputToAccelerationSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_); // 가속도 설정 시스템
     
     systemManager_->registerSystem<PlayerAnimationControlSystem>(SystemPhase::LOGIC_UPDATE, *animationManager_, *textureManager_, *renderManager_);
     systemManager_->registerSystem<SoundSystem>(SystemPhase::LOGIC_UPDATE, *soundManager_);
-
+    systemManager_->registerSystem<CameraSystem>(SystemPhase::POST_UPDATE, *renderManager_);
+    systemManager_->registerSystem<AnimationSystem>(SystemPhase::POST_UPDATE);
+    
+    systemManager_->registerSystem<InputToAccelerationSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_);
     systemManager_->registerSystem<MovementSystem>(SystemPhase::PHYSICS_UPDATE);
 
-    systemManager_->registerSystem<AnimationSystem>(SystemPhase::POST_UPDATE);
-    systemManager_->registerSystem<CameraSystem>(SystemPhase::POST_UPDATE, *renderManager_);
+    
 
-    systemManager_->registerSystem<RenderSystem>(SystemPhase::RENDER, *renderManager_, *textManager_);
-
-
-    /* -- Registe all compontent to use. */
+    /* --- Regist all Conpontnt to use --- */
     entityManager_->registerComponentType<RenderComponent>();
-    entityManager_->registerComponentType<CameraComponent>();
+    entityManager_->registerComponentType<AnimationComponent>();
     entityManager_->registerComponentType<SoundComponent>();
+    entityManager_->registerComponentType<TextComponent>();
     entityManager_->registerComponentType<TransformComponent>();
     entityManager_->registerComponentType<VelocityComponent>();
     entityManager_->registerComponentType<AccelerationComponent>();
-    entityManager_->registerComponentType<TextComponent>();
-    entityManager_->registerComponentType<AnimationComponent>();
-    entityManager_->registerComponentType<InputControlComponent>();
     entityManager_->registerComponentType<PlayerAnimationControllerComponent>();
-    entityManager_->registerComponentType<PlayerMovementComponent>();
+    entityManager_->registerComponentType<InputControlComponent>();
+    entityManager_->registerComponentType<CameraComponent>();
 
 
-    // TestScene 등록 및 전환
+    /* --- Regist all scane to use*/
     sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *animationManager_, *entityManager_));
-    //sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *entityManager_));
+    sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *entityManager_));
+
+
     sceneManager_->changeScene("TestScene");
 
-    std::cout << "Application successfully initialized!" << std::endl;
     lastFrameTime_ = std::chrono::high_resolution_clock::now();
     return 0;
 }
@@ -94,7 +109,7 @@ void Application::quit() {
 
     SDL_DestroyRenderer(renderer_);
     SDL_DestroyWindow(window_);
-    /* Manager들은 모두 자동으로 소멸함. */
+    /* All Manager need no destruction */
 
     SDL_Quit();
 }
@@ -104,32 +119,35 @@ void Application::quit() {
  * 이벤트 처리, 업데이트, 렌더링을 반복함.
  */
 void Application::run() {
-    //SDL_Log("Application::run() - Entered run loop function.");
+    // std::cerr << "[DEBUG] Application::run() - Entered run loop function.\n";
     isRunning_ = true;
     while(isRunning_){
-        //SDL_Log("Application::run() - Top of the main loop.");
+        // std::cerr << "[DEBUG] Application::run() - Top of the main loop.\n";
         auto currentTime = std::chrono::high_resolution_clock::now();
         float deltaTime = std::chrono::duration<float>(currentTime - lastFrameTime_).count();
         lastFrameTime_ = currentTime;
 
         /* Process all events */
         if(!inputManager_->processEvents()){
-            //SDL_Log("Application::run() - processEvents() returned false. Exiting loop.");
+            // std::cerr << "[DEBUG] Application::run() - processEvents() returned false. Exiting loop.\n";
             isRunning_ = false;
             break;
         }
         inputManager_->updateKeyStates();
-        //SDL_Log("Application::run() - inputManager_->updateKeyStates complete");
-
-        sceneManager_->update(deltaTime);
-
+        
+        
         renderManager_->clear();
-
-        //SDL_Log("Application::run() - Calling systemManager_->updateAll().");
+        
+        /*
+        * SystemManager perform  in the sequence. {PRE_UPDATE, LOGIT_UPDATE, PHYSICS_UPDATE, POST_UPDATE, RENDER}
+        */
+        // std::cerr << "[DEBUG] Application::run() - Calling systemManager_->updateAll().\n";
         systemManager_->updateAll(deltaTime);
-        //SDL_Log("Application::run() - Finished systemManager_->updateAll().");
+        // std::cerr << "[DEBUG] Application::run() - Finished systemManager_->updateAll().\n";
 
+        // std::cerr << "[DEBUG] Application::run() - Calling sceneManager_->update()\n";
+        sceneManager_->update(deltaTime);
+        
         renderManager_->present();
-        //SDL_Log("Application::run() - Finished renderManager_->present() ");
     }
 }

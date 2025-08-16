@@ -36,7 +36,6 @@ public:
 
     std::shared_ptr<Sound> getSound(const std::filesystem::path& filePath);
 
-    // EntityId를 받도록 시그니처 변경
     ALuint playSound(EntityId entityId, Sound* sound,
                      Position position = {0.0f, 0.0f, 0.0f},
                      SoundPriority priority = SoundPriority::NORMAL,

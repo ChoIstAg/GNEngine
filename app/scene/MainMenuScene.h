@@ -11,7 +11,7 @@ public:
 
     void onEnter() override;
     void onExit() override;
-    void handleEvent(const SDL_Event& e) override;
+    void handleEvent(const Event& event) override;
     void update(float deltaTime) override;
     void render(SDL_Renderer* renderer) override;
 };

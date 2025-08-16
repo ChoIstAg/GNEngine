@@ -3,7 +3,9 @@
 
 #include <SDL3/SDL.h>
 
-// 순환참조를 방지하기 위해 전방 선언함.
+#include "EventInterface.h"
+
+// 순환참조 방지용 전방선언
 class EventManager;
 class RenderManager;
 class TextureManager;
@@ -32,7 +34,7 @@ public:
     // 씬 진입 시 호출.
     virtual void onEnter() = 0;
     virtual void onExit() = 0; // 씬 종료 시 호출
-    virtual void handleEvent(const SDL_Event& event) = 0; // 입력 처리
+    virtual void handleEvent(const Event& event) = 0; // 입력 처리
     virtual void update(float deltaTime) = 0; // 논리 업데이트
     virtual void render(SDL_Renderer* renderer) = 0; // 렌더링
 };

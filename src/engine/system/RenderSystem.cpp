@@ -6,7 +6,7 @@ RenderSystem::RenderSystem(RenderManager& renderManager, TextManager& textManage
     : renderManager_(renderManager), textManager_(textManager) {}
 
 void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
-    // 1. 필요한 모든 컴포넌트 배열들을 가져옴
+    // 필요한 모든 컴포넌트 배열들을 가져옴
     auto renderArray = entityManager.getComponentArray<RenderComponent>();
     auto transformArray = entityManager.getComponentArray<TransformComponent>();
     auto animArray = entityManager.getComponentArray<AnimationComponent>();

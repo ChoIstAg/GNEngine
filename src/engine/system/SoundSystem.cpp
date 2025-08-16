@@ -5,7 +5,7 @@ SoundSystem::SoundSystem(SoundManager& soundManager)
     : soundManager_(soundManager) {}
 
 void SoundSystem::update(EntityManager& entityManager, float deltaTime) {
-    // 1. 컴포넌트를 순회하며 재생/정지 요청 처리
+    // 컴포넌트를 순회하며 재생/정지 요청 처리
     for (auto entity : entityManager.getEntitiesWith<SoundComponent, TransformComponent>()) {
         auto soundComponent = entityManager.getComponent<SoundComponent>(entity).value(); // SoA로 인해 value()로 접근
         auto transform = entityManager.getComponent<TransformComponent>(entity).value();
