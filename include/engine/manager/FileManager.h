@@ -36,7 +36,7 @@ public:
     void operator=(const FileManager&) = delete;
 
     // Settings
-    void firstInit();
+    void init();
     void setSetting(std::string_view key, std::string_view value);
     std::string getSetting(std::string_view key, std::string_view defaultValue = "");
     void saveSettings(const std::filesystem::path& filePath);

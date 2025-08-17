@@ -44,7 +44,7 @@ int Application::init(){
     }
 
     auto& fileManager = FileManager::getInstance();
-    fileManager.firstInit();
+    fileManager.init();
     
     windowWidth = std::stoi(fileManager.getSetting("windowWidth", "1920"));
     windowHeight = std::stoi(fileManager.getSetting("windowHeight", "1080"));

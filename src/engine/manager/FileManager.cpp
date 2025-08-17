@@ -15,13 +15,13 @@ FileManager::FileManager() : builder_(1024) {}
  * @brief 설정 파일을 초기화하고 기본값을 설정하거나 기존 설정을 불러옴.
  * @param configFilePath: 설정 파일 경로
 */
-void FileManager::firstInit() {
+void FileManager::init() {
     std::filesystem::path configFilePath = static_cast<std::filesystem::path>(APP_ROOT_PATH) / "data/config.bin";
     if (!std::filesystem::exists(configFilePath)) {
-        // 디렉토리가 없으면 생성
+        // 상위 디렉토리가 없으면 생성
         std::filesystem::create_directories(configFilePath.parent_path());
 
-        // 모든 모니터의 데이터 추출 <- 나중에 다른 창 매니저나 렌더 매니저에 이항 예정
+        // 모든 모니터의 데이터 추출 <- 나중에 다른 창 매니저나 렌더 매니저에 기능 이항 예정
         // int displayCount = 0; /* A number of display connected. */
         // SDL_DisplayID* displayIDs = SDL_GetDisplays(&displayCount);
         // if(!displayIDs){ SDL_Log("[ERROR] FileManager - Can't load DisplayIds : %d", SDL_GetError()); }
