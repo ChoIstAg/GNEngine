@@ -15,10 +15,6 @@ RenderManager::RenderManager(SDL_Renderer* renderer, SDL_Window* window)
     }
 }
 
-// bool RenderManager::init() {
-//     return true;
-// }
-
 RenderManager::~RenderManager() {
     // Renderer와 Window는 Application 클래스에서 소유하고 파괴하므로, 여기서는 파괴하지 않음.
     std::cerr << "RenderManager " << this << " is successfully destroyed" << std::endl;

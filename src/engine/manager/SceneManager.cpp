@@ -1,19 +1,10 @@
 #include "engine/manager/SceneManager.h"
 
-#include "engine/core/EventInterface.h"
-#include "engine/manager/EventManager.h"
-#include "engine/manager/RenderManager.h"
-#include "engine/manager/TextureManager.h"
-#include "engine/manager/SoundManager.h"
-#include "engine/manager/EntityManager.h"
-
+#include <iostream>
+#include "engine/core/Scene.h"
 
 // SceneManager 생성자 구현
-SceneManager::SceneManager(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager, EntityManager& entityManager)
-    : eventManager_(eventManager), renderManager_(renderManager), textureManager_(textureManager), soundManager_(soundManager), entityManager_(entityManager) {
-    // 모든 매니저 포인터가 유효한지 확인 (선택 사항이지만 안전을 위해)
-    // assert(eventManager_ && renderManager_ && textureManager_ && soundManager_);
-}
+SceneManager::SceneManager() = default;
 
 /*
  * addScene 함수는 새로운 씬을 씬 맵에 추가함.

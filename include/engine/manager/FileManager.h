@@ -5,8 +5,12 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <iostream>
+#include <chrono>
+#include <map>
 
-/* for flatBuffers */
+// definitions_generated 파일은 이 명령어로 생성. 
+//./lib/flatbuffers/flatc.exe -c -o "include/engine/flatbuffers_generated" "asset/text/fbs/definitions.fbs"
 #include "engine/flatbuffers_generated/definitions_generated.h"
 
 namespace GNEngine {
@@ -16,23 +20,45 @@ namespace GNEngine {
     }
 }
 
+/* 
+ * @brief 모든 로그와 파일 읽고 쓰기를 담당하는 매니저.
+ * @note Using Singleton Pattern
+*/
 class GNEngine_API FileManager {
 public:
-    FileManager();
+    static FileManager& getInstance() {
+        static FileManager instance;
+        return instance;
+    }
+
+    // 복사 및 대입 삭제 (상글톤)
+    FileManager(const FileManager&) = delete;
+    void operator=(const FileManager&) = delete;
 
     // Settings
-    void setSetting(const std::string& key, const std::string& value);
-    std::string getSetting(const std::string& key, const std::string& defaultValue = "");
+    void firstInit();
+    void setSetting(std::string_view key, std::string_view value);
+    std::string getSetting(std::string_view key, std::string_view defaultValue = "");
     void saveSettings(const std::filesystem::path& filePath);
     void loadSettings(const std::filesystem::path& filePath);
-
+    
     // Logs
-    void addLog(const std::string& message);
+    void addLog(std::string_view message);
     void saveLogs(const std::filesystem::path& filePath);
 
 private:
+    // Private for Singleton pattern
+    FileManager(); 
+    ~FileManager() {
+        std::cerr << "FileManager instance is successfully destroyed.\n";
+    }
+
     flatbuffers::FlatBufferBuilder builder_;
 
-    std::vector<flatbuffers::Offset<GNEngine::data::Setting>> settings_;
-    std::vector<flatbuffers::Offset<GNEngine::data::Log>> logs_;
+    /* @brief For saving data */
+    std::vector<flatbuffers::Offset<GNEngine::data::Setting>> settings_offsets_;
+    std::vector<flatbuffers::Offset<GNEngine::data::Log>> logs_offsets_;
+    
+    /* @brief For easy access */
+    std::map<std::string, std::string> settings_map_;
 };

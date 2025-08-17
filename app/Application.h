@@ -12,7 +12,6 @@
 #include "engine/manager/EntityManager.h"
 #include "engine/manager/SystemManager.h"
 #include "engine/manager/RenderManager.h"
-#include "engine/manager/FileManager.h"
 #include "engine/manager/EventManager.h"
 #include "engine/manager/InputManager.h"
 #include "engine/manager/SoundManager.h"
@@ -20,14 +19,15 @@
 #include "engine/manager/TextManager.h"
 #include "engine/manager/AnimationManager.h"
 #include "engine/manager/SceneManager.h"
+#include "engine/manager/FileManager.h"
 
 class Application {
 private:
     SDL_Renderer* renderer_;
     SDL_Window* window_;
     
-    int windowWidth = WINDOW_WIDTH;
-    int windowHeight = WINDOW_HEIGHT;
+    int windowWidth;
+    int windowHeight;
 
     bool isRunning_ = false;
 
@@ -35,6 +35,7 @@ private:
 
 public:
     Application();
+    ~Application();
     int init();
 
     void run();
@@ -47,7 +48,6 @@ public:
     std::unique_ptr<EntityManager> entityManager_;
     std::unique_ptr<SystemManager> systemManager_;
     std::unique_ptr<RenderManager> renderManager_;
-    std::unique_ptr<FileManager> fileManager_;
     std::unique_ptr<EventManager> eventManager_;
     std::unique_ptr<InputManager> inputManager_;
     std::unique_ptr<SceneManager> sceneManager_;

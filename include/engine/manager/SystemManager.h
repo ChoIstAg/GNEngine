@@ -26,6 +26,7 @@ enum class SystemPhase {
 class GNEngine_API SystemManager {
 public:
     SystemManager(EntityManager& entityManager);
+    ~SystemManager();
 
     /**
      * @brief 시스템을 특정 실행 단계에 등록함.

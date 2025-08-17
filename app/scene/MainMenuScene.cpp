@@ -1,6 +1,10 @@
 #include "MainMenuScene.h"
 #include <iostream>
 
+MainMenuScene::MainMenuScene() {
+    // 필요한 Manager가 있다면 여기서 주입받아 초기화합니다.
+}
+
 void MainMenuScene::onEnter() {
     std::cout << "MainMenuScene: Entering..." << std::endl;
     

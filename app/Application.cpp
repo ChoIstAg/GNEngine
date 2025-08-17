@@ -32,14 +32,23 @@
 #include "scene/TestScene.h"
 
 
-Application::Application() {};
+Application::Application() {}
+Application::~Application() {
+    std::cerr << "App is successfully quited.\n";
+}
 
 int Application::init(){
     if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) { /* Initialize SDL Systems*/
         SDL_Log("SDL_Init Error: %s", SDL_GetError());
         return -1;
     }
+
+    auto& fileManager = FileManager::getInstance();
+    fileManager.firstInit();
     
+    windowWidth = std::stoi(fileManager.getSetting("windowWidth", "1920"));
+    windowHeight = std::stoi(fileManager.getSetting("windowHeight", "1080"));
+
     window_ = SDL_CreateWindow("Application", windowWidth, windowHeight, 0);
     renderer_ = SDL_CreateRenderer(window_, nullptr);
     if(!window_ || !renderer_){
@@ -56,7 +65,6 @@ int Application::init(){
     entityManager_ = std::make_unique<EntityManager>();
     systemManager_ = std::make_unique<SystemManager>(*entityManager_);
     renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
-    fileManager_ = std::make_unique<FileManager>();
     eventManager_ = std::make_unique<EventManager>();
     inputManager_ = std::make_unique<InputManager>(*eventManager_);
     textureManager_ = std::make_unique<TextureManager>(renderer_);
@@ -64,17 +72,15 @@ int Application::init(){
     soundManager_ = std::make_unique<SoundManager>();
     animationManager_ = std::make_unique<AnimationManager>();
 
-    sceneManager_ = std::make_unique<SceneManager>( *eventManager_, *renderManager_, *textureManager_, *soundManager_, *entityManager_);
+    sceneManager_ = std::make_unique<SceneManager>();
 
     /* --- Regist all systems --- */
     systemManager_->registerSystem<RenderSystem>(SystemPhase::RENDER, *renderManager_, *textManager_);
     systemManager_->registerSystem<InputSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_);
-    
     systemManager_->registerSystem<PlayerAnimationControlSystem>(SystemPhase::LOGIC_UPDATE, *animationManager_, *textureManager_, *renderManager_);
     systemManager_->registerSystem<SoundSystem>(SystemPhase::LOGIC_UPDATE, *soundManager_);
     systemManager_->registerSystem<CameraSystem>(SystemPhase::POST_UPDATE, *renderManager_);
     systemManager_->registerSystem<AnimationSystem>(SystemPhase::POST_UPDATE);
-    
     systemManager_->registerSystem<InputToAccelerationSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_);
     systemManager_->registerSystem<MovementSystem>(SystemPhase::PHYSICS_UPDATE);
 
@@ -95,7 +101,7 @@ int Application::init(){
 
     /* --- Regist all scane to use*/
     sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *animationManager_, *entityManager_));
-    sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *entityManager_));
+    sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>());
 
 
     sceneManager_->changeScene("TestScene");
@@ -105,14 +111,25 @@ int Application::init(){
 }
 
 void Application::quit() {
+    auto& fileManager = FileManager::getInstance();
+    const std::filesystem::path configPath = "app/data/config.bin";
+    
+    // Get current window size and save it
+    SDL_GetWindowSize(window_, &windowWidth, &windowHeight);
+    fileManager.setSetting("WindowWidth", std::to_string(windowWidth));
+    fileManager.setSetting("WindowHeight", std::to_string(windowHeight));
+    fileManager.saveSettings(configPath);
+
     std::cout << "cleaning up and quitting... " << std::endl;
+
+    /* All Manager need no destruction */
 
     SDL_DestroyRenderer(renderer_);
     SDL_DestroyWindow(window_);
-    /* All Manager need no destruction */
 
     SDL_Quit();
 }
+
 
 /**
  * @brief 애플리케이션의 메인 루프.

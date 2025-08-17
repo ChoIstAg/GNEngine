@@ -40,8 +40,8 @@ public:
     };
     
     ~EventManager() {
-        subscribers_.clear(); /* 모든 구독자 목록을 비움. */
-        std::cerr << "EventManager destroyed and all subscriptions cleared.\n";
+        if(!subscribers_.empty()) { subscribers_.clear(); }
+        std::cerr << "EventManager " << this << " is successfully destroyed and all subscriptions cleared.\n";
     }
 
     /* 이벤트 구독하기 */

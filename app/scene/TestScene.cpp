@@ -5,55 +5,62 @@
 #include <filesystem>
 #include <iostream>
 
+// 필요한 Manager 헤더 포함
 #include "engine/manager/EntityManager.h"
+#include "engine/manager/EventManager.h"
+#include "engine/manager/TextureManager.h"
+#include "engine/manager/RenderManager.h"
+#include "engine/manager/SoundManager.h"
+#include "engine/manager/AnimationManager.h"
+
+// 필요한 Component 헤더 포함
 #include "engine/component/CameraComponent.h"
 #include "engine/component/RenderComponent.h"
 #include "engine/component/TransformComponent.h"
-#
+#include "engine/component/SoundComponent.h"
 
+// 필요한 Prefab 헤더 포함
 #include "engine/prefab/PlayerPrefab.h"
 
 TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager, AnimationManager& animationManager, EntityManager& entityManager)
-    : Scene(eventManager, renderManager, textureManager, soundManager, entityManager), 
-        renderManager_(renderManager),
-        soundManager_(soundManager),
-        animationManager_(animationManager)
+    : eventManager_(eventManager),
+      renderManager_(renderManager),
+      textureManager_(textureManager),
+      soundManager_(soundManager),
+      animationManager_(animationManager),
+      entityManager_(entityManager)
 {
     // BGM 사운드 로드 및 재생
     std::filesystem::path bgmPath = std::filesystem::path(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3";
     auto bgmSound = soundManager_.getSound(bgmPath);
     if (bgmSound) {
-        auto bgmEntity = entityManager.createEntity();
-        auto& soundComp = entityManager.addComponent<SoundComponent>(bgmEntity);
+        auto bgmEntity = entityManager_.createEntity();
+        auto& soundComp = entityManager_.addComponent<SoundComponent>(bgmEntity);
         soundComp.addSound("bgm", bgmSound, true, 0.5f); // loop, volume
         soundComp.play("bgm");
+        std::cerr << "bgm is successfully played.\n";
     } else { std::cerr << "TestScene: Failed to load BGM sound from " << bgmPath << "\n"; }
 
     // Exampel 엔티티 생성
-    EntityId exampleEntityId = entityManager.createEntity();
-    entityManager.addComponent<TransformComponent>(exampleEntityId, 0.0f, 0.0f);
+    EntityId exampleEntityId = entityManager_.createEntity();
+    entityManager_.addComponent<TransformComponent>(exampleEntityId, 0.0f, 0.0f);
     std::filesystem::path examplePngPath = std::filesystem::path(IMAGE_ASSET_ROOT_PATH) / "example_png.png";
-    if (textureManager.loadTexture(examplePngPath)) {
+    if (textureManager_.loadTexture(examplePngPath)) {
         SDL_Log("TestScene: example_png.png loaded successfully.");
     } else {
         SDL_Log("TestScene: Failed to load example_png.png.");
     }
-    entityManager.addComponent<RenderComponent>(exampleEntityId, textureManager.getTexture(examplePngPath), false, SDL_Rect{0, 0, textureManager.getTexture(examplePngPath)->width_, textureManager.getTexture(examplePngPath)->height_});
+    auto exampleTexture = textureManager_.getTexture(examplePngPath);
+    entityManager_.addComponent<RenderComponent>(exampleEntityId, exampleTexture, false, SDL_Rect{0, 0, exampleTexture->width_, exampleTexture->height_});
     
 
     // PlayerFactory를 사용하여 플레이어 엔티티 생성
-    EntityId playerEntityId = PlayerPrefab::create(entityManager, eventManager, textureManager, renderManager, soundManager, animationManager);
+    EntityId playerEntityId = PlayerPrefab::create(entityManager_, eventManager_, textureManager_, renderManager_, soundManager_, animationManager_);
 
     // 카메라 엔티티 생성 및 CameraComponent 추가
-    cameraEntityId_ = entityManager.createEntity();
+    cameraEntityId_ = entityManager_.createEntity();
     // PlayerFactory가 생성한 플레이어 엔티티를 카메라의 타겟으로 설정
-    entityManager.addComponent<CameraComponent>(cameraEntityId_, 0.0f, 0.0f, 10.0f, playerEntityId);
-
-
-    // for (int i = 0; i < 1000; i++) {
-    //     EntityId testEntity = entityManager.createEntity();
-    //     entityManager.addComponent<RenderComponent>(testEntity);
-    // }
+    entityManager_.addComponent<CameraComponent>(cameraEntityId_, 0.0f, 0.0f, 10.0f, playerEntityId);
 
     std::cerr << "TestScene successfully initialized! \n";
 }
@@ -81,6 +88,6 @@ void TestScene::update(float deltaTime) {
 
 void TestScene::render(SDL_Renderer* renderer) {
     // std::cout << "TestScene: Rendering..." << std::endl;
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // 검은색 배경
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // 흰색 배경
     SDL_RenderClear(renderer);
 }

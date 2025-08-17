@@ -1,20 +1,23 @@
 #pragma once
 #include "engine/core/Scene.h"
 #include "engine/core/Entity.h"
-#include "engine/core/EventInterface.h"
-#include "engine/manager/EventManager.h"
-#include "engine/manager/TextureManager.h"
-#include "engine/manager/RenderManager.h"
-#include "engine/manager/SoundManager.h"
-#include "engine/manager/AnimationManager.h"
-#include <iostream>
-#include <memory>
 
-#include "engine/component/SoundComponent.h"
+// 필요한 Manager들의 전방 선언
+class EventManager;
+class RenderManager;
+class TextureManager;
+class SoundManager;
+class AnimationManager;
+class EntityManager;
 
 class TestScene : public Scene {
 public:
-    TestScene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager, AnimationManager& animationManager, EntityManager& entityManager);
+    TestScene(EventManager& eventManager, 
+              RenderManager& renderManager, 
+              TextureManager& textureManager, 
+              SoundManager& soundManager, 
+              AnimationManager& animationManager, 
+              EntityManager& entityManager);
     ~TestScene() override = default;
 
     void onEnter() override;
@@ -24,9 +27,13 @@ public:
     void render(SDL_Renderer* renderer) override;
 
 private:
+    // 이 씬에서 사용하는 Manager들에 대한 참조
+    EventManager& eventManager_;
+    RenderManager& renderManager_;
+    TextureManager& textureManager_;
     SoundManager& soundManager_;
     AnimationManager& animationManager_;
-    RenderManager& renderManager_;
+    EntityManager& entityManager_;
     
     EntityId cameraEntityId_;
 };

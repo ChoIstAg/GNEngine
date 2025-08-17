@@ -1,89 +1,188 @@
 #include "engine/manager/FileManager.h"
-#include "engine/flatbuffers_generated/definitions_generated.h"
+#include "config.h"
 #include <fstream>
+#include <iostream>
+#include <string_view>
 
-FileManager::FileManager() {}
+#include <SDL3/SDL.h>
 
 /*
- * 설정값 추가
+ * 빌더의 초기 용량을 1024바이트로 설정함.
 */
-void FileManager::setSetting(const std::string& key, const std::string& value) {
-    auto key_offset = builder_.CreateString(key);
-    auto value_offset = builder_.CreateString(value);
+FileManager::FileManager() : builder_(1024) {}
 
-    auto setting = GNEngine::data::CreateSetting(builder_, key_offset, value_offset);
-    settings_.push_back(setting);
+/*
+ * @brief 설정 파일을 초기화하고 기본값을 설정하거나 기존 설정을 불러옴.
+ * @param configFilePath: 설정 파일 경로
+*/
+void FileManager::firstInit() {
+    std::filesystem::path configFilePath = static_cast<std::filesystem::path>(APP_ROOT_PATH) / "data/config.bin";
+    if (!std::filesystem::exists(configFilePath)) {
+        // 디렉토리가 없으면 생성
+        std::filesystem::create_directories(configFilePath.parent_path());
+
+        // 모든 모니터의 데이터 추출 <- 나중에 다른 창 매니저나 렌더 매니저에 이항 예정
+        // int displayCount = 0; /* A number of display connected. */
+        // SDL_DisplayID* displayIDs = SDL_GetDisplays(&displayCount);
+        // if(!displayIDs){ SDL_Log("[ERROR] FileManager - Can't load DisplayIds : %d", SDL_GetError()); }
+        // for(int i = 0; i < displayCount; i++) {
+        //     SDL_DisplayID id = displayIDs[i];
+        //     const SDL_DisplayMode* mode = SDL_GetCurrentDisplayMode(id);
+        // }
+
+        // 유저의 주 모니터 크기를 기본 화면 크기로 설정. 
+        SDL_DisplayID displayID = SDL_GetPrimaryDisplay();
+        if(!displayID) {
+            SDL_Log("[ERROR] FileManager - Can't get display id. : %s", SDL_GetError());
+        } else {
+                const SDL_DisplayMode* displayMode = SDL_GetCurrentDisplayMode(displayID);
+                if(displayMode == nullptr) {
+                    SDL_Log("[ERROR] FileManager - Can't get current display mode. : %s", SDL_GetError());
+                } else {
+                    setSetting("windowWidth", std::to_string(displayMode->w));
+                    setSetting("windowHeight", std::to_string(displayMode->h));
+                }
+            }
+        
+        // 기본 설정 값 설정
+        setSetting("fullscreen", "true");
+        setSetting("masterVolume", "100");
+
+        // 설정 저장
+        saveSettings(configFilePath);
+        std::cout << "First Init! Created new config file: " << configFilePath << std::endl;
+    } else {
+        // 기존 설정 불러오기
+        loadSettings(configFilePath);
+        std::cout << "Loaded existing config file: " << configFilePath << std::endl;
+    }
 }
 
 /*
- * 설정값 불러오기
+ * @brief 설정 값을 설정함. 내부 맵에 키-값으로 저장함.
+ * @param key: 설정 키
+ * @param value: 설정 값
 */
-std::string FileManager::getSetting(const std::string& key, const std::string& defaultValue) {
-    // This part will be implemented after loading settings is done
-    return defaultValue;
+void FileManager::setSetting(std::string_view key, std::string_view value) 
+{
+    settings_map_[std::string(key)] = std::string(value);
 }
 
 /*
- * 설정값 저장
+ * @brief 설정 값을 가져옴. 키가 존재하지 않으면 기본값을 반환함.
+ * @param key: 설정 키
+ * @param defaultValue: 키가 없을 때 반환할 기본값
+ * @return 키에 해당하는 설정 값 또는 기본값
 */
-void FileManager::saveSettings(const std::filesystem::path& filePath) {
-    auto settings_vector = builder_.CreateVector(settings_);
-    auto settings = GNEngine::data::CreateSettings(builder_, settings_vector);
-    builder_.Finish(settings);
-
-    uint8_t* buf = builder_.GetBufferPointer();
-    int size = builder_.GetSize();
-
-    std::ofstream ofs(filePath, std::ios::binary);
-    ofs.write(reinterpret_cast<char*>(buf), size);
+std::string FileManager::getSetting(std::string_view key, std::string_view defaultValue) 
+{
+    if (settings_map_.count(std::string(key))) 
+    {
+        return settings_map_.at(std::string(key));
+    }
+    return std::string(defaultValue);
 }
 
 /*
- * 설정값 불러오기
+ * @brief 현재 설정들을 FlatBuffers 형식으로 파일에 저장함.
+ * @param filePath: 저장할 파일 경로
 */
-void FileManager::loadSettings(const std::filesystem::path& filePath) {
-    std::ifstream ifs(filePath, std::ios::binary | std::ios::ate);
-    if (!ifs.is_open()) {
-        return;
+void FileManager::saveSettings(const std::filesystem::path& filePath) 
+{
+    builder_.Clear();
+    settings_offsets_.clear();
+
+    for (const auto& pair : settings_map_) 
+    {
+        auto key = builder_.CreateString(pair.first);
+        auto value = builder_.CreateString(pair.second);
+        
+        auto setting = GNEngine::data::CreateSetting(builder_, key, value);
+        settings_offsets_.push_back(setting);
     }
 
-    auto size = ifs.tellg();
-    ifs.seekg(0, std::ios::beg);
-
-    std::vector<char> buffer(size);
-    if (!ifs.read(buffer.data(), size)) {
-        return;
-    }
-
-    auto settings = GNEngine::data::GetSettings(buffer.data());
+    auto settings_vector = builder_.CreateVector(settings_offsets_);
     
-    for (const auto* setting : *settings->settings()) {
-        // For now, we just print the loaded settings
-        printf("Loaded setting: %s = %s\n", setting->key()->c_str(), setting->value()->c_str());
+    auto data = GNEngine::data::CreateData(builder_, settings_vector);
+    builder_.Finish(data);
+
+    std::ofstream outfile(filePath, std::ios::binary);
+    if (outfile.is_open())
+    {
+        outfile.write(reinterpret_cast<const char*>(builder_.GetBufferPointer()), builder_.GetSize());
     }
 }
 
 /*
- * 로그 추가
+ * @brief 파일에서 FlatBuffers 형식의 설정을 불러와 맵에 채움.
+ * @param filePath: 불러올 파일 경로
 */
-void FileManager::addLog(const std::string& message) {
-    auto message_offset = builder_.CreateString(message);
-    auto timestamp = std::chrono::system_clock::now().time_since_epoch().count();
-    auto log = GNEngine::data::CreateLog(builder_, timestamp, message_offset);
-    logs_.push_back(log);
+void FileManager::loadSettings(const std::filesystem::path& filePath) 
+{
+    std::ifstream infile(filePath, std::ios::binary | std::ios::ate);
+    if (!infile.is_open()) 
+    {
+        return;
+    }
+
+    auto size = infile.tellg();
+    infile.seekg(0, std::ios::beg);
+    
+    std::vector<char> buffer(size);
+    infile.read(buffer.data(), size);
+
+    auto verifier = flatbuffers::Verifier(reinterpret_cast<const uint8_t*>(buffer.data()), buffer.size());
+    if (!GNEngine::data::VerifyDataBuffer(verifier)) {
+        return;
+    }
+
+    auto data = GNEngine::data::GetData(buffer.data());
+    auto settings = data->settings();
+    
+    settings_map_.clear();
+    if (settings) 
+    {
+        for (const auto* setting : *settings) 
+        {
+            if (setting->key() && setting->value())
+            {
+                settings_map_[setting->key()->str()] = setting->value()->str();
+            }
+        }
+    }
 }
 
 /*
- * 로그 저장
+ * @brief 로그 메시지를 추가함. 현재 타임스탬프와 함께 로그 오프셋 벡터에 저장됨.
+ * @param message: 로그 메시지
 */
-void FileManager::saveLogs(const std::filesystem::path& filePath) {
-    auto logs_vector = builder_.CreateVector(logs_);
-    auto logs = GNEngine::data::CreateLogs(builder_, logs_vector);
-    builder_.Finish(logs);
+void FileManager::addLog(std::string_view message) 
+{
+    auto message_offset = builder_.CreateString(message);
+    auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-    uint8_t* buf = builder_.GetBufferPointer();
-    int size = builder_.GetSize();
+    auto log = GNEngine::data::CreateLog(builder_, timestamp, message_offset);
+    logs_offsets_.push_back(log);
+}
 
-    std::ofstream ofs(filePath, std::ios::binary);
-    ofs.write(reinterpret_cast<char*>(buf), size);
+/*
+ * @brief 저장된 로그들을 FlatBuffers 형식으로 파일에 저장함.
+ * @param filePath: 저장할 파일 경로
+*/
+void FileManager::saveLogs(const std::filesystem::path& filePath) 
+{
+    builder_.Clear();
+
+    auto logs_vector = builder_.CreateVector(logs_offsets_);
+    
+    auto data = GNEngine::data::CreateData(builder_, 0, logs_vector);
+    builder_.Finish(data);
+
+    std::ofstream outfile(filePath, std::ios::binary);
+    if (outfile.is_open())
+    {
+        outfile.write(reinterpret_cast<const char*>(builder_.GetBufferPointer()), builder_.GetSize());
+    }
+    
+    logs_offsets_.clear();
 }

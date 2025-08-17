@@ -4,6 +4,10 @@
     #define PROJECT_ROOT_PATH "@CMAKE_SOURCE_DIR@/"
     #endif
 
+    #ifndef APP_ROOT_PATH
+    #define APP_ROOT_PATH "@CMAKE_SOURCE_DIR@/app/"
+    #endif
+
     #ifndef ASSET_ROOT_PATH
     #define ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/"
     #endif
@@ -32,11 +36,8 @@
     #define ANIMATION_SHEET_ASSET_ROOT_PATH "@CMAKE_SOURCE_DIR@/asset/animation/spritesheet/"
     #endif
 
-    // Movement constants
+    // Movement constants 임시
     #define MOVE_SPEED 100.0f
     #define ACCELERATION_RATE 1000.0f
     #define DECELERATION_RATE 1000.0f
     #define MAX_SPEED 500.0f
-
-    #define WINDOW_WIDTH 1280
-    #define WINDOW_HEIGHT 720

@@ -75,7 +75,8 @@
         "chrono": "cpp",
         "cfenv": "cpp",
         "forward_list": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "unordered_set": "cpp"
     },
     "discord.enabled": true,
     "vscord.enabled": true

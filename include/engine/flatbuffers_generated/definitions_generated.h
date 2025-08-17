@@ -19,14 +19,11 @@ namespace data {
 struct Setting;
 struct SettingBuilder;
 
-struct Settings;
-struct SettingsBuilder;
-
 struct Log;
 struct LogBuilder;
 
-struct Logs;
-struct LogsBuilder;
+struct Data;
+struct DataBuilder;
 
 struct Setting FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef SettingBuilder Builder;
@@ -37,12 +34,24 @@ struct Setting FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   const ::flatbuffers::String *key() const {
     return GetPointer<const ::flatbuffers::String *>(VT_KEY);
   }
+  bool KeyCompareLessThan(const Setting * const o) const {
+    return *key() < *o->key();
+  }
+  int KeyCompareWithValue(const char *_key) const {
+    return strcmp(key()->c_str(), _key);
+  }
+  template<typename StringType>
+  int KeyCompareWithValue(const StringType& _key) const {
+    if (key()->c_str() < _key) return -1;
+    if (_key < key()->c_str()) return 1;
+    return 0;
+  }
   const ::flatbuffers::String *value() const {
     return GetPointer<const ::flatbuffers::String *>(VT_VALUE);
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_KEY) &&
+           VerifyOffsetRequired(verifier, VT_KEY) &&
            verifier.VerifyString(key()) &&
            VerifyOffset(verifier, VT_VALUE) &&
            verifier.VerifyString(value()) &&
@@ -67,6 +76,7 @@ struct SettingBuilder {
   ::flatbuffers::Offset<Setting> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = ::flatbuffers::Offset<Setting>(end);
+    fbb_.Required(o, Setting::VT_KEY);
     return o;
   }
 };
@@ -91,58 +101,6 @@ inline ::flatbuffers::Offset<Setting> CreateSettingDirect(
       _fbb,
       key__,
       value__);
-}
-
-struct Settings FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
-  typedef SettingsBuilder Builder;
-  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_SETTINGS = 4
-  };
-  const ::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Setting>> *settings() const {
-    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Setting>> *>(VT_SETTINGS);
-  }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_SETTINGS) &&
-           verifier.VerifyVector(settings()) &&
-           verifier.VerifyVectorOfTables(settings()) &&
-           verifier.EndTable();
-  }
-};
-
-struct SettingsBuilder {
-  typedef Settings Table;
-  ::flatbuffers::FlatBufferBuilder &fbb_;
-  ::flatbuffers::uoffset_t start_;
-  void add_settings(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Setting>>> settings) {
-    fbb_.AddOffset(Settings::VT_SETTINGS, settings);
-  }
-  explicit SettingsBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  ::flatbuffers::Offset<Settings> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = ::flatbuffers::Offset<Settings>(end);
-    return o;
-  }
-};
-
-inline ::flatbuffers::Offset<Settings> CreateSettings(
-    ::flatbuffers::FlatBufferBuilder &_fbb,
-    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Setting>>> settings = 0) {
-  SettingsBuilder builder_(_fbb);
-  builder_.add_settings(settings);
-  return builder_.Finish();
-}
-
-inline ::flatbuffers::Offset<Settings> CreateSettingsDirect(
-    ::flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<::flatbuffers::Offset<GNEngine::data::Setting>> *settings = nullptr) {
-  auto settings__ = settings ? _fbb.CreateVector<::flatbuffers::Offset<GNEngine::data::Setting>>(*settings) : 0;
-  return GNEngine::data::CreateSettings(
-      _fbb,
-      settings__);
 }
 
 struct Log FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
@@ -208,16 +166,23 @@ inline ::flatbuffers::Offset<Log> CreateLogDirect(
       message__);
 }
 
-struct Logs FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
-  typedef LogsBuilder Builder;
+struct Data FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef DataBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_LOGS = 4
+    VT_SETTINGS = 4,
+    VT_LOGS = 6
   };
+  const ::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Setting>> *settings() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Setting>> *>(VT_SETTINGS);
+  }
   const ::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Log>> *logs() const {
     return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Log>> *>(VT_LOGS);
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyOffset(verifier, VT_SETTINGS) &&
+           verifier.VerifyVector(settings()) &&
+           verifier.VerifyVectorOfTables(settings()) &&
            VerifyOffset(verifier, VT_LOGS) &&
            verifier.VerifyVector(logs()) &&
            verifier.VerifyVectorOfTables(logs()) &&
@@ -225,68 +190,76 @@ struct Logs FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   }
 };
 
-struct LogsBuilder {
-  typedef Logs Table;
+struct DataBuilder {
+  typedef Data Table;
   ::flatbuffers::FlatBufferBuilder &fbb_;
   ::flatbuffers::uoffset_t start_;
-  void add_logs(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Log>>> logs) {
-    fbb_.AddOffset(Logs::VT_LOGS, logs);
+  void add_settings(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Setting>>> settings) {
+    fbb_.AddOffset(Data::VT_SETTINGS, settings);
   }
-  explicit LogsBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+  void add_logs(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Log>>> logs) {
+    fbb_.AddOffset(Data::VT_LOGS, logs);
+  }
+  explicit DataBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  ::flatbuffers::Offset<Logs> Finish() {
+  ::flatbuffers::Offset<Data> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = ::flatbuffers::Offset<Logs>(end);
+    auto o = ::flatbuffers::Offset<Data>(end);
     return o;
   }
 };
 
-inline ::flatbuffers::Offset<Logs> CreateLogs(
+inline ::flatbuffers::Offset<Data> CreateData(
     ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Setting>>> settings = 0,
     ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<GNEngine::data::Log>>> logs = 0) {
-  LogsBuilder builder_(_fbb);
+  DataBuilder builder_(_fbb);
   builder_.add_logs(logs);
+  builder_.add_settings(settings);
   return builder_.Finish();
 }
 
-inline ::flatbuffers::Offset<Logs> CreateLogsDirect(
+inline ::flatbuffers::Offset<Data> CreateDataDirect(
     ::flatbuffers::FlatBufferBuilder &_fbb,
+    std::vector<::flatbuffers::Offset<GNEngine::data::Setting>> *settings = nullptr,
     const std::vector<::flatbuffers::Offset<GNEngine::data::Log>> *logs = nullptr) {
+  auto settings__ = settings ? _fbb.CreateVectorOfSortedTables<GNEngine::data::Setting>(settings) : 0;
   auto logs__ = logs ? _fbb.CreateVector<::flatbuffers::Offset<GNEngine::data::Log>>(*logs) : 0;
-  return GNEngine::data::CreateLogs(
+  return GNEngine::data::CreateData(
       _fbb,
+      settings__,
       logs__);
 }
 
-inline const GNEngine::data::Settings *GetSettings(const void *buf) {
-  return ::flatbuffers::GetRoot<GNEngine::data::Settings>(buf);
+inline const GNEngine::data::Data *GetData(const void *buf) {
+  return ::flatbuffers::GetRoot<GNEngine::data::Data>(buf);
 }
 
-inline const GNEngine::data::Settings *GetSizePrefixedSettings(const void *buf) {
-  return ::flatbuffers::GetSizePrefixedRoot<GNEngine::data::Settings>(buf);
+inline const GNEngine::data::Data *GetSizePrefixedData(const void *buf) {
+  return ::flatbuffers::GetSizePrefixedRoot<GNEngine::data::Data>(buf);
 }
 
-inline bool VerifySettingsBuffer(
+inline bool VerifyDataBuffer(
     ::flatbuffers::Verifier &verifier) {
-  return verifier.VerifyBuffer<GNEngine::data::Settings>(nullptr);
+  return verifier.VerifyBuffer<GNEngine::data::Data>(nullptr);
 }
 
-inline bool VerifySizePrefixedSettingsBuffer(
+inline bool VerifySizePrefixedDataBuffer(
     ::flatbuffers::Verifier &verifier) {
-  return verifier.VerifySizePrefixedBuffer<GNEngine::data::Settings>(nullptr);
+  return verifier.VerifySizePrefixedBuffer<GNEngine::data::Data>(nullptr);
 }
 
-inline void FinishSettingsBuffer(
+inline void FinishDataBuffer(
     ::flatbuffers::FlatBufferBuilder &fbb,
-    ::flatbuffers::Offset<GNEngine::data::Settings> root) {
+    ::flatbuffers::Offset<GNEngine::data::Data> root) {
   fbb.Finish(root);
 }
 
-inline void FinishSizePrefixedSettingsBuffer(
+inline void FinishSizePrefixedDataBuffer(
     ::flatbuffers::FlatBufferBuilder &fbb,
-    ::flatbuffers::Offset<GNEngine::data::Settings> root) {
+    ::flatbuffers::Offset<GNEngine::data::Data> root) {
   fbb.FinishSizePrefixed(root);
 }
 

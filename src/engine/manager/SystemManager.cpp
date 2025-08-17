@@ -4,6 +4,10 @@
 SystemManager::SystemManager(EntityManager& entityManager)
     : entityManager_(entityManager) {}
 
+SystemManager::~SystemManager() {
+    std::cerr << "SystemManager " << this << " is successfully destroyed. \n" ;
+}
+
 void SystemManager::updateAll(float deltaTime) {
     // SystemPhase에 정의된 순서대로 시스템들을 업데이트
     
