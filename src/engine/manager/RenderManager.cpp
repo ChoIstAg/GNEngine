@@ -103,12 +103,12 @@ void RenderManager::renderTexture(SDL_Texture* texture, float x, float y, const 
     }
 }
 
-void RenderManager::setViewport(int x, int y, int w, int h) {
+void RenderManager::setViewport(SDL_Rect viewport) {
     if (!renderer_) {
-        SDL_Log("RenderManager::setViewport - Renderer is null.");
+        SDL_Log("RenderManager::setViewport - Renderer is null. : %s", SDL_GetError());
         return;
     }
-    SDL_Rect viewport = {x, y, w, h};
+
     if (!SDL_SetRenderViewport(renderer_, &viewport)) {
         SDL_Log("RenderManager::setViewport - Failed to set viewport: %s", SDL_GetError());
     }

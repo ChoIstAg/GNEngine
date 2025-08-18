@@ -4,9 +4,8 @@
 #include <memory>
 #include <unordered_map>
 #include <string>
-#include "../core/Scene.h"
 
-// EventInterface는 handleEvent 시그니처에 필요함
+#include "../core/Scene.h"
 #include "../core/EventInterface.h"
 
 class GNEngine_API SceneManager {

@@ -9,6 +9,7 @@
 #include <chrono>
 
 /* --- Include all Manager to use --- */
+#include "engine/manager/FileManager.h"
 #include "engine/manager/EntityManager.h"
 #include "engine/manager/SystemManager.h"
 #include "engine/manager/RenderManager.h"
@@ -19,7 +20,6 @@
 #include "engine/manager/TextManager.h"
 #include "engine/manager/AnimationManager.h"
 #include "engine/manager/SceneManager.h"
-#include "engine/manager/FileManager.h"
 
 class Application {
 private:

@@ -1,5 +1,6 @@
 #pragma once
 #include "../../GNEngine_API.h"
+#include "RootPath.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
@@ -10,7 +11,6 @@
 #include <functional> // For std::hash<std::filesystem::path>
 
 #include "engine/resource/Texture.h"
-#include "config.h"
 
 
 class GNEngine_API TextureManager {

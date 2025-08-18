@@ -26,8 +26,8 @@ set(OPENAL_DIR "${CMAKE_SOURCE_DIR}/lib/openal-soft-1.24.3-bin")
 # MinGW 런타임 경로 설정
 set(MINGW_BIN_DIR "C:/Development_Environment/code/MSYS2/ucrt64/bin")
 
-# config.h 생성. 소스에서 프로젝트 경로 지정용.
-configure_file(${CMAKE_SOURCE_DIR}/include/config.h.in ${CMAKE_BINARY_DIR}/config.h @ONLY)
+# filepath.h 생성. 소스에서 프로젝트 경로 지정용.
+configure_file(${CMAKE_SOURCE_DIR}/include/RootPath.h.in ${CMAKE_BINARY_DIR}/RootPath.h @ONLY)
 include_directories(${CMAKE_BINARY_DIR})
 
 # SDL 패키지 찾기
@@ -62,8 +62,6 @@ add_library(GNEngine SHARED
     src/engine/system/PlayerAnimationControlSystem.cpp
     src/engine/system/AccelerationResetSystem.cpp
     src/engine/component/AnimationComponent.cpp
-    src/engine/component/PlayerAnimationControllerComponent.cpp
-    src/engine/component/PlayerMovementComponent.cpp
     src/engine/component/SoundComponent.cpp
     src/engine/prefab/PlayerPrefab.cpp
 )

@@ -42,5 +42,5 @@ public:
      * @param w 뷰포트의 너비.
      * @param h 뷰포트의 높이.
      */
-    void setViewport(int x, int y, int w, int h);
+    void setViewport(SDL_Rect viewport);
 };

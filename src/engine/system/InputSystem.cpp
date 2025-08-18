@@ -1,5 +1,5 @@
 #include "engine/system/InputSystem.h"
-#include "config.h"
+#include "RootPath.h"
 #include "engine/component/InputControlComponent.h"
 #include "engine/core/Entity.h" // EntityId를 사용하기 위해 추가
 
@@ -36,7 +36,7 @@ void InputSystem::onKeysHeld(const KeysHeldEvent& event, EntityManager& entityMa
             auto it = inputControl.keyActions.find(keyInfo.scancode);
             if (it != inputControl.keyActions.end()) {
                 // 매핑된 액션을 찾았다면 ActionEvent를 생성하여 dispatch
-                // SDL_Log("InputSystem: Firing ActionEvent '%s' for entity %u.", it->second.c_str(), entity);
+                // std::cerr << "[DEBUG] InputSystem - Firing ActionEvent " << it->second << " for entity(" << entity << ") \n";
                 eventManager_.dispatch(ActionEvent(entity, it->second));
             }
         }

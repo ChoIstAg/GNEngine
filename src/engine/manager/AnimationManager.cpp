@@ -1,8 +1,10 @@
 #include "engine/manager/AnimationManager.h"
+#include "RootPath.h"
+
 #include <fstream>
 #include <iostream>
+
 #include "nlohmann/json.hpp"
-#include "config.h"
 
 /*
  * @brief JSON 파일을 로드하여 애니메이션 데이터를 파싱하고 캐시에 저장함.

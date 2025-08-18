@@ -1,4 +1,5 @@
 #include "engine/prefab/PlayerPrefab.h"
+
 #include "engine/manager/EntityManager.h"
 #include "engine/manager/EventManager.h"
 #include "engine/manager/TextureManager.h"
@@ -14,17 +15,12 @@
 #include "engine/component/PlayerAnimationControllerComponent.h"
 #include "engine/component/PlayerMovementComponent.h"
 #include "engine/component/InputControlComponent.h"
+
 #include <iostream>
 #include <filesystem>
 
 /*
 * @brief 플레이어 엔티티를 생성하고 필요한 모든 컴포넌트를 추가함.
-* @param entityManager - 엔티티와 컴포넌트를 관리하는 EntityManager
-* @param eventManager - 이벤트 시스템을 관리하는 EventManager
-* @param textureManager - 텍스처 리소스를 관리하는 TextureManager
-* @param renderManager - 렌더링을 총괄하는 RenderManager
-* @param soundManager - 사운드 리소스를 관리하는 SoundManager
-* @param animationManager - 애니메이션 리소스를 관리하는 AnimationManager
 * @return 생성된 플레이어의 EntityId
 */
 EntityId PlayerPrefab::create(EntityManager& entityManager, EventManager& eventManager, TextureManager& textureManager, RenderManager& renderManager, SoundManager& soundManager, AnimationManager& animationManager) {

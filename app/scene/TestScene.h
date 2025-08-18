@@ -1,6 +1,7 @@
 #pragma once
 #include "engine/core/Scene.h"
 #include "engine/core/Entity.h"
+#include "engine/component/SoundComponent.h"
 
 // 필요한 Manager들의 전방 선언
 class EventManager;
@@ -35,5 +36,8 @@ private:
     AnimationManager& animationManager_;
     EntityManager& entityManager_;
     
+    SoundComponent soundComponent;
+
+    EntityId bgmEntity;
     EntityId cameraEntityId_;
 };

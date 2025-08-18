@@ -1,5 +1,6 @@
 #include "engine/manager/FileManager.h"
-#include "config.h"
+#include "RootPath.h"
+
 #include <fstream>
 #include <iostream>
 #include <string_view>
@@ -45,7 +46,7 @@ void FileManager::init() {
             }
         
         // 기본 설정 값 설정
-        setSetting("fullscreen", "true");
+        setSetting("fullscreen", "false");
         setSetting("masterVolume", "100");
 
         // 설정 저장

@@ -1,5 +1,12 @@
 #pragma once
 
+#include <vector>
+#include <unordered_map>
+#include <memory>
+#include <stdexcept>
+#include <iostream>
+#include <format>
+
 #include "Entity.h"
 #include "engine/component/TransformComponent.h"
 #include "engine/component/VelocityComponent.h"
@@ -8,12 +15,6 @@
 #include "engine/component/AnimationComponent.h"
 #include "engine/component/TextComponent.h"
 #include "engine/component/CameraComponent.h"
-#include <vector>
-#include <unordered_map>
-#include <memory>
-#include <stdexcept>
-#include <iostream>
-#include <format>
 
 class IComponentArray {
 public:

@@ -56,24 +56,14 @@
 
 ## 5. 소스 파일들의 역할과 구조
 - System : 모든 직접적인 로직을 담당함.
-    - RenderSystem
-    - AnimationSystem
-    - MovementSystem
-    - PlayerAnimationControlSystem
-    - SoundSystem
 - Manager : 리소스 관리와 초기화 등 유틸리티 기능을 담당하는 관리자.
-    - EntityManager
-    - EventManager
-    - InputManager
-    - TextureManager, TextManager, AnimationManger, SoundManager
-    - SceneManager
 - Component : 각 Entity가 기능을 사용하기 위해 갖는 객체.
-- Entity : 
+- Entity : EntityManager를 통해 Component를 등록할 수 있음. ID로만 사용
 - prefab : Entity를 생성하는 빌드 템플릿.
 
 
 - app/main.cpp: 어플리케이션의 진입점. 단지 메인 콜백을 실행하기 위한 시발점으로 사용됨.
-- app/Application.cpp: 메인 콜백 함수와 어플리케이션에서 필요한 각 매니저와 부가 요소들을 멤버 변수로 정의함.
+- app/Application.cpp: 메인 콜백 함수와 어플리케이션에서 필요한 각 매니저와 부가 요소들을 멤버 변수로 정의함. 그리고 메인 run 함수가 존재.
 - engine/event/EventInterface.h: 이벤트 객체들을 정의해놓음. 새 이벤트를 만들 때 여기서 타입을 추가하기.
 - engine/component/: 각 Entity가 기능을 사용하기 위해 갖는 객체.
 - engine/manager/: 각 매니저.

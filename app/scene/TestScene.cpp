@@ -1,6 +1,6 @@
 #include "TestScene.h"
 
-#include "config.h"
+#include "RootPath.h"
 #include <SDL3/SDL.h>
 #include <filesystem>
 #include <iostream>
@@ -34,14 +34,14 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
     std::filesystem::path bgmPath = std::filesystem::path(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3";
     auto bgmSound = soundManager_.getSound(bgmPath);
     if (bgmSound) {
-        auto bgmEntity = entityManager_.createEntity();
-        auto& soundComp = entityManager_.addComponent<SoundComponent>(bgmEntity);
-        soundComp.addSound("bgm", bgmSound, true, 0.5f); // loop, volume
-        soundComp.play("bgm");
+        bgmEntity = entityManager_.createEntity();
+        soundComponent = entityManager_.addComponent<SoundComponent>(bgmEntity);
+        soundComponent.addSound("bgm", bgmSound, true, 0.5f); // loop, volume
+        soundComponent.play("bgm");
         std::cerr << "bgm is successfully played.\n";
     } else { std::cerr << "TestScene: Failed to load BGM sound from " << bgmPath << "\n"; }
 
-    // Exampel 엔티티 생성
+    // Example 엔티티 생성
     EntityId exampleEntityId = entityManager_.createEntity();
     entityManager_.addComponent<TransformComponent>(exampleEntityId, 0.0f, 0.0f);
     std::filesystem::path examplePngPath = std::filesystem::path(IMAGE_ASSET_ROOT_PATH) / "example_png.png";
@@ -67,14 +67,11 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
 
 void TestScene::onEnter() {
     std::cout << "TestScene: Entering..." << std::endl;
-
-    renderManager_.setViewport(0, 0, 1280, 720); // 전체 화면 뷰포트 (임시)
 }
 
 void TestScene::onExit() {
     std::cout << "TestScene: Exiting..." << std::endl;
-    soundManager_.stopAllSounds();
-    
+    soundComponent.stop("bgm");    
 }
 
 void TestScene::handleEvent(const Event& event) {

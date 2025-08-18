@@ -16,5 +16,5 @@
  * @field keyActions 키(SDL_Scancode)와 액션 이름(std::string)을 매핑하는 맵.
 */ 
 struct GNEngine_API InputControlComponent : public Component {
-    std::map<SDL_Scancode, std::string> keyActions;
+    std::unordered_map<SDL_Scancode, std::string> keyActions;
 };

@@ -1,7 +1,7 @@
 #include "engine/system/MovementSystem.h"
-#include <cmath>
-#include "config.h" // Include config.h for DECELERATION_RATE, ACCELERATION_RATE, MOVE_SPEED
+#include "RootPath.h"
 
+#include <cmath>
 #include <iostream>
 
 void MovementSystem::update(EntityManager& entityManager, float deltaTime) {

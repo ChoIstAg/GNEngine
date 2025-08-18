@@ -1,7 +1,7 @@
 #include "Application.h"
+
 #include <chrono>
 #include <iostream>
-
 
 // Managers are included in header file.
 /* --- Include All Systems to use --- */
@@ -38,7 +38,8 @@ Application::~Application() {
 }
 
 int Application::init(){
-    if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) { /* Initialize SDL Systems*/
+    /* Initialize SDL Systems*/
+    if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
         SDL_Log("SDL_Init Error: %s", SDL_GetError());
         return -1;
     }
@@ -62,9 +63,13 @@ int Application::init(){
 
 
     /* --- Initialize all manager --- */
+    renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
+    // SDL_Rect viewport = {0 - windowWidth / 2, windowHeight / 2, windowWidth, windowHeight};
+    SDL_Rect viewport = {0, 0, windowWidth, windowHeight};
+    renderManager_->setViewport(viewport);
+
     entityManager_ = std::make_unique<EntityManager>();
     systemManager_ = std::make_unique<SystemManager>(*entityManager_);
-    renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
     eventManager_ = std::make_unique<EventManager>();
     inputManager_ = std::make_unique<InputManager>(*eventManager_);
     textureManager_ = std::make_unique<TextureManager>(renderer_);
@@ -114,11 +119,11 @@ void Application::quit() {
     auto& fileManager = FileManager::getInstance();
     const std::filesystem::path configPath = "app/data/config.bin";
     
-    // Get current window size and save it
-    SDL_GetWindowSize(window_, &windowWidth, &windowHeight);
-    fileManager.setSetting("WindowWidth", std::to_string(windowWidth));
-    fileManager.setSetting("WindowHeight", std::to_string(windowHeight));
-    fileManager.saveSettings(configPath);
+    // // Get current window size and save it
+    // SDL_GetWindowSize(window_, &windowWidth, &windowHeight);
+    // fileManager.setSetting("WindowWidth", std::to_string(windowWidth));
+    // fileManager.setSetting("WindowHeight", std::to_string(windowHeight));
+    // fileManager.saveSettings(configPath);
 
     std::cout << "cleaning up and quitting... " << std::endl;
 
