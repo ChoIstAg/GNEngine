@@ -35,9 +35,11 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
     auto bgmSound = soundManager_.getSound(bgmPath);
     if (bgmSound) {
         bgmEntity = entityManager_.createEntity();
-        soundComponent = entityManager_.addComponent<SoundComponent>(bgmEntity);
-        soundComponent.addSound("bgm", bgmSound, true, 0.5f); // loop, volume
-        soundComponent.play("bgm");
+        entityManager_.addComponent<TransformComponent>(bgmEntity);
+        auto& soundComponentRef = entityManager_.addComponent<SoundComponent>(bgmEntity);
+        soundComponent = &soundComponentRef;
+        soundComponent->addSound("bgm", bgmSound, true, 0.5f); // loop, volume
+        soundComponent->play("bgm");
         std::cerr << "bgm is successfully played.\n";
     } else { std::cerr << "TestScene: Failed to load BGM sound from " << bgmPath << "\n"; }
 
@@ -71,7 +73,9 @@ void TestScene::onEnter() {
 
 void TestScene::onExit() {
     std::cout << "TestScene: Exiting..." << std::endl;
-    soundComponent.stop("bgm");    
+    if (soundComponent) {
+        soundComponent->stop("bgm");
+    }
 }
 
 void TestScene::handleEvent(const Event& event) {

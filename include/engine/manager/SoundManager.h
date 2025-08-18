@@ -58,12 +58,13 @@ public:
     void setSourcePitch(ALuint sourceId, float pitch);
 
     // --- SoundSystem이 SoA 데이터에 접근하기 위한 Getter 함수들 ---
-    static constexpr int MAX_VOICES = 64;
     const std::vector<ALuint>& getSourceIds() const { return sourceIdsLeft_; }
     const std::vector<EntityId>& getOwnerEntityIds() const { return ownerEntityIds_; }
     const std::vector<bool>& getArePlayingFlags() const { return arePlaying_; }
     size_t getVoiceCount() const { return sourceIdsLeft_.size(); }
-
+    
+    /* 최대 보이스 풀 개수*/
+    static constexpr int MAX_VOICES = 64;
 private:
     ALCdevice* device_ = nullptr;
     ALCcontext* context_ = nullptr;

@@ -161,7 +161,7 @@ void Application::run() {
         renderManager_->clear();
         
         /*
-        * SystemManager perform  in the sequence. {PRE_UPDATE, LOGIT_UPDATE, PHYSICS_UPDATE, POST_UPDATE, RENDER}
+        * SystemManager perform  in the order. {PRE_UPDATE, LOGIT_UPDATE, PHYSICS_UPDATE, POST_UPDATE, RENDER}
         */
         // std::cerr << "[DEBUG] Application::run() - Calling systemManager_->updateAll().\n";
         systemManager_->updateAll(deltaTime);

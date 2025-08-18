@@ -36,7 +36,7 @@ private:
     AnimationManager& animationManager_;
     EntityManager& entityManager_;
     
-    SoundComponent soundComponent;
+    SoundComponent* soundComponent = nullptr;
 
     EntityId bgmEntity;
     EntityId cameraEntityId_;

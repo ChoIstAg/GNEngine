@@ -12,7 +12,7 @@ TextManager::~TextManager() {
         TTF_CloseFont(font);
     }
     TTF_Quit();
-    std::cerr << "TextManager destroyed and all fonts unloaded." << std::endl;
+    std::cerr << "TextManager "<< this << " is successfully destroyed and all fonts unloaded." << std::endl;
 }
 
 bool TextManager::loadFont(const std::filesystem::path& filePath, int fontPointSize) {

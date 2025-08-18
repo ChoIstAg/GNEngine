@@ -1,13 +1,19 @@
 #include "engine/system/SoundSystem.h"
+#include "engine/manager/EntityManager.h"
 #include <iostream>
 
 SoundSystem::SoundSystem(SoundManager& soundManager)
     : soundManager_(soundManager) {}
 
 void SoundSystem::update(EntityManager& entityManager, float deltaTime) {
+    auto soundComponentArray = entityManager.getComponentArray<SoundComponent>();
+    if (!soundComponentArray) {
+        return; // No SoundComponents to process
+    }
+
     // 컴포넌트를 순회하며 재생/정지 요청 처리
     for (auto entity : entityManager.getEntitiesWith<SoundComponent, TransformComponent>()) {
-        auto soundComponent = entityManager.getComponent<SoundComponent>(entity).value(); // SoA로 인해 value()로 접근
+        auto& soundComponent = soundComponentArray->getComponent(entity);
         auto transform = entityManager.getComponent<TransformComponent>(entity).value();
 
         for (auto& pair : soundComponent.getAllSounds()) {
@@ -54,8 +60,8 @@ void SoundSystem::update(EntityManager& entityManager, float deltaTime) {
             ALint state;
             alGetSourcei(sourceIds[i], AL_SOURCE_STATE, &state);
             if (state == AL_STOPPED) {
-                if (auto soundCompOpt = entityManager.getComponent<SoundComponent>(ownerId)) {
-                    auto soundComp = soundCompOpt.value();
+                if (soundComponentArray->hasComponent(ownerId)) {
+                    auto& soundComp = soundComponentArray->getComponent(ownerId);
                     // 컴포넌트에서 해당 sourceId를 가진 soundData를 찾아 초기화
                     for (auto& pair : soundComp.getAllSounds()) {
                         if (pair.second.sourceId.has_value() && pair.second.sourceId.value() == sourceIds[i]) {

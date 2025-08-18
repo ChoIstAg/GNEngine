@@ -110,11 +110,13 @@ std::shared_ptr<Sound> SoundManager::getSound(const std::filesystem::path& fileP
     std::string ext = filePath.extension().string();
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-    if (ext == ".wav") loaded = loadWav(filePath, monoBuffer, stereoBufferRight, isStereo);
-    else if (ext == ".mp3") loaded = loadMp3(filePath, monoBuffer, stereoBufferRight, isStereo);
-    else if (ext == ".ogg") loaded = loadOgg(filePath, monoBuffer, stereoBufferRight, isStereo);
-    else if (ext == ".flac") loaded = loadFlac(filePath, monoBuffer, stereoBufferRight, isStereo);
-    else { std::cerr << "Unsupported format: " << ext << std::endl; return nullptr; }
+    if (ext == ".wav") { loaded = loadWav(filePath, monoBuffer, stereoBufferRight, isStereo); }
+    else if (ext == ".mp3") { loaded = loadMp3(filePath, monoBuffer, stereoBufferRight, isStereo); }
+    else if (ext == ".ogg") { loaded = loadOgg(filePath, monoBuffer, stereoBufferRight, isStereo); }
+    else if (ext == ".flac") { loaded = loadFlac(filePath, monoBuffer, stereoBufferRight, isStereo); }
+    else { std::cerr << "Unsupported format: " << ext << std::endl; 
+        return nullptr; 
+    }
 
     if (loaded) {
         auto sound = std::make_shared<Sound>(monoBuffer, stereoBufferRight, isStereo);
