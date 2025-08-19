@@ -4,16 +4,12 @@ GNEngine is a 2D game engine developed using Modern C++23 and SDL3.
 
 ## Features
 
-- **Component-Based Architecture:** Allows for creating complex game objects by attaching reusable and independent components.
-- **Event-Driven System:** Flexibly handles various events through an `EventManager`.
-- **Input Management:** Detects and processes keyboard input with an `InputManager`.
-- **2D Rendering:** Renders textures to the screen using a `RenderManager`.
-- **Resource Management:**
-    - `TextManager`: Loads TTF fonts to render text.
-    - `TextureManager`: Loads and manages image files as textures.
-    - `AnimationManager`: Creates and controls animations from sprite sheets or individual images.
-    - `SoundManager`: Plays and manages WAV, MP3, and OGG format sounds via OpenAL Soft (with dr_libs and stb_vorbis for decoding).
-- **Scene Management:** Easily switch and manage game scenes with a `SceneManager`.
+- **DOD + ECS system**
+- **Event-Driven System:** Flexibly handles various events through an `
+- **2D Rendering:** Renders textures and nimation to the screen.
+- **Sound**: Plays and manages WAV, MP3, and OGG format sounds via OpenAL Soft (with dr_libs and stb_vorbis for decoding).
+Can use stereo sound to 3D sound.
+- **Scene Management**: Easily switch and manage game scenes with a `SceneManager`.
 
 
 ## Used libraries
@@ -53,7 +49,9 @@ This project is built using CMake and `CMakePresets.json`.
 ## Directory Structure
 
 - `app/`: Main application source code (Corrent example application).
+    - `app/scene` : all external scene
 - `src/`: All source codes of headers.
+- `include/engine/core`: core files of engine.
 - `include/engine/system`: Perform engine logics
 - `include/engine/manager`: Contains various manager classes for core engine functionalities.
 - `include/engine/component`: Defines the base component and other concrete components like TransformComponent.
