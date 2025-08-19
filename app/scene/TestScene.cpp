@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <iostream>
 
-// 필요한 Manager 헤더 포함
+/* --- Include required managers --- */
 #include "engine/manager/EntityManager.h"
 #include "engine/manager/EventManager.h"
 #include "engine/manager/TextureManager.h"
@@ -13,13 +13,13 @@
 #include "engine/manager/SoundManager.h"
 #include "engine/manager/AnimationManager.h"
 
-// 필요한 Component 헤더 포함
+/* --- Include required components --- */
 #include "engine/component/CameraComponent.h"
 #include "engine/component/RenderComponent.h"
 #include "engine/component/TransformComponent.h"
 #include "engine/component/SoundComponent.h"
 
-// 필요한 Prefab 헤더 포함
+/* --- Include required prefabs --- */
 #include "engine/prefab/PlayerPrefab.h"
 
 TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, TextureManager& textureManager, SoundManager& soundManager, AnimationManager& animationManager, EntityManager& entityManager)
@@ -38,7 +38,7 @@ TestScene::TestScene(EventManager& eventManager, RenderManager& renderManager, T
         entityManager_.addComponent<TransformComponent>(bgmEntity);
         auto& soundComponentRef = entityManager_.addComponent<SoundComponent>(bgmEntity);
         soundComponent = &soundComponentRef;
-        soundComponent->addSound("bgm", bgmSound, true, 0.5f); // loop, volume
+        soundComponent->addSound("bgm", bgmSound, true, 0.3f);
         soundComponent->play("bgm");
         std::cerr << "bgm is successfully played.\n";
     } else { std::cerr << "TestScene: Failed to load BGM sound from " << bgmPath << "\n"; }

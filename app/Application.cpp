@@ -62,22 +62,24 @@ int Application::init(){
     SDL_SetRenderVSync(renderer_, true); /* Enable VSync */
 
 
-    /* --- Initialize all manager --- */
-    renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
-    // SDL_Rect viewport = {0 - windowWidth / 2, windowHeight / 2, windowWidth, windowHeight};
-    SDL_Rect viewport = {0, 0, windowWidth, windowHeight};
-    renderManager_->setViewport(viewport);
+    /* 
+     * Please 
+    */
 
-    entityManager_ = std::make_unique<EntityManager>();
-    systemManager_ = std::make_unique<SystemManager>(*entityManager_);
+    /* --- Initialize all manager --- */
     eventManager_ = std::make_unique<EventManager>();
     inputManager_ = std::make_unique<InputManager>(*eventManager_);
+    soundManager_ = std::make_unique<SoundManager>();
     textureManager_ = std::make_unique<TextureManager>(renderer_);
     textManager_ = std::make_unique<TextManager>(renderer_);
-    soundManager_ = std::make_unique<SoundManager>();
     animationManager_ = std::make_unique<AnimationManager>();
-
+    entityManager_ = std::make_unique<EntityManager>();
+    systemManager_ = std::make_unique<SystemManager>(*entityManager_);
     sceneManager_ = std::make_unique<SceneManager>();
+    renderManager_ = std::make_unique<RenderManager>(renderer_, window_);
+
+    SDL_Rect viewport = {0, 0, windowWidth, windowHeight};
+    renderManager_->setViewport(viewport);
 
     /* --- Regist all systems --- */
     systemManager_->registerSystem<RenderSystem>(SystemPhase::RENDER, *renderManager_, *textManager_);
@@ -90,7 +92,6 @@ int Application::init(){
     systemManager_->registerSystem<MovementSystem>(SystemPhase::PHYSICS_UPDATE);
 
     
-
     /* --- Regist all Conpontnt to use --- */
     entityManager_->registerComponentType<RenderComponent>();
     entityManager_->registerComponentType<AnimationComponent>();
@@ -104,10 +105,9 @@ int Application::init(){
     entityManager_->registerComponentType<CameraComponent>();
 
 
-    /* --- Regist all scane to use*/
+    /* --- Regist all scane ---*/
     sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *animationManager_, *entityManager_));
     sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>());
-
 
     sceneManager_->changeScene("TestScene");
 

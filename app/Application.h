@@ -44,15 +44,19 @@ public:
     SDL_Renderer* getRenderer() const { return renderer_; }
     SDL_Window* getWindow() const { return window_; }
 
-    /* Managers */
-    std::unique_ptr<EntityManager> entityManager_;
-    std::unique_ptr<SystemManager> systemManager_;
-    std::unique_ptr<RenderManager> renderManager_;
+    /* 
+     * Managers
+     * The destruction order is the reverse of the declaration order.
+     * Declare in the order of creation/dependency.
+    */
     std::unique_ptr<EventManager> eventManager_;
     std::unique_ptr<InputManager> inputManager_;
-    std::unique_ptr<SceneManager> sceneManager_;
+    std::unique_ptr<SoundManager> soundManager_;
     std::unique_ptr<TextureManager> textureManager_;
     std::unique_ptr<TextManager> textManager_;
     std::unique_ptr<AnimationManager> animationManager_;
-    std::unique_ptr<SoundManager> soundManager_;
+    std::unique_ptr<EntityManager> entityManager_;
+    std::unique_ptr<SystemManager> systemManager_;
+    std::unique_ptr<SceneManager> sceneManager_;
+    std::unique_ptr<RenderManager> renderManager_; // RenderManager often depends on windowing, should be last.
 };

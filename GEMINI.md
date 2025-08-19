@@ -45,6 +45,7 @@
 의존성 라이브러리들은 `include/lib/` 디렉터리에서 관리됩니다.
 
 ## 4. 디렉터리 구조 (Directory Structure)
+- 각 파일의 자세한 역할은 ./Engine Struct.md 파일 참조..
 
 - `app/`: 메인 애플리케이션 소스 코드 (`main.cpp`, `Application.cpp` 등)
 - `include/engine/`: 엔진 핵심 로직

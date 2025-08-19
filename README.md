@@ -28,6 +28,7 @@ GNEngine is a 2D game engine developed using Modern C++23 and SDL3.
     - dr_flac(v0.13.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
     - stb_vorbis(v1.22): [https://github.com/nothings/stb](https://github.com/nothings/stb)
 - nlohmann/json(3.12.0): [https://github.com/nlohmann/json](https://github.com/nlohmann/json)
+- google/flatBuffer()
 
 ## Build & Run
 This project use GNU g++(v15.1.0) and ninja(v1.13.0).

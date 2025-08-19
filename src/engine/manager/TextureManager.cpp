@@ -65,11 +65,21 @@ bool TextureManager::loadTexture(const std::filesystem::path& filePath){
     return true;
 }
 
+/* 
+ * @return If texture is already loaded, return it.
+ * or is not loaded yet, load it and return it.
+ * if load false, return nullptr.
+*/
 Texture* TextureManager::getTexture(const std::filesystem::path& filePath) const {
     auto it = textureMap_.find(filePath);
     if (it != textureMap_.end()) {
         return it->second.get(); // unique_ptr에서 raw 포인터 반환
+    } else {
+        if (loadTexture(filePath)) {
+            return it->second.get();
+        }
     }
+    
     SDL_Log("TextureManager::getTexture - Texture not found: %s", filePath.string().c_str());
     return nullptr;
 }
