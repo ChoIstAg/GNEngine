@@ -35,8 +35,9 @@ public:
     void destroyEntity(EntityId entity);
 
     /* 
-     * @brief 사용할 컴포넌트를 등록한다. 
-     * 등록한 컴포넌트만 사용 가능. 
+     * @brief 사용할 컴포넌트를 등록한다. 등록한 컴포넌트만 사용 가능. 
+     * @tparam T 사용할 컴포넌트
+
     */
     template<typename T>
     void registerComponentType() {
@@ -53,6 +54,9 @@ public:
      * @brief 특정 엔티티에 컴포넌트를 추가함.
      *        SoA 컴포넌트일 경우, 반환값이 없음.
      *        AoS 컴포넌트일 경우, 추가된 컴포넌트의 참조를 반환함.
+     * @param entity 컴포넌트를 추가할 Entity의 Id
+     * @tparam T 추가할 컴포넌트
+     * @tparam Args 컴포넌트 생성자의 파라미터
     */
     template<typename T, typename... Args>
     auto addComponent(EntityId entity, Args&&... args) -> std::conditional_t<std::is_same_v<T, TransformComponent> || std::is_same_v<T, RenderComponent> || std::is_same_v<T, AnimationComponent> || std::is_same_v<T, TextComponent> || std::is_same_v<T, CameraComponent> || std::is_same_v<T, VelocityComponent> || std::is_same_v<T, AccelerationComponent>, void, T&>
@@ -119,6 +123,10 @@ public:
         }
     }
 
+    /* 
+     * @brief 주어진 컴포넌트들을 모두 갖고있는 Entity의 Id를 std::vector<EntityId> 형태로 반환.
+     * @tparam Args 검색할 모든 컴포넌트들
+    */
     template<typename... Args>
     std::vector<EntityId> getEntitiesWith() {
         Signature requiredSignature;

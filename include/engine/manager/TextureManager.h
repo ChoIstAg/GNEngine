@@ -24,5 +24,5 @@ public:
 
     bool loadTexture(const std::filesystem::path& filePath); 
     
-    Texture* getTexture(const std::filesystem::path& filePath) const;
+    Texture* getTexture(const std::filesystem::path& filePath);
 };

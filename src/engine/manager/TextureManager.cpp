@@ -1,6 +1,7 @@
 #include "engine/manager/TextureManager.h"
 #include <iostream>
 #include <filesystem>
+#include <memory>
 #include <SDL3_image/SDL_image.h>
 
 TextureManager::TextureManager(SDL_Renderer* renderer) 
@@ -15,7 +16,7 @@ TextureManager::~TextureManager() {
     std::cerr << "TextureManager " << this << " is successfully destroyed" << std::endl;
 }
 
-bool TextureManager::loadTexture(const std::filesystem::path& filePath){
+bool TextureManager::loadTexture(const std::filesystem::path& filePath) {
     // 이미 로드된 텍스처인지 확인
     if (textureMap_.count(filePath)) {
         return true; // 이미 로드되어 있다면 true 반환
@@ -70,13 +71,13 @@ bool TextureManager::loadTexture(const std::filesystem::path& filePath){
  * or is not loaded yet, load it and return it.
  * if load false, return nullptr.
 */
-Texture* TextureManager::getTexture(const std::filesystem::path& filePath) const {
+Texture* TextureManager::getTexture(const std::filesystem::path& filePath) {
     auto it = textureMap_.find(filePath);
     if (it != textureMap_.end()) {
         return it->second.get(); // unique_ptr에서 raw 포인터 반환
     } else {
         if (loadTexture(filePath)) {
-            return it->second.get();
+            return textureMap_[filePath].get();
         }
     }
     

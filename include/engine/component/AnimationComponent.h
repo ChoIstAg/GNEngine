@@ -8,17 +8,12 @@
 
 /*
  * @class AnimationComponent
- * @brief 게임 오브젝트에 애니메이션 기능을 부여하는 컴포넌트임.
- * Animation 데이터(프레임 정보)를 참조하여 현재 재생 상태를 관리하고,
- * 렌더링을 위해 현재 프레임의 SDL_Rect 정보를 제공함.
+ * @brief 게임 오브젝트에 애니메이션 기능을 부여하는 컴포넌트.
+ * @param animation 이 컴포넌트가 재생할 Animation 데이터.
+ * @param playOnAwake(true) 컴포넌트 생성 시 바로 애니메이션을 재생할지 여부.
  */ 
 class GNEngine_API AnimationComponent : public Component {
 public:
-    /*
-     * @brief AnimationComponent 생성자.
-     * @param animation - 이 컴포넌트가 재생할 Animation 데이터.
-     * @param playOnAwake - 컴포넌트 생성 시 바로 애니메이션을 재생할지 여부 (기본값: true).
-     */
     AnimationComponent(std::shared_ptr<Animation> animation, bool playOnAwake = true);
 
     /*

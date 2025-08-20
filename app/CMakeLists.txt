@@ -6,6 +6,7 @@ set(APP_SOURCES
     main.cpp
     scene/MainMenuScene.cpp
     scene/TestScene.cpp
+    scene/LogoScene.cpp
 )
 
 # 애플리케이션 실행 파일 정의

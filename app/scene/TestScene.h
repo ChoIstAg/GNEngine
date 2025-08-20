@@ -1,7 +1,8 @@
 #pragma once
+#include "GNEngine_API.h"
 #include "engine/core/Scene.h"
-#include "engine/core/Entity.h"
-#include "engine/component/SoundComponent.h"
+
+#include <vector>
 
 // 필요한 Manager들의 전방 선언
 class EventManager;
@@ -11,33 +12,34 @@ class SoundManager;
 class AnimationManager;
 class EntityManager;
 
+#include "engine/core/Entity.h"
+
 class TestScene : public Scene {
 public:
     TestScene(EventManager& eventManager, 
-              RenderManager& renderManager, 
-              TextureManager& textureManager, 
-              SoundManager& soundManager, 
-              AnimationManager& animationManager, 
-              EntityManager& entityManager);
+            RenderManager& renderManager, 
+            TextureManager& textureManager, 
+            SoundManager& soundManager, 
+            AnimationManager& animationManager,
+            EntityManager& entityManager);
     ~TestScene() override = default;
 
     void onEnter() override;
     void onExit() override;
-    void handleEvent(const Event& event) override;
+    bool loadScene() override;
     void update(float deltaTime) override;
-    void render(SDL_Renderer* renderer) override;
+    void render(SDL_Renderer* rawRenderer) override;
+    void handleEvent(const Event& event) override;
 
 private:
-    // 이 씬에서 사용하는 Manager들에 대한 참조
+    EntityManager& entityManager_;
     EventManager& eventManager_;
     RenderManager& renderManager_;
     TextureManager& textureManager_;
     SoundManager& soundManager_;
     AnimationManager& animationManager_;
-    EntityManager& entityManager_;
-    
-    SoundComponent* soundComponent = nullptr;
 
-    EntityId bgmEntity;
-    EntityId cameraEntityId_;
+    EntityId playerEntity_;
+    EntityId cameraEntity_;
+    std::vector<EntityId> entityIDs_;
 };

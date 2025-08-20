@@ -121,8 +121,9 @@ std::shared_ptr<Sound> SoundManager::getSound(const std::filesystem::path& fileP
     if (loaded) {
         auto sound = std::make_shared<Sound>(monoBuffer, stereoBufferRight, isStereo);
         soundCache_[filePath] = sound;
-        return sound;
+        return sound; /* Success */
     }
+    /* failure */
     if (monoBuffer != 0) alDeleteBuffers(1, &monoBuffer);
     if (stereoBufferRight != 0) alDeleteBuffers(1, &stereoBufferRight);
     return nullptr;

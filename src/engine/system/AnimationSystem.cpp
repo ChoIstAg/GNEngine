@@ -4,7 +4,7 @@
 void AnimationSystem::update(EntityManager& entityManager, float deltaTime) {
     auto animArray = entityManager.getComponentArray<AnimationComponent>();
     if (!animArray) {
-        std::cerr << "AnimationSystem.cpp에서 참조 실패 \n";
+        // std::cerr << "[ERROR] AnimationSystem - ComponentArray<AnimationComponent> is nullptr \n";
         return;
     }
 

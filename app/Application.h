@@ -11,6 +11,7 @@
 /* --- Include all Manager to use --- */
 #include "engine/manager/FileManager.h"
 #include "engine/manager/EntityManager.h"
+#include "engine/manager/SceneManager.h"
 #include "engine/manager/SystemManager.h"
 #include "engine/manager/RenderManager.h"
 #include "engine/manager/EventManager.h"
@@ -19,7 +20,7 @@
 #include "engine/manager/TextureManager.h"
 #include "engine/manager/TextManager.h"
 #include "engine/manager/AnimationManager.h"
-#include "engine/manager/SceneManager.h"
+#include "engine/manager/FadeManager.h"
 
 class Application {
 private:
@@ -58,5 +59,6 @@ public:
     std::unique_ptr<EntityManager> entityManager_;
     std::unique_ptr<SystemManager> systemManager_;
     std::unique_ptr<SceneManager> sceneManager_;
+    std::unique_ptr<FadeManager> fadeManager_;
     std::unique_ptr<RenderManager> renderManager_; // RenderManager often depends on windowing, should be last.
 };

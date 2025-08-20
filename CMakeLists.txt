@@ -42,27 +42,33 @@ add_library(GNEngine SHARED
     src/engine/resource/Animation.cpp
     src/engine/resource/Sound.cpp
     src/engine/resource/Text.cpp
+
+    src/engine/manager/FileManager.cpp
     src/engine/manager/EntityManager.cpp
     src/engine/manager/SystemManager.cpp
     src/engine/manager/RenderManager.cpp
     src/engine/manager/InputManager.cpp
-    src/engine/manager/FileManager.cpp
     src/engine/manager/SceneManager.cpp
     src/engine/manager/SoundManager.cpp
     src/engine/manager/AnimationManager.cpp
     src/engine/manager/TextManager.cpp
     src/engine/manager/TextureManager.cpp
+    src/engine/manager/FadeManager.cpp
+
     src/engine/system/RenderSystem.cpp
     src/engine/system/SoundSystem.cpp
     src/engine/system/InputSystem.cpp
     src/engine/system/CameraSystem.cpp
+    src/engine/system/FadeSystem.cpp
     src/engine/system/AnimationSystem.cpp
     src/engine/system/MovementSystem.cpp
     src/engine/system/InputToAccelerationSystem.cpp
     src/engine/system/PlayerAnimationControlSystem.cpp
     src/engine/system/AccelerationResetSystem.cpp
+
     src/engine/component/AnimationComponent.cpp
     src/engine/component/SoundComponent.cpp
+
     src/engine/prefab/PlayerPrefab.cpp
 )
 

@@ -9,6 +9,7 @@ public:
 
     void onEnter() override;
     void onExit() override;
+    bool loadScene() override;
     void handleEvent(const Event& event) override;
     void update(float deltaTime) override;
     void render(SDL_Renderer* renderer) override;

@@ -9,11 +9,13 @@ void MovementSystem::update(EntityManager& entityManager, float deltaTime) {
     auto transformArray = entityManager.getComponentArray<TransformComponent>();
     auto velocityArray = entityManager.getComponentArray<VelocityComponent>();
     auto accelerationArray = entityManager.getComponentArray<AccelerationComponent>();
+    // if (!transformArray) { std::cerr << "[ERROR] MovementSystem - ComponentArray<TransformComponent> is nullptr.\n"; }
+    // if (!velocityArray) { std::cerr << "[ERROR] MovementSystem - ComponentArray<VelocityComponent> is nullptr.\n"; }
+    // if (!accelerationArray) { std::cerr << "[ERROR] MovementSystem - ComponentArray<AccelerationComponent> is nullptr.\n"; }
 
     // 컴포넌트 배열이 없으면 시스템을 실행할 수 없음
     if (!transformArray || !velocityArray || !accelerationArray) {
-        std::cerr << "[Error] MovementSystem - ComponentArray is nullptr.\n";
-        return;
+         return;
     }
 
     // 2. SoA 데이터에 직접 접근하기 위해 각 컴포넌트의 데이터 벡터를 가져옴

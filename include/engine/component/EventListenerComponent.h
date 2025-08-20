@@ -18,6 +18,8 @@
  * 해당 이벤트가 발생했을 때 콜백을 호출함.
  * 
  * 구독 해지 시 모든 등록된 이벤트 리스너를 제거함.
+ * @param owner 이 컴포넌트의 소유자 Entity.
+ * @param eventManager 이벤트를 구독하고 관리할 EventManager 인스턴스.
  */
 struct GNEngine_API EventListenerComponent : public Component {
 private:

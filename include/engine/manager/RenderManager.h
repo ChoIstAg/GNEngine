@@ -15,7 +15,7 @@ private:
 public:
     RenderManager(SDL_Renderer* renderer, SDL_Window* window);
     ~RenderManager();
-
+    
     void clear();
     void present();
 

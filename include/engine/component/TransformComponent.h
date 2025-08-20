@@ -4,10 +4,13 @@
 #include "engine/core/Component.h"
 
 /*
- * TransformComponent는 게임 오브젝트의 2D 공간에서의
- * 위치, 회전, 크기를 나타내는 데이터 집합임.
- * 이 컴포넌트는 순수 데이터(POD) 컨테이너 역할을 함.
- */ 
+* TransformComponent는 게임 오브젝트의 2D 공간에서의
+* 위치, 회전, 크기를 나타내는 데이터 집합임.
+* 이 컴포넌트는 순수 데이터(POD) 컨테이너 역할을 함.
+* @param positionX(0.0f), positionY(0.0f) 위치 X, Y
+* @param scaleX(1.0f), scaleY(1.0f) 크기 배율 (너비, 높이)
+* @param rotatedAngle(0.0f) 회전된 각도
+*/ 
 struct GNEngine_API TransformComponent : public Component {
 
     /*

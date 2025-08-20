@@ -1,38 +1,75 @@
 #pragma once
+#include "GNEngine_API.h"
 #include "engine/core/Scene.h"
 
 // 필요한 Manager들의 전방 선언
+class EntityManager;
 class EventManager;
 class RenderManager;
 class TextureManager;
 class SoundManager;
 class AnimationManager;
-class EntityManager;
+class FadeManager;
+class SceneManager;
+
+#include <SDL3/SDL_render.h>
 
 #include "engine/component/TransformComponent.h"
 #include "engine/component/TextComponent.h"
 #include "engine/component/RenderComponent.h"
 
-class LogoScene : Scene {
+/*
+ * @brief LogoScene
+ * 
+ * 이 생성자는 로고 씬을 초기화하며, 엔티티, 이벤트, 렌더링, 사운드, 텍스처, 애니메이션, 페이드 관련 매니저들의 참조를 받아
+ * 씬에서 사용할 수 있도록 저장함.
+ * 
+ * @param entityManager 엔티티 관리 매니저 참조
+ * @param eventManager 이벤트 관리 매니저 참조
+ * @param renderManager 렌더링 관리 매니저 참조
+ * @param soundManager 사운드 관리 매니저 참조
+ * @param textureManager 텍스처 관리 매니저 참조
+ * @param animationManager 애니메이션 관리 매니저 참조
+ * @param fadeManager 페이드 효과 관리 매니저 참조
+ */
+class LogoScene : public Scene {
 public: 
-    LogoScene(EventManager& eventManager, 
+    LogoScene(EntityManager& entityManager,
+            SceneManager& sceneManager,
+            EventManager& eventManager, 
             RenderManager& renderManager, 
-            TextureManager& textureManager, 
             SoundManager& soundManager, 
-            AnimationManager& animationManager, 
-            EntityManager& entityManager);
+            TextureManager& textureManager, 
+            AnimationManager& animationManager,
+            FadeManager& fadeManager);
     ~LogoScene() override = default;
 
     void onEnter() override;
     void onExit() override;
+    bool loadScene() override;
+    void update(float deltaTime) override;
+    void render(SDL_Renderer* rawRenderer) override;
+    void handleEvent(const Event& event) override;
 
 private:
     EntityId logoEntity_;
+    float sceneTimer_ = 0.0f;
 
+    enum class LogoSceneState {
+        FADING_IN,
+        DISPLAYING,
+        FADING_OUT
+    };
+    LogoSceneState currentState_ = LogoSceneState::FADING_IN;
+
+    //FadeComponent& fadeComp_;
+
+    EntityManager& entityManager_;
+    SceneManager& sceneManager_;
     EventManager& eventManager_;
     RenderManager& renderManager_;
     TextureManager& textureManager_;
     SoundManager& soundManager_;
     AnimationManager& animationManager_;
-    EntityManager& entityManager_;
+    FadeManager& fadeManager_;
 };

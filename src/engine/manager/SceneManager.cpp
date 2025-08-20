@@ -12,9 +12,9 @@ SceneManager::SceneManager() = default;
  * @param name 씬의 고유 이름
  * @param scene 추가할 씬 객체의 unique_ptr
 */
-void SceneManager::addScene(const std::string& name, std::unique_ptr<Scene> scene) {
-    scenes_[name] = std::move(scene);
-}
+// void SceneManager::addScene(const std::string& name, std::unique_ptr<Scene> scene) {
+//     scenes_[name] = std::move(scene);
+// } 템플릿으로 전환 시도중. 템플릿 코드는 SceneManager.h에..
 
 /*
  * changeScene 함수는 현재 활성화된 씬을 변경함.

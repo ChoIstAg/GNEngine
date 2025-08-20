@@ -13,6 +13,10 @@
  * @brief 렌더링할 텍스트에 대한 모든 정보를 담는 데이터 컴포넌트임.
  *        이 컴포넌트 자체는 로직을 가지지 않으며, RenderSystem이 이 정보를 사용해
  *        텍스처를 생성하고 화면에 렌더링함.
+ * @param text 렌더링할 텍스트 문자열.
+ * @param fontPath 사용할 폰트 파일의 경로.
+ * @param fontSize 폰트의 크기.
+ * @param color 텍스트의 색상 (SDL_Color).
  */
 struct GNEngine_API TextComponent : public Component {
     std::string text;

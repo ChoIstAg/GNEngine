@@ -18,10 +18,15 @@ public:
     virtual void onEnter() = 0;
     // 씬 종료 시 호출
     virtual void onExit() = 0; 
+    // 씬 로드
+    virtual bool loadScene() { return true; }
     // 입력 처리
     virtual void handleEvent(const Event& event) = 0; 
     // 논리 업데이트
     virtual void update(float deltaTime) = 0; 
     // 렌더링
     virtual void render(SDL_Renderer* renderer) = 0; 
+
+protected:
+    bool isLoaded_ = false;
 };
