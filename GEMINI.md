@@ -5,6 +5,7 @@
 - **프로젝트명:** GNEngine
 - **목표:** Modern C++과 SDL3를 이용한 2D 게임 엔진 개발.
 - **사용 패러다임:** DOD(Data Oriented Design) + ECS(Entity Component System)
+- 현재 DOD 구조를 사용하고 있다는 것을 꼭 기억해줘.
 
 ## 2. 빌드 및 실행 (Build & Run)
 - 현재 운영체재는 Windows 11 Home이고 현재 GEMINI CLI는 VSCODE의 터미널에서 실행중이야.

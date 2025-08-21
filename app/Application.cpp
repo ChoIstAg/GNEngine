@@ -59,11 +59,10 @@ int Application::init(){
     renderer_ = SDL_CreateRenderer(window_, nullptr);
     if(!window_ || !renderer_){
         SDL_Log("Error occured in SDL_CreateWindow or SDL_CreateRenderer : %s", SDL_GetError());
-        SDL_Quit();
         return -1;
     }
 
-    /* Set additional settings */
+    /* Set additional settings */ 
     SDL_SetRenderVSync(renderer_, true); /* Enable VSync */
 
 
@@ -93,7 +92,7 @@ int Application::init(){
     systemManager_->registerSystem<AnimationSystem>(SystemPhase::POST_UPDATE);
     systemManager_->registerSystem<InputToAccelerationSystem>(SystemPhase::PRE_UPDATE, *eventManager_, *entityManager_);
     systemManager_->registerSystem<MovementSystem>(SystemPhase::PHYSICS_UPDATE);
-    systemManager_->registerSystem<FadeSystem>(SystemPhase::RENDER, *renderManager_);
+    systemManager_->registerSystem<FadeSystem>(SystemPhase::LOGIC_UPDATE, *renderManager_);
     
     /* --- Regist all Conpontnt to use --- */
     entityManager_->registerComponentType<RenderComponent>();
@@ -112,11 +111,11 @@ int Application::init(){
     /* --- Regist all scane ---*/
     sceneManager_->addScene("LogoScene", std::make_unique<LogoScene>(*entityManager_, *sceneManager_, *eventManager_, *renderManager_, *soundManager_, *textureManager_, *animationManager_, *fadeManager_));
     sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *animationManager_, *entityManager_));
-    sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>());
+    //sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>());
 
     sceneManager_->loadScene("LogoScene");
     sceneManager_->changeScene("LogoScene");
-    //sceneManager_->changeScene("TestScene");
+    // sceneManager_->changeScene("TestScene");
 
     lastFrameTime_ = std::chrono::high_resolution_clock::now();
     return 0;
@@ -171,16 +170,16 @@ void Application::run() {
         
         
         renderManager_->clear();
-        sceneManager_->render(renderer_);
         /*
         * SystemManager perform in the order. {PRE_UPDATE, LOGIT_UPDATE, PHYSICS_UPDATE, POST_UPDATE, RENDER}
         */
-        // std::cerr << "[DEBUG] Application::run() - Calling systemManager_->updateAll().\n";
-        systemManager_->updateAll(deltaTime);
-        // std::cerr << "[DEBUG] Application::run() - Finished systemManager_->updateAll().\n";
-
-        // std::cerr << "[DEBUG] Application::run() - Calling sceneManager_->update()\n";
-        sceneManager_->update(deltaTime);
+       sceneManager_->render(renderer_); // Moved this line up
+       // std::cerr << "[DEBUG] Application::run() - Calling systemManager_->updateAll().\n";
+       systemManager_->updateAll(deltaTime);
+       // std::cerr << "[DEBUG] Application::run() - Finished systemManager_->updateAll().\n";
+       
+       // std::cerr << "[DEBUG] Application::run() - Calling sceneManager_->update()\n";
+       sceneManager_->update(deltaTime);
         
         renderManager_->present();
     }

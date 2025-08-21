@@ -161,10 +161,10 @@ struct MouseButtonReleasedEvent : public MouseButtonEvent {
  * @field actionName 액션의 종류를 나타내는 문자열 (예: "move_forward", "jump", "fire").
  */
 struct ActionEvent : public Event {
-    EntityId targetEntityId;
+    EntityID targetEntityId;
     std::string actionName;
 
-    ActionEvent(EntityId entityId, const std::string& action)
+    ActionEvent(EntityID entityId, const std::string& action)
         : targetEntityId(entityId), actionName(action) {}
 };
 

@@ -53,12 +53,12 @@ bool TestScene::loadScene() {
 
     /* --- BGM --- */
     auto bgmEntity = entityManager_.createEntity();
+    entityIDs_.push_back(bgmEntity);
     std::filesystem::path bgmPath = static_cast<std::filesystem::path>(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3";
     auto bgmSound = soundManager_.getSound(bgmPath);
     if (bgmSound) {
         auto& soundComp = entityManager_.addComponent<SoundComponent>(bgmEntity);
         soundComp.addSound("bgm", bgmSound, true, 0.5f);
-        entityIDs_.push_back(bgmEntity);
         soundComp.play("bgm");
     } else {
         std::cerr << "[ERROR] TestScene - Can't load bgm. \n";
@@ -89,7 +89,7 @@ void TestScene::update(float deltaTime) {
 }
 
 void TestScene::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255); // Dark grey background
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //Black
 }
 
 void TestScene::handleEvent(const Event& event) {

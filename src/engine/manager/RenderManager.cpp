@@ -73,7 +73,7 @@ void RenderManager::renderTexture(SDL_Texture* texture, float x, float y, const 
         srcFRect.w = static_cast<float>(srcRect->w);
         srcFRect.h = static_cast<float>(srcRect->h);
     }
-    
+
     /* 너비와 높이가 0이면 srcRect 또는 텍스처의 원본 크기를 사용 */
     if (w == 0 || h == 0) {
         float queryW, queryH;

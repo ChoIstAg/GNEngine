@@ -20,5 +20,6 @@ struct FadeComponent : public Component {
     float timer = 0.0f;
     float duration = 1.0f;
     SDL_Color color = { 0, 0, 0, 255 };
-    std::function<void()> onComplete = nullptr; //TODO - void function point로 바꾸기. 현재 오버헤드 존재함
+    float currentAlpha = 0.0f; // 현재 알파값. FadeSystem이 매 프레임 계산.
+    std::function<void()> onComplete = nullptr; //TODO1 - void function point로 바꾸기. 현재 오버헤드 존재함
 };

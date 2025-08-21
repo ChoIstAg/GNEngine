@@ -23,10 +23,10 @@ void CameraSystem::update(EntityManager& entityManager, float deltaTime) {
     auto& transformX = transformArray->positionX;
     auto& transformY = transformArray->positionY;
 
-    for (EntityId entity : entityManager.getEntitiesWith<CameraComponent>()) {
+    for (EntityID entity : entityManager.getEntitiesWith<CameraComponent>()) {
         const size_t cameraIndex = cameraArray->getEntityToIndexMap().at(entity);
 
-        EntityId targetId = targetEntityIds[cameraIndex];
+        EntityID targetId = targetEntityIds[cameraIndex];
         if (targetId != 0) {
             // SDL_Log("CameraSystem: Target entity ID is %u.", targetId);
             

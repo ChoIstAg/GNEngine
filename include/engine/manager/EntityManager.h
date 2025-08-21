@@ -31,8 +31,8 @@ public:
     EntityManager(EntityManager&&) = delete;
     EntityManager& operator=(EntityManager&&) = delete;
 
-    EntityId createEntity();
-    void destroyEntity(EntityId entity);
+    EntityID createEntity();
+    void destroyEntity(EntityID entity);
 
     /* 
      * @brief 사용할 컴포넌트를 등록한다. 등록한 컴포넌트만 사용 가능. 
@@ -59,7 +59,7 @@ public:
      * @tparam Args 컴포넌트 생성자의 파라미터
     */
     template<typename T, typename... Args>
-    auto addComponent(EntityId entity, Args&&... args) -> std::conditional_t<std::is_same_v<T, TransformComponent> || std::is_same_v<T, RenderComponent> || std::is_same_v<T, AnimationComponent> || std::is_same_v<T, TextComponent> || std::is_same_v<T, CameraComponent> || std::is_same_v<T, VelocityComponent> || std::is_same_v<T, AccelerationComponent>, void, T&>
+    auto addComponent(EntityID entity, Args&&... args) -> std::conditional_t<std::is_same_v<T, TransformComponent> || std::is_same_v<T, RenderComponent> || std::is_same_v<T, AnimationComponent> || std::is_same_v<T, TextComponent> || std::is_same_v<T, CameraComponent> || std::is_same_v<T, VelocityComponent> || std::is_same_v<T, AccelerationComponent>, void, T&>
     {
         std::type_index type = typeid(T);
         if (componentTypes_.find(type) == componentTypes_.end()) {
@@ -86,7 +86,7 @@ public:
      * @return 컴포넌트가 존재하면 std::optional<T>로 감싸진 컴포넌트 값을, 없으면 std::nullopt를 반환함.
     */
     template<typename T>
-    std::optional<T> getComponent(EntityId entity) {
+    std::optional<T> getComponent(EntityID entity) {
         std::type_index type = typeid(T);
         if (componentTypes_.find(type) == componentTypes_.end()) {
             return std::nullopt;
@@ -100,7 +100,7 @@ public:
     }
 
     template<typename T>
-    bool hasComponent(EntityId entity) {
+    bool hasComponent(EntityID entity) {
         std::type_index type = typeid(T);
         if (componentTypes_.find(type) == componentTypes_.end()) {
             return false;
@@ -110,7 +110,7 @@ public:
     }
 
     template<typename T>
-    void removeComponent(EntityId entity) {
+    void removeComponent(EntityID entity) {
         std::type_index type = typeid(T);
         if (componentTypes_.find(type) == componentTypes_.end()) {
             return;
@@ -128,13 +128,13 @@ public:
      * @tparam Args 검색할 모든 컴포넌트들
     */
     template<typename... Args>
-    std::vector<EntityId> getEntitiesWith() {
+    std::vector<EntityID> getEntitiesWith() {
         Signature requiredSignature;
         (registerComponentType<Args>(), ...);
         ((requiredSignature.set(componentTypes_[typeid(Args)])), ...);
 
-        std::vector<EntityId> matchingEntities;
-        for (EntityId entity : activeEntities_) {
+        std::vector<EntityID> matchingEntities;
+        for (EntityID entity : activeEntities_) {
             if ((entitySignatures_[entity] & requiredSignature) == requiredSignature) {
                 matchingEntities.push_back(entity);
             }
@@ -142,7 +142,7 @@ public:
         return matchingEntities;
     }
 
-    std::vector<EntityId> getAllEntities() const;
+    std::vector<EntityID> getAllEntities() const;
 
     /*
      * @brief 시스템이 컴포넌트 배열에 직접 접근할 수 있도록 포인터를 반환함.
@@ -157,11 +157,11 @@ public:
     }
 
 private:
-    EntityId nextEntityId_ = 1;
-    std::vector<EntityId> activeEntities_;
-    std::queue<EntityId> availableEntityIds_;
+    EntityID nextEntityId_ = 1;
+    std::vector<EntityID> activeEntities_;
+    std::queue<EntityID> availableEntityIds_;
     std::unordered_map<std::type_index, std::shared_ptr<IComponentArray>> componentArrays_;
     std::unordered_map<std::type_index, size_t> componentTypes_;
     size_t nextComponentType_ = 0;
-    std::unordered_map<EntityId, Signature> entitySignatures_;
+    std::unordered_map<EntityID, Signature> entitySignatures_;
 };

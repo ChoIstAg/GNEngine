@@ -19,14 +19,14 @@
 class IComponentArray {
 public:
     virtual ~IComponentArray() = default;
-    virtual void entityDestroyed(EntityId entity) = 0;
-    virtual bool hasComponent(EntityId entity) const = 0;
+    virtual void entityDestroyed(EntityID entity) = 0;
+    virtual bool hasComponent(EntityID entity) const = 0;
 };
 
 template<typename T>
 class ComponentArray : public IComponentArray {
 public:
-    void addComponent(EntityId entity, T&& component) {
+    void addComponent(EntityID entity, T&& component) {
         if (entityToIndexMap.count(entity)) {
             throw std::runtime_error("Component already added to entity.");
         }
@@ -36,7 +36,7 @@ public:
         components.push_back(std::move(component));
     }
 
-    void removeComponent(EntityId entity) {
+    void removeComponent(EntityID entity) {
         if (!entityToIndexMap.count(entity)) {
             throw std::runtime_error("Component not found for entity.");
         }
@@ -44,7 +44,7 @@ public:
         size_t indexOfLast = components.size() - 1;
         components[indexOfRemoved] = std::move(components[indexOfLast]);
         
-        EntityId entityOfLast = indexToEntityMap[indexOfLast];
+        EntityID entityOfLast = indexToEntityMap[indexOfLast];
         entityToIndexMap[entityOfLast] = indexOfRemoved;
         indexToEntityMap[indexOfRemoved] = entityOfLast;
 
@@ -53,18 +53,18 @@ public:
         indexToEntityMap.erase(indexOfLast);
     }
 
-    T& getComponent(EntityId entity) {
+    T& getComponent(EntityID entity) {
         if (!entityToIndexMap.count(entity)) {
             throw std::runtime_error("Component not found for entity.");
         }
         return components[entityToIndexMap.at(entity)];
     }
 
-    bool hasComponent(EntityId entity) const override {
+    bool hasComponent(EntityID entity) const override {
         return entityToIndexMap.count(entity);
     }
 
-    void entityDestroyed(EntityId entity) override {
+    void entityDestroyed(EntityID entity) override {
         if (entityToIndexMap.count(entity)) {
             removeComponent(entity);
         }
@@ -72,34 +72,34 @@ public:
 
 protected:
     std::vector<T> components;
-    std::unordered_map<EntityId, size_t> entityToIndexMap;
-    std::unordered_map<size_t, EntityId> indexToEntityMap;
+    std::unordered_map<EntityID, size_t> entityToIndexMap;
+    std::unordered_map<size_t, EntityID> indexToEntityMap;
 };
 
 class GNEngine_API SoAComponentArray : public IComponentArray {
 public:
-    void entityDestroyed(EntityId entity) override;
+    void entityDestroyed(EntityID entity) override;
 
-    bool hasComponent(EntityId entity) const override {
+    bool hasComponent(EntityID entity) const override {
         return entityToIndexMap.count(entity);
     }
 
-    const std::unordered_map<EntityId, size_t>& getEntityToIndexMap() const {
+    const std::unordered_map<EntityID, size_t>& getEntityToIndexMap() const {
         return entityToIndexMap;
     }
 
 protected:
     virtual void swapAndPop(size_t indexOfRemoved, size_t indexOfLast) = 0;
 
-    static std::unordered_map<EntityId, size_t> entityToIndexMap;
-    static std::unordered_map<size_t, EntityId> indexToEntityMap;
+    static std::unordered_map<EntityID, size_t> entityToIndexMap;
+    static std::unordered_map<size_t, EntityID> indexToEntityMap;
 };
 
 
 template<>
 class ComponentArray<TransformComponent> : public SoAComponentArray {
 public:
-    void addComponent(EntityId entity, TransformComponent&& component) {
+    void addComponent(EntityID entity, TransformComponent&& component) {
         size_t index;
         auto it = entityToIndexMap.find(entity);
         if (it == entityToIndexMap.end()) {
@@ -125,9 +125,9 @@ public:
         rotatedAngle[index] = component.rotatedAngle_;
     }
 
-    void removeComponent(EntityId entity) { /* Stub */ }
+    void removeComponent(EntityID entity) { /* Stub */ }
 
-    TransformComponent getComponent(EntityId entity) {
+    TransformComponent getComponent(EntityID entity) {
         if (!entityToIndexMap.count(entity)) {
             throw std::runtime_error("TransformComponent not found for entity.");
         }
@@ -166,7 +166,7 @@ protected:
 template<>
 class ComponentArray<VelocityComponent> : public SoAComponentArray {
 public:
-    void addComponent(EntityId entity, VelocityComponent&& component) {
+    void addComponent(EntityID entity, VelocityComponent&& component) {
         size_t index;
         auto it = entityToIndexMap.find(entity);
         if (it == entityToIndexMap.end()) {
@@ -185,9 +185,9 @@ public:
         vy[index] = component.vy;
     }
 
-    void removeComponent(EntityId entity) { /* Stub */ }
+    void removeComponent(EntityID entity) { /* Stub */ }
 
-    VelocityComponent getComponent(EntityId entity) {
+    VelocityComponent getComponent(EntityID entity) {
         if (!entityToIndexMap.count(entity)) {
             throw std::runtime_error("VelocityComponent not found for entity.");
         }
@@ -210,7 +210,7 @@ protected:
 template<>
 class ComponentArray<AccelerationComponent> : public SoAComponentArray {
 public:
-    void addComponent(EntityId entity, AccelerationComponent&& component) {
+    void addComponent(EntityID entity, AccelerationComponent&& component) {
         size_t index;
         auto it = entityToIndexMap.find(entity);
         if (it == entityToIndexMap.end()) {
@@ -229,9 +229,9 @@ public:
         ay[index] = component.ay;
     }
 
-    void removeComponent(EntityId entity) { /* Stub */ }
+    void removeComponent(EntityID entity) { /* Stub */ }
 
-    AccelerationComponent getComponent(EntityId entity) {
+    AccelerationComponent getComponent(EntityID entity) {
         if (!entityToIndexMap.count(entity)) {
             throw std::runtime_error("AccelerationComponent not found for entity.");
         }
@@ -255,7 +255,7 @@ protected:
 template<>
 class ComponentArray<RenderComponent> : public SoAComponentArray {
 public:
-    void addComponent(EntityId entity, RenderComponent&& component) {
+    void addComponent(EntityID entity, RenderComponent&& component) {
         size_t index;
         auto it = entityToIndexMap.find(entity);
         if (it == entityToIndexMap.end()) {
@@ -268,6 +268,7 @@ public:
 
         if (index >= textures.size()) {
             textures.resize(index + 1);
+            layers.resize(index + 1);
             hasAnimations.resize(index + 1);
             srcRectX.resize(index + 1);
             srcRectY.resize(index + 1);
@@ -278,6 +279,7 @@ public:
         }
 
         textures[index] = component.getTexture();
+        layers[index] = component.getLayer();
         hasAnimations[index] = component.hasAnimation();
         const auto& rect = component.getSrcRect();
         srcRectX[index] = rect.x;
@@ -288,17 +290,18 @@ public:
         flipY[index] = component.getFlipY();
     }
 
-    void removeComponent(EntityId entity) { /* Stub */ }
+    void removeComponent(EntityID entity) { /* Stub */ }
 
-    RenderComponent getComponent(EntityId entity) {
+    RenderComponent getComponent(EntityID entity) {
         if (!entityToIndexMap.count(entity)) {
             throw std::runtime_error("RenderComponent not found for entity.");
         }
         size_t i = entityToIndexMap.at(entity);
-        return RenderComponent(textures[i], hasAnimations[i], {srcRectX[i], srcRectY[i], srcRectW[i], srcRectH[i]}, flipX[i], flipY[i]);
+        return RenderComponent(textures[i], layers[i], hasAnimations[i], {srcRectX[i], srcRectY[i], srcRectW[i], srcRectH[i]}, flipX[i], flipY[i]);
     }
 
     std::vector<Texture*> textures;
+    std::vector<RenderLayer> layers;
     std::vector<bool> hasAnimations;
     std::vector<int> srcRectX, srcRectY, srcRectW, srcRectH;
     std::vector<bool> flipX, flipY;
@@ -306,6 +309,7 @@ public:
 protected:
     void swapAndPop(size_t indexOfRemoved, size_t indexOfLast) override {
         textures[indexOfRemoved] = textures[indexOfLast];
+        layers[indexOfRemoved] = layers[indexOfLast];
         hasAnimations[indexOfRemoved] = hasAnimations[indexOfLast];
         srcRectX[indexOfRemoved] = srcRectX[indexOfLast];
         srcRectY[indexOfRemoved] = srcRectY[indexOfLast];
@@ -315,6 +319,7 @@ protected:
         flipY[indexOfRemoved] = flipY[indexOfLast];
 
         textures.pop_back();
+        layers.pop_back();
         hasAnimations.pop_back();
         srcRectX.pop_back();
         srcRectY.pop_back();
@@ -328,7 +333,7 @@ protected:
 template<>
 class ComponentArray<AnimationComponent> : public SoAComponentArray {
 public:
-    void addComponent(EntityId entity, AnimationComponent&& component) {
+    void addComponent(EntityID entity, AnimationComponent&& component) {
         size_t index;
         auto it = entityToIndexMap.find(entity);
         if (it == entityToIndexMap.end()) {
@@ -354,9 +359,9 @@ public:
         areFinished[index] = component.isFinished_;
     }
 
-    void removeComponent(EntityId entity) { /* Stub */ }
+    void removeComponent(EntityID entity) { /* Stub */ }
 
-    AnimationComponent getComponent(EntityId entity) {
+    AnimationComponent getComponent(EntityID entity) {
         if (!entityToIndexMap.count(entity)) {
             throw std::runtime_error("AnimationComponent not found for entity.");
         }
@@ -394,7 +399,7 @@ protected:
 template<>
 class ComponentArray<TextComponent> : public SoAComponentArray {
 public:
-    void addComponent(EntityId entity, TextComponent&& component) {
+    void addComponent(EntityID entity, TextComponent&& component) {
         size_t index;
         auto it = entityToIndexMap.find(entity);
         if (it == entityToIndexMap.end()) {
@@ -432,9 +437,9 @@ public:
         textureHeights[index] = component.textureHeight;
     }
 
-    void removeComponent(EntityId entity) { /* Stub */ }
+    void removeComponent(EntityID entity) { /* Stub */ }
 
-    TextComponent getComponent(EntityId entity) {
+    TextComponent getComponent(EntityID entity) {
         if (!entityToIndexMap.count(entity)) {
             throw std::runtime_error("TextComponent not found for entity.");
         }
@@ -491,7 +496,7 @@ protected:
 template<>
 class ComponentArray<CameraComponent> : public SoAComponentArray {
 public:
-    void addComponent(EntityId entity, CameraComponent&& component) {
+    void addComponent(EntityID entity, CameraComponent&& component) {
         size_t index;
         auto it = entityToIndexMap.find(entity);
         if (it == entityToIndexMap.end()) {
@@ -515,9 +520,9 @@ public:
         targetEntityIds[index] = component.targetEntityId;
     }
 
-    void removeComponent(EntityId entity) { /* Stub */ }
+    void removeComponent(EntityID entity) { /* Stub */ }
 
-    CameraComponent getComponent(EntityId entity) {
+    CameraComponent getComponent(EntityID entity) {
         if (!entityToIndexMap.count(entity)) {
             throw std::runtime_error("CameraComponent not found for entity.");
         }
@@ -528,7 +533,7 @@ public:
     std::vector<float> x;
     std::vector<float> y;
     std::vector<float> zoom;
-    std::vector<EntityId> targetEntityIds;
+    std::vector<EntityID> targetEntityIds;
 
 protected:
     void swapAndPop(size_t indexOfRemoved, size_t indexOfLast) override {

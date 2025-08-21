@@ -22,6 +22,7 @@ SoundManager::SoundManager() {
 
 SoundManager::~SoundManager() {
     quitAL();
+    std::cerr << "SoundManager " << this << " is successfully destroyed. \n";
 }
 
 bool SoundManager::initAL() {
@@ -92,7 +93,7 @@ void SoundManager::quitAL() {
 void SoundManager::checkAlErrors(const std::string& filename, int line) {
     ALenum error = alGetError();
     if (error != AL_NO_ERROR) {
-        std::cerr << "OpenAL Error in " << filename << " (" << line << "): " << alGetString(error) << std::endl;
+        std::cerr << "[OpenAL Error] in " << filename << " (" << line << "): " << alGetString(error) << std::endl;
     }
 }
 
@@ -129,7 +130,7 @@ std::shared_ptr<Sound> SoundManager::getSound(const std::filesystem::path& fileP
     return nullptr;
 }
 
-ALuint SoundManager::playSound(EntityId entityId, Sound* sound, Position position, SoundPriority priority, float volume, float pitch, bool loop, bool spatialized) {
+ALuint SoundManager::playSound(EntityID entityId, Sound* sound, Position position, SoundPriority priority, float volume, float pitch, bool loop, bool spatialized) {
     if (!sound) return 0;
 
     auto voiceIndexOpt = findAvailableVoice(priority);

@@ -1,0 +1,19 @@
+Acess main
+Loaded existing config file: "C:/Development/code/project/GNEngine/app/data/config.bin"
+OpenAL initialized with 64 voices.
+LogoScene is successfully loaded.
+LogoScene::onEnter()
+LogoScene::onExit()
+TestScene::onEnter()
+Application - Cleaning up and quitting... 
+App is successfully quited.
+RenderManager 0x30ad7e0 is successfully destroyed
+SystemManager 0x30ad700 is successfully destroyed.
+TextManager 0x30ac680 is successfully destroyed and all fonts unloaded.
+TextureManager 0x30ab910 is successfully destroyed
+OpenAL shut down.
+SoundManager 0x308d180 is successfully destroyed.
+InputManager 0x308d090 is successfully destroyed
+EventManager 0x308d020 is successfully destroyed and all subscriptions cleared.
+Application exited successfully!
+FileManager instance is successfully destroyed.

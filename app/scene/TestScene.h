@@ -39,7 +39,7 @@ private:
     SoundManager& soundManager_;
     AnimationManager& animationManager_;
 
-    EntityId playerEntity_;
-    EntityId cameraEntity_;
-    std::vector<EntityId> entityIDs_;
+    EntityID playerEntity_;
+    EntityID cameraEntity_;
+    std::vector<EntityID> entityIDs_;
 };

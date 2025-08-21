@@ -52,8 +52,13 @@ public:
     void handleEvent(const Event& event) override;
 
 private:
-    EntityId logoEntity_;
+    EntityID logoEntity_;
+
     float sceneTimer_ = 0.0f;
+
+    float screenTime_ = 3.0f;
+    float fadeInTime_ = 1.0f;
+    float fadeOutTime_ = 5.0f;
 
     enum class LogoSceneState {
         FADING_IN,
@@ -61,8 +66,6 @@ private:
         FADING_OUT
     };
     LogoSceneState currentState_ = LogoSceneState::FADING_IN;
-
-    //FadeComponent& fadeComp_;
 
     EntityManager& entityManager_;
     SceneManager& sceneManager_;

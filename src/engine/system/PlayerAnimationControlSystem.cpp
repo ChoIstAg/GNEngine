@@ -1,8 +1,11 @@
-#include "engine/component/AccelerationComponent.h"
 #include "engine/system/PlayerAnimationControlSystem.h"
+
 #include <iostream>
 #include <filesystem>
 #include <cmath>
+
+#include "engine/core/RenderLayer.h"
+#include "engine/component/AccelerationComponent.h"
 #include "engine/component/RenderComponent.h"
 #include "engine/component/TransformComponent.h"
 
@@ -18,7 +21,7 @@ PlayerAnimationControlSystem::PlayerAnimationControlSystem(
 
 void PlayerAnimationControlSystem::update(EntityManager& entityManager, float deltaTime) {
     //SDL_Log("PlayerAnimationControlSystem: update called. DeltaTime: %.4f", deltaTime);
-    for (EntityId entity : entityManager.getEntitiesWith<PlayerAnimationControllerComponent, AnimationComponent, VelocityComponent, TransformComponent, AccelerationComponent>()) {
+    for (EntityID entity : entityManager.getEntitiesWith<PlayerAnimationControllerComponent, AnimationComponent, VelocityComponent, TransformComponent, AccelerationComponent>()) {
         auto animController_opt = entityManager.getComponent<PlayerAnimationControllerComponent>(entity);
         auto animation_opt = entityManager.getComponent<AnimationComponent>(entity);
         auto velocity_opt = entityManager.getComponent<VelocityComponent>(entity);
@@ -74,11 +77,11 @@ void PlayerAnimationControlSystem::update(EntityManager& entityManager, float de
     }
 }
 
-void PlayerAnimationControlSystem::playWalkAnimation(EntityManager& entityManager, EntityId entityId, std::shared_ptr<Animation> walkAnimationData) {
+void PlayerAnimationControlSystem::playWalkAnimation(EntityManager& entityManager, EntityID entityId, std::shared_ptr<Animation> walkAnimationData) {
     setCurrentAnimation(entityManager, entityId, walkAnimationData);
 }
 
-void PlayerAnimationControlSystem::playJumpAnimation(EntityManager& entityManager, EntityId entityId, std::shared_ptr<Animation> jumpAnimationData) {
+void PlayerAnimationControlSystem::playJumpAnimation(EntityManager& entityManager, EntityID entityId, std::shared_ptr<Animation> jumpAnimationData) {
     setCurrentAnimation(entityManager, entityId, jumpAnimationData);
 }
 
@@ -86,7 +89,7 @@ bool PlayerAnimationControlSystem::isJumpAnimationActive(AnimationComponent* ani
     return animation && animation->animation_ == jumpAnimationData;
 }
 
-void PlayerAnimationControlSystem::setCurrentAnimation(EntityManager& entityManager, EntityId entityId, std::shared_ptr<Animation> newAnimation) {
+void PlayerAnimationControlSystem::setCurrentAnimation(EntityManager& entityManager, EntityID entityId, std::shared_ptr<Animation> newAnimation) {
     if (!newAnimation) {
         std::cerr << "Error: Attempted to set a null animation for entity " << entityId << std::endl;
         if (entityManager.hasComponent<AnimationComponent>(entityId)) {
@@ -138,7 +141,7 @@ void PlayerAnimationControlSystem::setCurrentAnimation(EntityManager& entityMana
         if (textureManager_.loadTexture(newAnimation->getTexturePath())) {
             Texture* newAnimTexture = textureManager_.getTexture(newAnimation->getTexturePath());
             if (newAnimTexture) {
-                entityManager.addComponent<RenderComponent>(entityId, newAnimTexture, true, newAnimation->getFrame(0));
+                entityManager.addComponent<RenderComponent>(entityId, newAnimTexture, RenderLayer::GAME_OBJECT, true, newAnimation->getFrame(0));
             } else {
                 std::cerr << "Error: Could not get texture after loading for new animation: " << newAnimation->getTexturePath().string() << ". RenderComponent not added." << std::endl;
             }
@@ -153,7 +156,7 @@ void PlayerAnimationControlSystem::setCurrentAnimation(EntityManager& entityMana
         if (textureManager_.loadTexture(defaultTexturePath)) {
             Texture* defaultTexture = textureManager_.getTexture(defaultTexturePath);
             if (defaultTexture) {
-                entityManager.addComponent<RenderComponent>(entityId, defaultTexture, false);
+                entityManager.addComponent<RenderComponent>(entityId, defaultTexture, RenderLayer::GAME_OBJECT, false);
             } else {
                 std::cerr << "Error: Could not get default texture for fallback: " << defaultTexturePath.string() << ". RenderComponent not added." << std::endl;
             }

@@ -2,6 +2,9 @@
 
 #include "engine/manager/EntityManager.h"
 #include "engine/component/FadeComponent.h"
+#include "engine/component/RenderComponent.h"
+#include "engine/component/TransformComponent.h"
+#include "engine/core/RenderLayer.h"
 
 FadeManager::FadeManager(EntityManager& entityManager) 
     : entityManager_(entityManager) {}
@@ -14,11 +17,16 @@ FadeManager::FadeManager(EntityManager& entityManager)
  */
 void FadeManager::startFadeIn(float duration, SDL_Color color, std::function<void()> onComplete) {
     auto fadeEntity = entityManager_.createEntity();
+    entityManager_.addComponent<TransformComponent>(fadeEntity);
+
     auto& fade = entityManager_.addComponent<FadeComponent>(fadeEntity);
     fade.state = FadeState::FADE_IN;
     fade.duration = duration;
     fade.color = color;
     fade.onComplete = onComplete;
+    fade.currentAlpha = 255.0f; // 페이드 인 시작 시 알파값은 255 (불투명)
+
+    entityManager_.addComponent<RenderComponent>(fadeEntity, nullptr, RenderLayer::SCENE_EFFECT);
 }
 
 /*
@@ -29,9 +37,14 @@ void FadeManager::startFadeIn(float duration, SDL_Color color, std::function<voi
  */
 void FadeManager::startFadeOut(float duration, SDL_Color color, std::function<void()> onComplete) {
     auto fadeEntity = entityManager_.createEntity();
+    entityManager_.addComponent<TransformComponent>(fadeEntity);
+
     auto& fade = entityManager_.addComponent<FadeComponent>(fadeEntity);
     fade.state = FadeState::FADE_OUT;
     fade.duration = duration;
     fade.color = color;
     fade.onComplete = onComplete;
+    fade.currentAlpha = 0.0f; // 페이드 아웃 시작 시 알파값은 0 (투명)
+
+    entityManager_.addComponent<RenderComponent>(fadeEntity, nullptr, RenderLayer::SCENE_EFFECT);
 }

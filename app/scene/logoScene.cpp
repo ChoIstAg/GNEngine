@@ -27,6 +27,8 @@
 /* --- Include required prefabs --- */
 #include "engine/prefab/PlayerPrefab.h"
 
+//TODO [5] - 로고를 여러개 넣을 수 있게 하기. 키 입력시 다음 로고로 넘어가고 마지막 로고시 Fade Out과 함께 장면 전환.
+
 LogoScene::LogoScene(EntityManager& entityManager,
                     SceneManager& sceneManager,
                     EventManager& eventManager,
@@ -47,23 +49,27 @@ LogoScene::LogoScene(EntityManager& entityManager,
     // Constructor is now empty
 }
 
-bool LogoScene::loadScene()
-{
+bool LogoScene::loadScene() {
     logoEntity_ = entityManager_.createEntity();
     entityManager_.addComponent<TransformComponent>(logoEntity_);
 
     std::filesystem::path logoPath = static_cast<std::filesystem::path>(IMAGE_ASSET_ROOT_PATH) / "logo/" / "logo_no_background.png";
     Texture* logoIMG = textureManager_.getTexture(logoPath);
-    if(logoIMG == nullptr) { 
+    if(logoIMG == nullptr) {
         std::cerr << "[ERROR] LogoScene - can't load logoIMG \n";
     }
-    entityManager_.addComponent<RenderComponent>(logoEntity_, logoIMG);
+    entityManager_.addComponent<RenderComponent>(logoEntity_, logoIMG, RenderLayer::UI);
 
-    // 로고를 화면 중앙에 배치
-    TransformComponent transform = entityManager_.getComponent<TransformComponent>(logoEntity_).value();
-    transform.positionX_ = renderManager_.getWindowWidth() / 2.0f;
-    transform.positionY_ = renderManager_.getWindowHeight() / 2.0f;
-    
+    /* Skip to input key */
+    auto skipLogoScene = [&](const KeyReleasedEvent& event) {
+        if(event.keyCode == SDL_SCANCODE_SPACE) {
+            screenTime_ = 0.3f;
+            fadeInTime_ = 0.1f;
+            fadeOutTime_ = 0.2f;
+        }
+    };
+    eventManager_.subscribe<KeyReleasedEvent>(skipLogoScene);
+
     std::cerr << "LogoScene is successfully loaded.\n";
     isLoaded_ = true;
     return true;
@@ -76,10 +82,10 @@ void LogoScene::onEnter() {
 
     std::cerr << "LogoScene::onEnter()\n";
     currentState_ = LogoSceneState::FADING_IN;
-    fadeManager_.startFadeIn(2.0f, {0, 0, 0, 255}, 
+    fadeManager_.startFadeIn(0.3f, {0, 0, 0, 255}, 
         [this]() { 
             currentState_ = LogoSceneState::DISPLAYING;
-            sceneTimer_ = 0.0f;
+            sceneTimer_ = 0.0f; // init
         } );
 }
 
@@ -89,22 +95,22 @@ void LogoScene::onExit() {
 }
 
 void LogoScene::update(float deltaTime) {
-    if (currentState_ == LogoSceneState::DISPLAYING)
-    {
+    if (currentState_ == LogoSceneState::DISPLAYING) {
         sceneTimer_ += deltaTime;
-        if (sceneTimer_ >= 3.0f)
-        {
+        if (sceneTimer_ >= screenTime_) {
             currentState_ = LogoSceneState::FADING_OUT;
             fadeManager_.startFadeOut(2.0f, {0, 0, 0, 255}, 
                 [this]() {
+                    sceneManager_.loadScene("TestScene");
                     sceneManager_.changeScene("TestScene");
-                });
+                } );
         }
     }
 }
 
 void LogoScene::render(SDL_Renderer* rawRenderer) {
-    SDL_SetRenderDrawColor(renderManager_.getRenderer(), 255, 255, 255, 255); // 흰색 배경
+    SDL_SetRenderDrawColor(rawRenderer, 255, 255, 255, 255); // 흰색 배경
+    SDL_RenderClear(rawRenderer);
 }
 
 void LogoScene::handleEvent(const Event& event) {

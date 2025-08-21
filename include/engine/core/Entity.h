@@ -4,10 +4,10 @@
 #include <bitset>
 
 // Unique Entity ID that recognized by ECS system.
-using EntityId = uint32_t;
+using EntityID = uint32_t;
 
 // Invalid EntityId 
-constexpr EntityId INVALID_ENTITY_ID = 0;
+constexpr EntityID INVALID_ENTITY_ID = 0;
 
 // Max component that entity can have
 constexpr size_t MAX_COMPONENTS = 32;
