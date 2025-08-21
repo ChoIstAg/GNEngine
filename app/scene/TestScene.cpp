@@ -58,6 +58,7 @@ bool TestScene::loadScene() {
     auto bgmSound = soundManager_.getSound(bgmPath);
     if (bgmSound) {
         auto& soundComp = entityManager_.addComponent<SoundComponent>(bgmEntity);
+        entityManager_.addComponent<TransformComponent>(bgmEntity);
         soundComp.addSound("bgm", bgmSound, true, 0.5f);
         soundComp.play("bgm");
     } else {

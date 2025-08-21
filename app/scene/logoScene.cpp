@@ -64,7 +64,7 @@ bool LogoScene::loadScene() {
     auto skipLogoScene = [&](const KeyReleasedEvent& event) {
         if(event.keyCode == SDL_SCANCODE_SPACE) {
             screenTime_ = 0.3f;
-            fadeInTime_ = 0.1f;
+            fadeInTime_ = 0.1f; // 사실상 의미 없긴 함. 나중에 Fade 로직 변경시 의미 있을것.
             fadeOutTime_ = 0.2f;
         }
     };
