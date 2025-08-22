@@ -25,7 +25,7 @@ public:
     // 논리 업데이트
     virtual void update(float deltaTime) = 0; 
     // 렌더링
-    virtual void render(SDL_Renderer* renderer) = 0; 
+    virtual void render(SDL_Renderer* renderer) {} 
 
 protected:
     bool isLoaded_ = false;

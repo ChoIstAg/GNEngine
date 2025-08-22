@@ -67,6 +67,7 @@ int Application::init(){
 
 
     /* ※Do not change the order of declarations.※ */
+    /* (The order of declaration is the same as the order of destruction.) */
     /* --- Initialize all manager --- */
     entityManager_ = std::make_unique<EntityManager>();
     eventManager_ = std::make_unique<EventManager>();
@@ -110,7 +111,7 @@ int Application::init(){
 
     /* --- Regist all scane ---*/
     sceneManager_->addScene("LogoScene", std::make_unique<LogoScene>(*entityManager_, *sceneManager_, *eventManager_, *renderManager_, *soundManager_, *textureManager_, *animationManager_, *fadeManager_));
-    sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*eventManager_, *renderManager_, *textureManager_, *soundManager_, *animationManager_, *entityManager_));
+    sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*entityManager_, *eventManager_, *renderManager_, *soundManager_, *textureManager_, *textManager_, *animationManager_));
     //sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>());
 
     sceneManager_->loadScene("LogoScene");
@@ -173,7 +174,6 @@ void Application::run() {
         /*
         * SystemManager perform in the order. {PRE_UPDATE, LOGIT_UPDATE, PHYSICS_UPDATE, POST_UPDATE, RENDER}
         */
-       sceneManager_->render(renderer_); // Moved this line up
        // std::cerr << "[DEBUG] Application::run() - Calling systemManager_->updateAll().\n";
        systemManager_->updateAll(deltaTime);
        // std::cerr << "[DEBUG] Application::run() - Finished systemManager_->updateAll().\n";

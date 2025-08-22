@@ -35,5 +35,4 @@ public:
 
     void handleEvent(const Event& event);
     void update(float deltaTime);
-    void render(SDL_Renderer* renderer);
 };

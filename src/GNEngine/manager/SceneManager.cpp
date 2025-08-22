@@ -59,13 +59,3 @@ void SceneManager::update(float deltaTime) {
         currentScene_->update(deltaTime);
     }
 }
-
-/*
- * render 함수는 현재 활성화된 씬을 렌더링합니다.
- * @param renderer 렌더링에 사용할 SDL_Renderer 포인터
-*/
-void SceneManager::render(SDL_Renderer* renderer) {
-    if (currentScene_) {
-        currentScene_->render(renderer);
-    }
-}

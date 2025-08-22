@@ -1,5 +1,6 @@
 ﻿#include "GNEngine/system/CameraSystem.h"
 #include <iostream>
+#include <SDL3/SDL_log.h>
 
 CameraSystem::CameraSystem(RenderManager& renderManager)
     : renderManager_(renderManager) {}
@@ -25,6 +26,7 @@ void CameraSystem::update(EntityManager& entityManager, float deltaTime) {
 
     for (EntityID entity : entityManager.getEntitiesWith<CameraComponent>()) {
         const size_t cameraIndex = cameraArray->getEntityToIndexMap().at(entity);
+        // SDL_Log("CameraSystem: entity=%u, cameraIndex=%zu", entity, cameraIndex);
 
         EntityID targetId = targetEntityIds[cameraIndex];
         if (targetId != 0) {
@@ -32,6 +34,7 @@ void CameraSystem::update(EntityManager& entityManager, float deltaTime) {
             
             if (transformArray->hasComponent(targetId)) {
                 const size_t targetTransformIndex = transformArray->getEntityToIndexMap().at(targetId);
+                // SDL_Log("CameraSystem: targetId=%u, targetTransformIndex=%zu", targetId, targetTransformIndex);
                 
                 // 카메라를 타겟 엔티티의 위치로 이동 (간단한 따라가기 로직)
                 cameraX[cameraIndex] = transformX[targetTransformIndex];
@@ -44,11 +47,12 @@ void CameraSystem::update(EntityManager& entityManager, float deltaTime) {
 
                 // TODO: 부드러운 카메라 이동, 경계 처리, 줌 레벨 조정 등 추가 로직 구현
             } else {
-                //SDL_Log("CameraSystem: Target entity %u does not have TransformComponent.", targetId);
+                // SDL_Log("CameraSystem: Target entity %u does not have TransformComponent.", targetId);
             }
         } else {
-            //SDL_Log("CameraSystem: No target entity set for camera %u.", entity);
+            // SDL_Log("CameraSystem: No target entity set for camera %u.", entity);
         }
+        
         // TODO: 줌 레벨 조정 로직 등 추가
     }
 }

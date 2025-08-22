@@ -9,9 +9,6 @@ void MovementSystem::update(EntityManager& entityManager, float deltaTime) {
     auto transformArray = entityManager.getComponentArray<TransformComponent>();
     auto velocityArray = entityManager.getComponentArray<VelocityComponent>();
     auto accelerationArray = entityManager.getComponentArray<AccelerationComponent>();
-    // if (!transformArray) { std::cerr << "[ERROR] MovementSystem - ComponentArray<TransformComponent> is nullptr.\n"; }
-    // if (!velocityArray) { std::cerr << "[ERROR] MovementSystem - ComponentArray<VelocityComponent> is nullptr.\n"; }
-    // if (!accelerationArray) { std::cerr << "[ERROR] MovementSystem - ComponentArray<AccelerationComponent> is nullptr.\n"; }
 
     // 컴포넌트 배열이 없으면 시스템을 실행할 수 없음
     if (!transformArray || !velocityArray || !accelerationArray) {
@@ -28,47 +25,48 @@ void MovementSystem::update(EntityManager& entityManager, float deltaTime) {
 
     // 3. 처리할 엔티티 목록을 가져옴
     auto entities = entityManager.getEntitiesWith<TransformComponent, VelocityComponent, AccelerationComponent>();
-    const auto& entityToIndexMap = transformArray->getEntityToIndexMap();
 
-    // 4. 엔티티 루프를 돌며 데이터 처리 (캐시 친화적 방식)
+    // 4. 엔티티 루프를 돌며 데이터 처리
     for (const auto& entity : entities) {
-        const size_t i = entityToIndexMap.at(entity); // 엔티티 ID로부터 데이터 인덱스를 찾음
+        const size_t transformIndex = transformArray->getEntityToIndexMap().at(entity);
+        const size_t velocityIndex = velocityArray->getEntityToIndexMap().at(entity);
+        const size_t accelerationIndex = accelerationArray->getEntityToIndexMap().at(entity);
 
         // 가속도를 이용한 속도 업데이트
-        velX[i] += accX[i] * deltaTime;
-        velY[i] += accY[i] * deltaTime;
+        velX[velocityIndex] += accX[accelerationIndex] * deltaTime;
+        velY[velocityIndex] += accY[accelerationIndex] * deltaTime;
 
         // 가속도가 없을 때 감속 적용
-        if (accX[i] == 0.0f) {
-            if (velX[i] > 0) {
-                velX[i] = std::max(0.0f, velX[i] - DECELERATION_RATE * deltaTime);
-            } else if (velX[i] < 0) {
-                velX[i] = std::min(0.0f, velX[i] + DECELERATION_RATE * deltaTime);
+        if (accX[accelerationIndex] == 0.0f) {
+            if (velX[velocityIndex] > 0) {
+                velX[velocityIndex] = std::max(0.0f, velX[velocityIndex] - DECELERATION_RATE * deltaTime);
+            } else if (velX[velocityIndex] < 0) {
+                velX[velocityIndex] = std::min(0.0f, velX[velocityIndex] + DECELERATION_RATE * deltaTime);
             }
         }
-        if (accY[i] == 0.0f) {
-            if (velY[i] > 0) {
-                velY[i] = std::max(0.0f, velY[i] - DECELERATION_RATE * deltaTime);
-            } else if (velY[i] < 0) {
-                velY[i] = std::min(0.0f, velY[i] + DECELERATION_RATE * deltaTime);
+        if (accY[accelerationIndex] == 0.0f) {
+            if (velY[velocityIndex] > 0) {
+                velY[velocityIndex] = std::max(0.0f, velY[velocityIndex] - DECELERATION_RATE * deltaTime);
+            } else if (velY[velocityIndex] < 0) {
+                velY[velocityIndex] = std::min(0.0f, velY[velocityIndex] + DECELERATION_RATE * deltaTime);
             }
         }
 
         // 속도 제한
-        if (std::abs(velX[i]) > MAX_SPEED) {
-            velX[i] = std::copysign(MAX_SPEED, velX[i]);
+        if (std::abs(velX[velocityIndex]) > MAX_SPEED) {
+            velX[velocityIndex] = std::copysign(MAX_SPEED, velX[velocityIndex]);
         }
-        if (std::abs(velY[i]) > MAX_SPEED) {
-            velY[i] = std::copysign(MAX_SPEED, velY[i]);
+        if (std::abs(velY[velocityIndex]) > MAX_SPEED) {
+            velY[velocityIndex] = std::copysign(MAX_SPEED, velY[velocityIndex]);
         }
 
         // 속도를 이용한 위치 업데이트
-        posX[i] += velX[i] * deltaTime;
-        posY[i] += velY[i] * deltaTime;
+        posX[transformIndex] += velX[velocityIndex] * deltaTime;
+        posY[transformIndex] += velY[velocityIndex] * deltaTime;
 
         // 매 프레임 끝에 가속도를 0으로 리셋
-        accX[i] = 0.0f;
-        accY[i] = 0.0f;
+        accX[accelerationIndex] = 0.0f;
+        accY[accelerationIndex] = 0.0f;
     }
 }
 

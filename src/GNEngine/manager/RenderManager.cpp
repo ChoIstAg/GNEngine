@@ -20,10 +20,10 @@ RenderManager::~RenderManager() {
     std::cerr << "RenderManager " << this << " is successfully destroyed" << std::endl;
 }
 
-/* 화면 비우기 */
+/* 배경 색 설정 및 화면 비우기. */
 void RenderManager::clear() {
     if (renderer_) {
-        SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255); /* 기본 배경색을 검정으로 설정 */
+        SDL_SetRenderDrawColor(renderer_, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a); /* 배경색 설정 */
         SDL_RenderClear(renderer_);
     }
 }
@@ -33,11 +33,6 @@ void RenderManager::present() {
     if (renderer_) {
         SDL_RenderPresent(renderer_);
     }
-}
-
-void RenderManager::setCameraPosition(float x, float y) {
-    cameraX_ = x;
-    cameraY_ = y;
 }
 
 /* 텍스처 렌더링. 
@@ -103,25 +98,13 @@ void RenderManager::renderTexture(SDL_Texture* texture, float x, float y, const 
     }
 }
 
-void RenderManager::setViewport(SDL_Rect viewport) {
-    if (!renderer_) {
-        SDL_Log("RenderManager::setViewport - Renderer is null. : %s", SDL_GetError());
-        return;
-    }
+// void RenderManager::setViewport(SDL_Rect viewport) {
+//     if (!renderer_) {
+//         SDL_Log("RenderManager::setViewport - Renderer is null. : %s", SDL_GetError());
+//         return;
+//     }
 
-    if (!SDL_SetRenderViewport(renderer_, &viewport)) {
-        SDL_Log("RenderManager::setViewport - Failed to set viewport: %s", SDL_GetError());
-    }
-}
-
-int RenderManager::getWindowWidth() const {
-    int w, h;
-    SDL_GetWindowSize(window_, &w, &h);
-    return w;
-}
-
-int RenderManager::getWindowHeight() const {
-    int w, h;
-    SDL_GetWindowSize(window_, &w, &h);
-    return h;
-}
+//     if (!SDL_SetRenderViewport(renderer_, &viewport)) {
+//         SDL_Log("RenderManager::setViewport - Failed to set viewport: %s", SDL_GetError());
+//     }
+// }

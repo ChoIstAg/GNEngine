@@ -2,8 +2,8 @@
 #include "GNEngine/manager/EntityManager.h"
 
 // SoAComponentArray의 static 멤버 변수 정의
-GNEngine_API std::unordered_map<EntityID, size_t> SoAComponentArray::entityToIndexMap;
-GNEngine_API std::unordered_map<size_t, EntityID> SoAComponentArray::indexToEntityMap;
+// GNEngine_API std::unordered_map<EntityID, size_t> SoAComponentArray::entityToIndexMap;
+// GNEngine_API std::unordered_map<size_t, EntityID> SoAComponentArray::indexToEntityMap;
 
 /*
  * @brief 엔티티가 파괴될 때 호출되어 공유 맵과 각 컴포넌트 배열의 데이터를 정리함.
@@ -17,6 +17,10 @@ GNEngine_API void SoAComponentArray::entityDestroyed(EntityID entity) {
     size_t indexOfRemoved = entityToIndexMap.at(entity);
     size_t indexOfLast = entityToIndexMap.size() - 1;
 
+    // 2. 데이터 벡터에서 실제 데이터 이동 및 삭제 (swap and pop)
+    swapAndPop(indexOfRemoved, indexOfLast);
+
+    // 3. 맵 업데이트
     if (indexOfRemoved == indexOfLast) {
         // 제거할 엔티티가 마지막 요소인 경우, 그냥 맵에서 제거
         entityToIndexMap.erase(entity);
@@ -31,9 +35,6 @@ GNEngine_API void SoAComponentArray::entityDestroyed(EntityID entity) {
         entityToIndexMap.erase(entity);
         indexToEntityMap.erase(indexOfLast);
     }
-    
-    // TODO: EntityManager::destroyEntity에서 모든 SoA ComponentArray에 대해 
-    //       직접 swapAndPop(indexOfRemoved, indexOfLast)를 호출하여 데이터 벡터를 재정렬하는 코드가 필요함.
 }
 
 

@@ -46,7 +46,7 @@ LogoScene::LogoScene(EntityManager& entityManager,
     animationManager_(animationManager),
     fadeManager_(fadeManager)
 {
-    // Constructor is now empty
+    renderManager_.setBackgroundColor({255, 255, 255, 255}); // White
 }
 
 bool LogoScene::loadScene() {

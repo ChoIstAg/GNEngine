@@ -91,8 +91,8 @@ public:
 protected:
     virtual void swapAndPop(size_t indexOfRemoved, size_t indexOfLast) = 0;
 
-    static std::unordered_map<EntityID, size_t> entityToIndexMap;
-    static std::unordered_map<size_t, EntityID> indexToEntityMap;
+    std::unordered_map<EntityID, size_t> entityToIndexMap;
+    std::unordered_map<size_t, EntityID> indexToEntityMap;
 };
 
 

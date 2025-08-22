@@ -12,12 +12,16 @@ RenderSystem::RenderSystem(RenderManager& renderManager, TextManager& textManage
     : renderManager_(renderManager), textManager_(textManager) {}
 
 void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
-    // 이 함수 내에서만 사용할 로컬 구조체와 정렬용 람다
+    SDL_Color backgroundColor = renderManager_.getBackgroundColor();
+    SDL_SetRenderDrawColor(renderManager_.getRenderer(), backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
+
+    // 이 함수 내에서만 사용할 로컬 구조체
     struct Renderable {
         EntityID entity;
         RenderLayer layer;
     };
 
+    // 정렬용 람다
     auto compareRenderables = [](const Renderable& a, const Renderable& b) {
         return static_cast<int>(a.layer) < static_cast<int>(b.layer);
     };

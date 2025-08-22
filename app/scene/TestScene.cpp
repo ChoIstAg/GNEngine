@@ -6,12 +6,13 @@
 #include <filesystem>
 
 /* --- Managers --- */
+#include "GNEngine/manager/EntityManager.h"
+#include "GNEngine/manager/EventManager.h"
 #include "GNEngine/manager/RenderManager.h"
 #include "GNEngine/manager/TextureManager.h"
 #include "GNEngine/manager/SoundManager.h"
 #include "GNEngine/manager/AnimationManager.h"
-#include "GNEngine/manager/EntityManager.h"
-#include "GNEngine/manager/EventManager.h"
+#include "GNEngine/manager/TextManager.h"
 
 /* --- Components --- */
 #include "GNEngine/component/TransformComponent.h"
@@ -25,31 +26,35 @@
 /* --- Prefabs --- */
 #include "GNEngine/prefab/PlayerPrefab.h"
 
-TestScene::TestScene(EventManager& eventManager, 
-                   RenderManager& renderManager, 
-                   TextureManager& textureManager, 
-                   SoundManager& soundManager, 
-                   AnimationManager& animationManager,
-                   EntityManager& entityManager)
-    : eventManager_(eventManager),
-      renderManager_(renderManager),
-      textureManager_(textureManager),
-      soundManager_(soundManager),
-      animationManager_(animationManager),
-      entityManager_(entityManager)
+TestScene::TestScene(EntityManager& entityManager,
+                    EventManager& eventManager,
+                    RenderManager& renderManager,
+                    SoundManager& soundManager,
+                    TextureManager& textureManager,
+                    TextManager& textManager,
+                    AnimationManager& animationManager)
+    : entityManager_(entityManager),
+    eventManager_(eventManager),
+    renderManager_(renderManager),
+    textureManager_(textureManager),
+    textManager_(textManager),
+    soundManager_(soundManager),
+    animationManager_(animationManager)
 {
-    // Constructor is now empty
+    renderManager_.setBackgroundColor({0, 0, 0, 255}); // black
 }
 
 bool TestScene::loadScene() {
     /* --- Player --- */
     playerEntity_ = PlayerPrefab::create(entityManager_, eventManager_, textureManager_, renderManager_, soundManager_, animationManager_);
     entityIDs_.push_back(playerEntity_);
+    // std::cerr << "[DEBUG] TestScene::loadScene -  Player is successfully loaded.\n";
 
     /* --- Camera --- */
     cameraEntity_ = entityManager_.createEntity();
-    entityManager_.addComponent<CameraComponent>(cameraEntity_, playerEntity_, 10.0f);
+        entityManager_.addComponent<CameraComponent>(cameraEntity_, playerEntity_, 10.0f);
     entityIDs_.push_back(cameraEntity_);
+    // std::cerr << "[DEBUG] TestScene::loadScene - Camera is successfully loaded.\n";
 
     /* --- BGM --- */
     auto bgmEntity = entityManager_.createEntity();
@@ -64,6 +69,13 @@ bool TestScene::loadScene() {
     } else {
         std::cerr << "[ERROR] TestScene - Can't load bgm. \n";
     }
+    // std::cerr << "[DEBUG] TestScene::loadScene - bgm is successfully loaded.\n";
+
+
+    auto textEntity = entityManager_.createEntity();
+    entityIDs_.push_back(textEntity);
+    std::filesystem::path textPath = static_cast<std::filesystem::path>(TEXT_ASSET_ROOT_PATH) / "test.txt";
+
 
     isLoaded_ = true;
     return true;
@@ -89,9 +101,7 @@ void TestScene::update(float deltaTime) {
     // This scene might not have complex update logic itself
 }
 
-void TestScene::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //Black
-}
+
 
 void TestScene::handleEvent(const Event& event) {
     
