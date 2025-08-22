@@ -1,4 +1,4 @@
-#include "TestScene.h"
+﻿#include "TestScene.h"
 #include "RootPath.h"
 
 #include <iostream>
@@ -6,24 +6,24 @@
 #include <filesystem>
 
 /* --- Managers --- */
-#include "engine/manager/RenderManager.h"
-#include "engine/manager/TextureManager.h"
-#include "engine/manager/SoundManager.h"
-#include "engine/manager/AnimationManager.h"
-#include "engine/manager/EntityManager.h"
-#include "engine/manager/EventManager.h"
+#include "GNEngine/manager/RenderManager.h"
+#include "GNEngine/manager/TextureManager.h"
+#include "GNEngine/manager/SoundManager.h"
+#include "GNEngine/manager/AnimationManager.h"
+#include "GNEngine/manager/EntityManager.h"
+#include "GNEngine/manager/EventManager.h"
 
 /* --- Components --- */
-#include "engine/component/TransformComponent.h"
-#include "engine/component/RenderComponent.h"
-#include "engine/component/CameraComponent.h"
-#include "engine/component/SoundComponent.h"
-#include "engine/component/InputControlComponent.h"
-#include "engine/component/PlayerMovementComponent.h"
-#include "engine/component/PlayerAnimationControllerComponent.h"
+#include "GNEngine/component/TransformComponent.h"
+#include "GNEngine/component/RenderComponent.h"
+#include "GNEngine/component/CameraComponent.h"
+#include "GNEngine/component/SoundComponent.h"
+#include "GNEngine/component/InputControlComponent.h"
+#include "GNEngine/component/PlayerMovementComponent.h"
+#include "GNEngine/component/PlayerAnimationControllerComponent.h"
 
 /* --- Prefabs --- */
-#include "engine/prefab/PlayerPrefab.h"
+#include "GNEngine/prefab/PlayerPrefab.h"
 
 TestScene::TestScene(EventManager& eventManager, 
                    RenderManager& renderManager, 
@@ -96,3 +96,4 @@ void TestScene::render(SDL_Renderer* renderer) {
 void TestScene::handleEvent(const Event& event) {
     
 }
+

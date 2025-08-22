@@ -1,6 +1,6 @@
-#pragma once
+﻿#pragma once
 #include "GNEngine_API.h"
-#include "engine/core/Scene.h"
+#include "GNEngine/core/Scene.h"
 
 #include <vector>
 
@@ -12,7 +12,7 @@ class SoundManager;
 class AnimationManager;
 class EntityManager;
 
-#include "engine/core/Entity.h"
+#include "GNEngine/core/Entity.h"
 
 class TestScene : public Scene {
 public:
@@ -43,3 +43,4 @@ private:
     EntityID cameraEntity_;
     std::vector<EntityID> entityIDs_;
 };
+

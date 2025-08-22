@@ -1,5 +1,5 @@
-#include "engine/system/InputToAccelerationSystem.h"
-#include "engine/component/InputControlComponent.h"
+﻿#include "GNEngine/system/InputToAccelerationSystem.h"
+#include "GNEngine/component/InputControlComponent.h"
 
 InputToAccelerationSystem::InputToAccelerationSystem(EventManager& eventManager, EntityManager& entityManager)
     : eventManager_(eventManager), entityManager_(entityManager) {

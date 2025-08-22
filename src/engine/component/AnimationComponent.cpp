@@ -1,4 +1,4 @@
-#include "engine/component/AnimationComponent.h"
+﻿#include "GNEngine/component/AnimationComponent.h"
 #include <iostream>
 
 /*
@@ -55,3 +55,4 @@ const SDL_Rect& AnimationComponent::getCurrentFrameRect() const {
     static const SDL_Rect emptyRect = {0, 0, 0, 0};
     return emptyRect;
 }
+

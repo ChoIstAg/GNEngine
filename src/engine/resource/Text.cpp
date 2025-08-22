@@ -1,4 +1,4 @@
-#include "engine/resource/Text.h"
+﻿#include "GNEngine/resource/Text.h"
 #include <stdexcept>
 
 Text::Text(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, SDL_Color color, bool enableMultiline, bool enableNewline, int wrapWidth, int maxHeight)

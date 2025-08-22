@@ -1,4 +1,4 @@
-#include "engine/manager/SoundManager.h"
+﻿#include "GNEngine/manager/SoundManager.h"
 #include <iostream>
 #include <algorithm>
 #include <filesystem>
@@ -396,4 +396,5 @@ bool SoundManager::loadOgg(const std::filesystem::path& filePath, ALuint& monoBu
     AL_CHECK_ERROR();
     return true;
 }
+
 

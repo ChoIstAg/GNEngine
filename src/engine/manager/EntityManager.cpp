@@ -1,4 +1,4 @@
-#include "engine/manager/EntityManager.h"
+﻿#include "GNEngine/manager/EntityManager.h"
 #include <algorithm>
 #include <stdexcept>
 
@@ -34,3 +34,4 @@ void EntityManager::destroyEntity(EntityID entity) {
 std::vector<EntityID> EntityManager::getAllEntities() const {
     return activeEntities_;
 }
+

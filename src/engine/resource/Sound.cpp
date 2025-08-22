@@ -1,4 +1,4 @@
-#include "engine/resource/Sound.h"
+﻿#include "GNEngine/resource/Sound.h"
 
 /*
  * Sound 객체를 생성하고 멤버 변수를 초기화함.
@@ -21,3 +21,4 @@ Sound::~Sound() {
         alDeleteBuffers(1, &stereoBufferRight_);
     }
 }
+

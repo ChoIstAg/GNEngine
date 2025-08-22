@@ -75,7 +75,6 @@ add_library(GNEngine SHARED
 # GNEngine 라이브러리 인클루드 디렉터리 설정
 target_include_directories(GNEngine PUBLIC
     "${CMAKE_SOURCE_DIR}/include"
-    "${CMAKE_SOURCE_DIR}/lib"
     "${SDL3_INCLUDE_DIR}"
     "${SDL3_image_INCLUDE_DIR}"
     "${SDL3_ttf_INCLUDE_DIR}"

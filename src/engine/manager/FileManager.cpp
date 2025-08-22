@@ -1,4 +1,4 @@
-#include "engine/manager/FileManager.h"
+﻿#include "GNEngine/manager/FileManager.h"
 #include "RootPath.h"
 
 #include <fstream>
@@ -187,3 +187,4 @@ void FileManager::saveLogs(const std::filesystem::path& filePath)
     
     logs_offsets_.clear();
 }
+

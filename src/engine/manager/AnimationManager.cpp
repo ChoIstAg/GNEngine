@@ -1,4 +1,4 @@
-#include "engine/manager/AnimationManager.h"
+﻿#include "GNEngine/manager/AnimationManager.h"
 #include "RootPath.h"
 
 #include <fstream>
@@ -103,3 +103,4 @@ std::shared_ptr<Animation> AnimationManager::getAnimation(const std::string& ani
     std::cerr << "Warning: Animation '" << animationName << "' not found in cache." << std::endl;
     return nullptr;
 }
+

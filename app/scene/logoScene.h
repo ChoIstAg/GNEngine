@@ -1,6 +1,6 @@
-#pragma once
+﻿#pragma once
 #include "GNEngine_API.h"
-#include "engine/core/Scene.h"
+#include "GNEngine/core/Scene.h"
 
 // 필요한 Manager들의 전방 선언
 class EntityManager;
@@ -14,9 +14,9 @@ class SceneManager;
 
 #include <SDL3/SDL_render.h>
 
-#include "engine/component/TransformComponent.h"
-#include "engine/component/TextComponent.h"
-#include "engine/component/RenderComponent.h"
+#include "GNEngine/component/TransformComponent.h"
+#include "GNEngine/component/TextComponent.h"
+#include "GNEngine/component/RenderComponent.h"
 
 /*
  * @brief LogoScene

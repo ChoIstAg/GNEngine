@@ -1,4 +1,4 @@
-#include "Application.h"
+﻿#include "Application.h"
 
 #include <chrono>
 #include <iostream>
@@ -6,29 +6,29 @@
 
 // Managers are included in header file.
 /* --- Include All Systems to use --- */
-#include "engine/system/AnimationSystem.h"
-#include "engine/system/RenderSystem.h"
-#include "engine/system/MovementSystem.h"
-#include "engine/system/InputSystem.h"
-#include "engine/system/SoundSystem.h"
-#include "engine/system/CameraSystem.h" 
-#include "engine/system/InputToAccelerationSystem.h"
-#include "engine/system/PlayerAnimationControlSystem.h"
-#include "engine/system/FadeSystem.h"
+#include "GNEngine/system/AnimationSystem.h"
+#include "GNEngine/system/RenderSystem.h"
+#include "GNEngine/system/MovementSystem.h"
+#include "GNEngine/system/InputSystem.h"
+#include "GNEngine/system/SoundSystem.h"
+#include "GNEngine/system/CameraSystem.h" 
+#include "GNEngine/system/InputToAccelerationSystem.h"
+#include "GNEngine/system/PlayerAnimationControlSystem.h"
+#include "GNEngine/system/FadeSystem.h"
 
 /* --- Include All Components to use --- */
-#include "engine/component/SoundComponent.h"
-#include "engine/component/CameraComponent.h"
-#include "engine/component/RenderComponent.h"
-#include "engine/component/AccelerationComponent.h"
-#include "engine/component/VelocityComponent.h"
-#include "engine/component/InputControlComponent.h"
-#include "engine/component/TransformComponent.h"
-#include "engine/component/AnimationComponent.h"
-#include "engine/component/TextComponent.h"
-#include "engine/component/FadeComponent.h"
-#include "engine/component/PlayerAnimationControllerComponent.h"
-#include "engine/component/PlayerMovementComponent.h"
+#include "GNEngine/component/SoundComponent.h"
+#include "GNEngine/component/CameraComponent.h"
+#include "GNEngine/component/RenderComponent.h"
+#include "GNEngine/component/AccelerationComponent.h"
+#include "GNEngine/component/VelocityComponent.h"
+#include "GNEngine/component/InputControlComponent.h"
+#include "GNEngine/component/TransformComponent.h"
+#include "GNEngine/component/AnimationComponent.h"
+#include "GNEngine/component/TextComponent.h"
+#include "GNEngine/component/FadeComponent.h"
+#include "GNEngine/component/PlayerAnimationControllerComponent.h"
+#include "GNEngine/component/PlayerMovementComponent.h"
 
 /* --- Include All Scenes to use --- */
 #include "scene/LogoScene.h"
@@ -184,3 +184,4 @@ void Application::run() {
         renderManager_->present();
     }
 }
+

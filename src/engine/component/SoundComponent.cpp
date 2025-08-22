@@ -1,4 +1,4 @@
-#include "engine/component/SoundComponent.h"
+﻿#include "GNEngine/component/SoundComponent.h"
 
 #include <iostream>
 
@@ -55,3 +55,4 @@ const SoundComponent::SoundData* SoundComponent::getSoundData(const std::string&
 std::unordered_map<std::string, SoundComponent::SoundData>& SoundComponent::getAllSounds() {
     return sounds_;
 }
+

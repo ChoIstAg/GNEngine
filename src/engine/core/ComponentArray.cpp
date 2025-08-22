@@ -1,5 +1,5 @@
-#include "engine/core/ComponentArray.h"
-#include "engine/manager/EntityManager.h"
+﻿#include "GNEngine/core/ComponentArray.h"
+#include "GNEngine/manager/EntityManager.h"
 
 // SoAComponentArray의 static 멤버 변수 정의
 GNEngine_API std::unordered_map<EntityID, size_t> SoAComponentArray::entityToIndexMap;
@@ -35,4 +35,5 @@ GNEngine_API void SoAComponentArray::entityDestroyed(EntityID entity) {
     // TODO: EntityManager::destroyEntity에서 모든 SoA ComponentArray에 대해 
     //       직접 swapAndPop(indexOfRemoved, indexOfLast)를 호출하여 데이터 벡터를 재정렬하는 코드가 필요함.
 }
+
 

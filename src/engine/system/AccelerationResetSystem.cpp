@@ -1,4 +1,4 @@
-#include "engine/system/AccelerationResetSystem.h"
+﻿#include "GNEngine/system/AccelerationResetSystem.h"
 
 void AccelerationResetSystem::update(EntityManager& entityManager, float deltaTime) {
     auto accelArray = entityManager.getComponentArray<AccelerationComponent>();

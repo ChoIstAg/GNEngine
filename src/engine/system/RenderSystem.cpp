@@ -1,12 +1,12 @@
-#include "engine/system/RenderSystem.h"
+﻿#include "GNEngine/system/RenderSystem.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <SDL3/SDL_render.h>
 
-#include "engine/core/Entity.h"
-#include "engine/core/RenderLayer.h"
-#include "engine/component/FadeComponent.h"
+#include "GNEngine/core/Entity.h"
+#include "GNEngine/core/RenderLayer.h"
+#include "GNEngine/component/FadeComponent.h"
 
 RenderSystem::RenderSystem(RenderManager& renderManager, TextManager& textManager)
     : renderManager_(renderManager), textManager_(textManager) {}

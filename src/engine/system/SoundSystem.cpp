@@ -1,5 +1,5 @@
-#include "engine/system/SoundSystem.h"
-#include "engine/manager/EntityManager.h"
+﻿#include "GNEngine/system/SoundSystem.h"
+#include "GNEngine/manager/EntityManager.h"
 #include <iostream>
 
 SoundSystem::SoundSystem(SoundManager& soundManager)

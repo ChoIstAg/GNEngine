@@ -1,4 +1,4 @@
-#include "engine/manager/TextManager.h"
+﻿#include "GNEngine/manager/TextManager.h"
 #include <iostream>
 
 TextManager::TextManager(SDL_Renderer* renderer) : renderer_(renderer) {

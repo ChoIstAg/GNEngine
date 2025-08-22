@@ -1,8 +1,8 @@
-#include "engine/manager/SceneManager.h"
+﻿#include "GNEngine/manager/SceneManager.h"
 
 #include <iostream>
 
-#include "engine/core/Scene.h"
+#include "GNEngine/core/Scene.h"
 
 // SceneManager 생성자 구현
 SceneManager::SceneManager() = default;

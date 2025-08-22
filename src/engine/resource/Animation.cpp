@@ -1,4 +1,4 @@
-#include "engine/resource/Animation.h"
+﻿#include "GNEngine/resource/Animation.h"
 
 /*
  * @brief Animation 생성자.
@@ -66,3 +66,4 @@ const std::filesystem::path& Animation::getTexturePath() const {
 bool Animation::isLooping() const {
     return loop_;
 }
+

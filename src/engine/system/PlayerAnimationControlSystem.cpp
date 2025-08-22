@@ -1,13 +1,13 @@
-#include "engine/system/PlayerAnimationControlSystem.h"
+﻿#include "GNEngine/system/PlayerAnimationControlSystem.h"
 
 #include <iostream>
 #include <filesystem>
 #include <cmath>
 
-#include "engine/core/RenderLayer.h"
-#include "engine/component/AccelerationComponent.h"
-#include "engine/component/RenderComponent.h"
-#include "engine/component/TransformComponent.h"
+#include "GNEngine/core/RenderLayer.h"
+#include "GNEngine/component/AccelerationComponent.h"
+#include "GNEngine/component/RenderComponent.h"
+#include "GNEngine/component/TransformComponent.h"
 
 PlayerAnimationControlSystem::PlayerAnimationControlSystem(
     AnimationManager& animationManager,

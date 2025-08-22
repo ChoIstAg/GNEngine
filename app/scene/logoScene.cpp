@@ -1,31 +1,31 @@
-#include "LogoScene.h"
+﻿#include "LogoScene.h"
 #include "RootPath.h"
 
 #include <iostream>
 #include <string>
 #include <filesystem>
 
-#include "engine/core/ComponentArray.h"
+#include "GNEngine/core/ComponentArray.h"
 
 /* --- Include required managers --- */
-#include "engine/manager/EntityManager.h"
-#include "engine/manager/EventManager.h"
-#include "engine/manager/RenderManager.h"
-#include "engine/manager/SoundManager.h"
-#include "engine/manager/TextureManager.h"
-#include "engine/manager/AnimationManager.h"
-#include "engine/manager/SceneManager.h"
-#include "engine/manager/FadeManager.h"
+#include "GNEngine/manager/EntityManager.h"
+#include "GNEngine/manager/EventManager.h"
+#include "GNEngine/manager/RenderManager.h"
+#include "GNEngine/manager/SoundManager.h"
+#include "GNEngine/manager/TextureManager.h"
+#include "GNEngine/manager/AnimationManager.h"
+#include "GNEngine/manager/SceneManager.h"
+#include "GNEngine/manager/FadeManager.h"
 
 /* --- Include required components --- */
-#include "engine/component/TransformComponent.h"
-#include "engine/component/RenderComponent.h"
-#include "engine/component/CameraComponent.h"
-#include "engine/component/SoundComponent.h"
-#include "engine/component/FadeComponent.h"
+#include "GNEngine/component/TransformComponent.h"
+#include "GNEngine/component/RenderComponent.h"
+#include "GNEngine/component/CameraComponent.h"
+#include "GNEngine/component/SoundComponent.h"
+#include "GNEngine/component/FadeComponent.h"
 
 /* --- Include required prefabs --- */
-#include "engine/prefab/PlayerPrefab.h"
+#include "GNEngine/prefab/PlayerPrefab.h"
 
 //TODO [5] - 로고를 여러개 넣을 수 있게 하기. 키 입력시 다음 로고로 넘어가고 마지막 로고시 Fade Out과 함께 장면 전환.
 
@@ -116,3 +116,4 @@ void LogoScene::render(SDL_Renderer* rawRenderer) {
 void LogoScene::handleEvent(const Event& event) {
     // 로고 씬에서는 현재 이벤트를 특별히 처리할 필요 없음
 }
+

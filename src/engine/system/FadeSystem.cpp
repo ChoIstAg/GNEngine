@@ -1,12 +1,12 @@
-#include "engine/system/FadeSystem.h"
+﻿#include "GNEngine/system/FadeSystem.h"
 
 #include <algorithm>
 #include <iostream>
 
-#include "engine/manager/RenderManager.h"
-#include "engine/manager/EntityManager.h"
+#include "GNEngine/manager/RenderManager.h"
+#include "GNEngine/manager/EntityManager.h"
 
-#include "engine/component/FadeComponent.h"
+#include "GNEngine/component/FadeComponent.h"
 
 /*
  * @brief FadeSystem의 생성자.
@@ -62,3 +62,4 @@ void FadeSystem::update(EntityManager& entityManager, float deltaTime) {
         }
     }
 }
+

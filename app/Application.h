@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -9,18 +9,18 @@
 #include <chrono>
 
 /* --- Include all Manager to use --- */
-#include "engine/manager/FileManager.h"
-#include "engine/manager/EntityManager.h"
-#include "engine/manager/SceneManager.h"
-#include "engine/manager/SystemManager.h"
-#include "engine/manager/RenderManager.h"
-#include "engine/manager/EventManager.h"
-#include "engine/manager/InputManager.h"
-#include "engine/manager/SoundManager.h"
-#include "engine/manager/TextureManager.h"
-#include "engine/manager/TextManager.h"
-#include "engine/manager/AnimationManager.h"
-#include "engine/manager/FadeManager.h"
+#include "GNEngine/manager/FileManager.h"
+#include "GNEngine/manager/EntityManager.h"
+#include "GNEngine/manager/SceneManager.h"
+#include "GNEngine/manager/SystemManager.h"
+#include "GNEngine/manager/RenderManager.h"
+#include "GNEngine/manager/EventManager.h"
+#include "GNEngine/manager/InputManager.h"
+#include "GNEngine/manager/SoundManager.h"
+#include "GNEngine/manager/TextureManager.h"
+#include "GNEngine/manager/TextManager.h"
+#include "GNEngine/manager/AnimationManager.h"
+#include "GNEngine/manager/FadeManager.h"
 
 class Application {
 private:
@@ -62,3 +62,4 @@ public:
     std::unique_ptr<FadeManager> fadeManager_;
     std::unique_ptr<RenderManager> renderManager_; // RenderManager often depends on windowing, should be last.
 };
+

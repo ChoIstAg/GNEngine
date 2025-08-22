@@ -1,5 +1,5 @@
-#pragma once
-#include "engine/core/Scene.h"
+﻿#pragma once
+#include "GNEngine/core/Scene.h"
 
 
 class MainMenuScene : public Scene {
@@ -14,3 +14,4 @@ public:
     void update(float deltaTime) override;
     void render(SDL_Renderer* renderer) override;
 };
+

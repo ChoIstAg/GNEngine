@@ -1,10 +1,10 @@
-#include "engine/manager/FadeManager.h"
+﻿#include "GNEngine/manager/FadeManager.h"
 
-#include "engine/manager/EntityManager.h"
-#include "engine/component/FadeComponent.h"
-#include "engine/component/RenderComponent.h"
-#include "engine/component/TransformComponent.h"
-#include "engine/core/RenderLayer.h"
+#include "GNEngine/manager/EntityManager.h"
+#include "GNEngine/component/FadeComponent.h"
+#include "GNEngine/component/RenderComponent.h"
+#include "GNEngine/component/TransformComponent.h"
+#include "GNEngine/core/RenderLayer.h"
 
 FadeManager::FadeManager(EntityManager& entityManager) 
     : entityManager_(entityManager) {}
