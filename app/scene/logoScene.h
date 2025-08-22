@@ -56,8 +56,8 @@ private:
 
     float sceneTimer_ = 0.0f;
 
-    float screenTime_ = 3.0f;
-    float fadeInTime_ = 1.0f;
+    float screenTime_ = 2.0f;
+    float fadeInTime_ = 1.5f;
     float fadeOutTime_ = 5.0f;
 
     enum class LogoSceneState {

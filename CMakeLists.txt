@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "-std=c++23")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
-# SDL 경로 설정
+# SDL 경로 설정좋아, 
 set(SDL3_DIR "${CMAKE_SOURCE_DIR}/lib/SDL3-3.2.18/x86_64-w64-mingw32/lib/cmake/SDL3")
 set(SDL3_DLL_DIR "${CMAKE_SOURCE_DIR}/lib/SDL3-3.2.18/x86_64-w64-mingw32/bin")
 set(SDL3_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/SDL3-3.2.18/x86_64-w64-mingw32/include")
@@ -35,41 +35,44 @@ find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image CONFIG REQUIRED)
 find_package(SDL3_ttf CONFIG REQUIRED)
 
+# Box2D
+add_subdirectory(lib/box2d-3.1.1)
+
 # GNEngine 라이브러리 정의
 add_library(GNEngine SHARED
     # Include All source files.
-    src/engine/core/ComponentArray.cpp
-    src/engine/resource/Animation.cpp
-    src/engine/resource/Sound.cpp
-    src/engine/resource/Text.cpp
+    src/GNEngine/core/ComponentArray.cpp
+    src/GNEngine/resource/Animation.cpp
+    src/GNEngine/resource/Sound.cpp
+    src/GNEngine/resource/Text.cpp
 
-    src/engine/manager/FileManager.cpp
-    src/engine/manager/EntityManager.cpp
-    src/engine/manager/SystemManager.cpp
-    src/engine/manager/RenderManager.cpp
-    src/engine/manager/InputManager.cpp
-    src/engine/manager/SceneManager.cpp
-    src/engine/manager/SoundManager.cpp
-    src/engine/manager/AnimationManager.cpp
-    src/engine/manager/TextManager.cpp
-    src/engine/manager/TextureManager.cpp
-    src/engine/manager/FadeManager.cpp
+    src/GNEngine/manager/FileManager.cpp
+    src/GNEngine/manager/EntityManager.cpp
+    src/GNEngine/manager/SystemManager.cpp
+    src/GNEngine/manager/RenderManager.cpp
+    src/GNEngine/manager/InputManager.cpp
+    src/GNEngine/manager/SceneManager.cpp
+    src/GNEngine/manager/SoundManager.cpp
+    src/GNEngine/manager/AnimationManager.cpp
+    src/GNEngine/manager/TextManager.cpp
+    src/GNEngine/manager/TextureManager.cpp
+    src/GNEngine/manager/FadeManager.cpp
 
-    src/engine/system/RenderSystem.cpp
-    src/engine/system/SoundSystem.cpp
-    src/engine/system/InputSystem.cpp
-    src/engine/system/CameraSystem.cpp
-    src/engine/system/FadeSystem.cpp
-    src/engine/system/AnimationSystem.cpp
-    src/engine/system/MovementSystem.cpp
-    src/engine/system/InputToAccelerationSystem.cpp
-    src/engine/system/PlayerAnimationControlSystem.cpp
-    src/engine/system/AccelerationResetSystem.cpp
+    src/GNEngine/system/RenderSystem.cpp
+    src/GNEngine/system/SoundSystem.cpp
+    src/GNEngine/system/InputSystem.cpp
+    src/GNEngine/system/CameraSystem.cpp
+    src/GNEngine/system/FadeSystem.cpp
+    src/GNEngine/system/AnimationSystem.cpp
+    src/GNEngine/system/MovementSystem.cpp
+    src/GNEngine/system/InputToAccelerationSystem.cpp
+    src/GNEngine/system/PlayerAnimationControlSystem.cpp
+    src/GNEngine/system/AccelerationResetSystem.cpp
 
-    src/engine/component/AnimationComponent.cpp
-    src/engine/component/SoundComponent.cpp
+    src/GNEngine/component/AnimationComponent.cpp
+    src/GNEngine/component/SoundComponent.cpp
 
-    src/engine/prefab/PlayerPrefab.cpp
+    src/GNEngine/prefab/PlayerPrefab.cpp
 )
 
 # GNEngine 라이브러리 인클루드 디렉터리 설정
@@ -82,14 +85,16 @@ target_include_directories(GNEngine PUBLIC
     "${CMAKE_SOURCE_DIR}/lib/dr_libs"
     "${CMAKE_SOURCE_DIR}/lib/ogg"
     "${CMAKE_SOURCE_DIR}/lib/nlohmann"
+    "${CMAKE_SOURCE_DIR}/lib"
+    "${CMAKE_SOURCE_DIR}/lib/box2d-3.1.1/include"
     
-    "${CMAKE_SOURCE_DIR}/include/engine/flatbuffers_generated"
-    "${CMAKE_SOURCE_DIR}/src/engine/component"
-    "${CMAKE_SOURCE_DIR}/src/engine/core"
-    "${CMAKE_SOURCE_DIR}/src/engine/manager"
-    "${CMAKE_SOURCE_DIR}/src/engine/prefab"
-    "${CMAKE_SOURCE_DIR}/src/engine/resource"
-    "${CMAKE_SOURCE_DIR}/src/engine/system"
+    "${CMAKE_SOURCE_DIR}/include/GNEngine/flatbuffers_generated"
+    "${CMAKE_SOURCE_DIR}/src/GNEngine/component"
+    "${CMAKE_SOURCE_DIR}/src/GNEngine/core"
+    "${CMAKE_SOURCE_DIR}/src/GNEngine/manager"
+    "${CMAKE_SOURCE_DIR}/src/GNEngine/prefab"
+    "${CMAKE_SOURCE_DIR}/src/GNEngine/resource"
+    "${CMAKE_SOURCE_DIR}/src/GNEngine/system"
 )
 
 # GNEngine 라이브러리 링크 설정
@@ -99,6 +104,7 @@ target_link_libraries(GNEngine PUBLIC
     SDL3_ttf::SDL3_ttf
     "${OPENAL_DIR}/libs/Win64/OpenAL32.lib"
     stdc++fs
+    box2d
 )
 
 # GNEngine_EXPORTS 정의 (DLL 빌드 시 필요)

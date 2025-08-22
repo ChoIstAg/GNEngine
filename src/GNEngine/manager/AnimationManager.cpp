@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "nlohmann/json.hpp"
+#include "./json.hpp"
 
 /*
  * @brief JSON 파일을 로드하여 애니메이션 데이터를 파싱하고 캐시에 저장함.

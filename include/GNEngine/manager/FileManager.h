@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "GNEngine_API.h"
-#include "flatbuffers/flatbuffers.h"
+#include <flatbuffers/flatbuffers.h>
 
 #include <string>
 #include <vector>
@@ -10,7 +10,7 @@
 #include <map>
 
 // definitions_generated 파일은 이 명령어로 생성. 
-//./lib/flatbuffers/flatc.exe -c -o "include/engine/flatbuffers_generated" "asset/text/fbs/definitions.fbs"
+//./lib/flatbuffers/flatc.exe -c -o "include/GNEngine/flatbuffers_generated" "asset/text/fbs/definitions.fbs"
 #include "GNEngine/flatbuffers_generated/definitions_generated.h"
 
 namespace GNEngine {

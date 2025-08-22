@@ -8,13 +8,13 @@
 
 /* for decording sound files*/
 #define DR_MP3_IMPLEMENTATION
-#include "dr_libs/dr_mp3.h"
+#include "./dr_mp3.h"
 #define DR_WAV_IMPLEMENTATION
-#include "dr_libs/dr_wav.h"
+#include "./dr_wav.h"
 #define DR_FLAC_IMPLEMENTATION
-#include "dr_libs/dr_flac.h"
+#include "./dr_flac.h"
 
-#include "ogg/stb_vorbis.c"
+#include "./stb_vorbis.c"
 
 SoundManager::SoundManager() {
     initAL();

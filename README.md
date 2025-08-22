@@ -21,7 +21,7 @@ Can use stereo sound to 3D sound.
 - for decoding sound files :
     - dr_wav(v0.14.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs) 
     - dr_mp3(v0.7.1): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
-    - dr_flac(v0.13.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
+    - dr_flac(v0.13.0): [https://github.com/mackron/dr_libs](https://github.com/nothings/dr_libs)
     - stb_vorbis(v1.22): [https://github.com/nothings/stb](https://github.com/nothings/stb)
 - nlohmann/json(3.12.0): [https://github.com/nlohmann/json](https://github.com/nlohmann/json)
 - google/flatBuffer()
