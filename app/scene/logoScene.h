@@ -14,6 +14,7 @@ class SceneManager;
 
 #include <SDL3/SDL_render.h>
 
+#include "GNEngine/core/Entity.h"
 #include "GNEngine/component/TransformComponent.h"
 #include "GNEngine/component/TextComponent.h"
 #include "GNEngine/component/RenderComponent.h"
@@ -48,8 +49,7 @@ public:
     void onExit() override;
     bool loadScene() override;
     void update(float deltaTime) override;
-    void render(SDL_Renderer* rawRenderer) override;
-    void handleEvent(const Event& event) override;
+    
 
 private:
     EntityID logoEntity_;

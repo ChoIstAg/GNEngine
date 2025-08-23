@@ -33,6 +33,14 @@ public:
         }
     }
 
-    void handleEvent(const Event& event);
-    void update(float deltaTime);
+    /*
+    * 현재 활성화된 씬의 논리를 업데이트.
+    * @param deltaTime 이전 프레임으로부터 경과된 시간 (초)
+    */
+    void update(float deltaTime) {
+        if (currentScene_) {
+            currentScene_->update(deltaTime);
+        }
+    }
+
 };

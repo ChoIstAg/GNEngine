@@ -109,13 +109,3 @@ void LogoScene::update(float deltaTime) {
         }
     }
 }
-
-void LogoScene::render(SDL_Renderer* rawRenderer) {
-    SDL_SetRenderDrawColor(rawRenderer, 255, 255, 255, 255); // 흰색 배경
-    SDL_RenderClear(rawRenderer);
-}
-
-void LogoScene::handleEvent(const Event& event) {
-    // 로고 씬에서는 현재 이벤트를 특별히 처리할 필요 없음
-}
-

@@ -101,10 +101,3 @@ void TestScene::onExit() {
 void TestScene::update(float deltaTime) {
     // This scene might not have complex update logic itself
 }
-
-
-
-void TestScene::handleEvent(const Event& event) {
-    
-}
-

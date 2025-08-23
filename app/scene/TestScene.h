@@ -30,7 +30,6 @@ public:
     void onExit() override;
     bool loadScene() override;
     void update(float deltaTime) override;
-    void handleEvent(const Event& event) override;
 
 private:
     EntityManager& entityManager_;
