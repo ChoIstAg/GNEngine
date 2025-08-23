@@ -46,20 +46,19 @@ LogoScene::LogoScene(EntityManager& entityManager,
     animationManager_(animationManager),
     fadeManager_(fadeManager)
 {
-    renderManager_.setBackgroundColor({255, 255, 255, 255}); // White
 }
 
 bool LogoScene::loadScene() {
     logoEntity_ = entityManager_.createEntity();
     entityManager_.addComponent<TransformComponent>(logoEntity_);
-
+    
     std::filesystem::path logoPath = static_cast<std::filesystem::path>(IMAGE_ASSET_ROOT_PATH) / "logo/" / "logo_no_background.png";
     Texture* logoIMG = textureManager_.getTexture(logoPath);
     if(logoIMG == nullptr) {
         std::cerr << "[ERROR] LogoScene - can't load logoIMG \n";
     }
     entityManager_.addComponent<RenderComponent>(logoEntity_, logoIMG, RenderLayer::UI);
-
+    
     /* Skip to input key */
     auto skipLogoScene = [&](const KeyReleasedEvent& event) {
         if(event.keyCode == SDL_SCANCODE_SPACE) {
@@ -69,7 +68,7 @@ bool LogoScene::loadScene() {
         }
     };
     eventManager_.subscribe<KeyReleasedEvent>(skipLogoScene);
-
+    
     std::cerr << "LogoScene is successfully loaded.\n";
     isLoaded_ = true;
     return true;
@@ -79,8 +78,11 @@ void LogoScene::onEnter() {
     if (!isLoaded_) {
         loadScene();
     }
-
     std::cerr << "LogoScene::onEnter()\n";
+    
+    renderManager_.setBackgroundColor({255, 255, 255, 255}); // White
+
+    /* Start fade in effect*/
     currentState_ = LogoSceneState::FADING_IN;
     fadeManager_.startFadeIn(0.3f, {0, 0, 0, 255}, 
         [this]() { 

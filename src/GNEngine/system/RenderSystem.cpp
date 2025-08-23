@@ -12,9 +12,6 @@ RenderSystem::RenderSystem(RenderManager& renderManager, TextManager& textManage
     : renderManager_(renderManager), textManager_(textManager) {}
 
 void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
-    SDL_Color backgroundColor = renderManager_.getBackgroundColor();
-    SDL_SetRenderDrawColor(renderManager_.getRenderer(), backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
-
     // 이 함수 내에서만 사용할 로컬 구조체
     struct Renderable {
         EntityID entity;

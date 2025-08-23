@@ -41,21 +41,21 @@ TestScene::TestScene(EntityManager& entityManager,
     soundManager_(soundManager),
     animationManager_(animationManager)
 {
-    renderManager_.setBackgroundColor({0, 0, 0, 255}); // black
 }
 
 bool TestScene::loadScene() {
+    
     /* --- Player --- */
     playerEntity_ = PlayerPrefab::create(entityManager_, eventManager_, textureManager_, renderManager_, soundManager_, animationManager_);
     entityIDs_.push_back(playerEntity_);
     // std::cerr << "[DEBUG] TestScene::loadScene -  Player is successfully loaded.\n";
-
+    
     /* --- Camera --- */
     cameraEntity_ = entityManager_.createEntity();
-        entityManager_.addComponent<CameraComponent>(cameraEntity_, playerEntity_, 10.0f);
+    entityManager_.addComponent<CameraComponent>(cameraEntity_, playerEntity_, 10.0f);
     entityIDs_.push_back(cameraEntity_);
     // std::cerr << "[DEBUG] TestScene::loadScene - Camera is successfully loaded.\n";
-
+    
     /* --- BGM --- */
     auto bgmEntity = entityManager_.createEntity();
     entityIDs_.push_back(bgmEntity);
@@ -70,13 +70,13 @@ bool TestScene::loadScene() {
         std::cerr << "[ERROR] TestScene - Can't load bgm. \n";
     }
     // std::cerr << "[DEBUG] TestScene::loadScene - bgm is successfully loaded.\n";
-
-
+    
+    
     auto textEntity = entityManager_.createEntity();
     entityIDs_.push_back(textEntity);
     std::filesystem::path textPath = static_cast<std::filesystem::path>(TEXT_ASSET_ROOT_PATH) / "test.txt";
-
-
+    
+    
     isLoaded_ = true;
     return true;
 }
@@ -85,6 +85,7 @@ void TestScene::onEnter() {
     if (!isLoaded_) {
         loadScene();
     }
+    renderManager_.setBackgroundColor({0, 0, 0, 255}); // black
     std::cerr << "TestScene::onEnter()" << std::endl;
 }
 

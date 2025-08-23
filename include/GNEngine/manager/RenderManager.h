@@ -12,7 +12,7 @@ private:
     float cameraX_ = 0.0f;
     float cameraY_ = 0.0f;
     float zoomLevel_ = 1.0f;
-    SDL_Color backgroundColor = {0, 0, 0, 255};
+    SDL_Color backgroundColor = {0, 0, 0, 255}; // black
 
 public:
     RenderManager(SDL_Renderer* renderer, SDL_Window* window);
@@ -36,6 +36,7 @@ public:
         return h;
     }
     
+   /* If you use this in a Scene, call it inside onEnter. */
     void setBackgroundColor(SDL_Color color) { backgroundColor = color; }
     SDL_Color getBackgroundColor() { return backgroundColor; }
     
@@ -49,7 +50,4 @@ public:
     void renderTexture(Texture* texture, float x, float y, float w, float h, SDL_FlipMode flip = SDL_FLIP_NONE);
     void renderTexture(Texture* texture, float x, float y, const SDL_Rect* srcRect, float w, float h, SDL_FlipMode flip = SDL_FLIP_NONE);
     void renderTexture(SDL_Texture* texture, float x, float y, const SDL_Rect* srcRect, float w, float h, SDL_FlipMode flip = SDL_FLIP_NONE);
-
-
-    
 };
