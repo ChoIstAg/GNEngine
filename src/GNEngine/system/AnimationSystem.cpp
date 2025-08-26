@@ -44,3 +44,5 @@ void AnimationSystem::update(EntityManager& entityManager, float deltaTime) {
         }
     }
 }
+
+

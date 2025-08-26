@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <cstdint>
 #include <bitset>
@@ -14,3 +14,4 @@ constexpr size_t MAX_COMPONENTS = 32;
 
 // Bitset indicating which types of components an Entity has
 using Signature = std::bitset<MAX_COMPONENTS>;
+

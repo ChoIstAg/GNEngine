@@ -1,0 +1,105 @@
+﻿#pragma once
+#include "../GNEngine_API.h"
+
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
+#include <string>
+
+/*
+ * @brief ?띿뒪??媛앹껜瑜??섑??대뒗 ?대옒?ㅼ엫.
+ * TextManager???섑빐 ?앹꽦?섍퀬 愿由щ맖.
+*/ 
+class GNEngine_API Text {
+public:
+    /*
+     * @brief Text 媛앹껜瑜??앹꽦??
+     * @param renderer ?뚮뜑留곸뿉 ?ъ슜??SDL_Renderer ?ъ씤??
+     * @param font ?띿뒪???뚮뜑留곸뿉 ?ъ슜??TTF_Font ?ъ씤??
+     * @param text ?쒖떆???띿뒪???댁슜
+     * @param color ?띿뒪???됱긽(Uint8 R, G, B, A)
+     * @param enableMultiline ?띿뒪????媛쒗뻾 臾몄옄瑜?泥섎━?좎? ?щ?
+     * @param enableNewline ?띿뒪????媛쒗뻾 臾몄옄瑜?泥섎━?좎? ?щ? (泥?以꾨쭔 ?뚮뜑留????ъ슜)
+     * @param wrapWidth ?띿뒪?멸? 媛쒗뻾??理쒕? ?덈퉬 (0?대㈃ ?덈퉬 ?쒗븳 ?놁쓬)
+     * @param maxHeight ?띿뒪?멸? ?뚮뜑留곷맆 理쒕? ?믪씠 (0?대㈃ ?믪씠 ?쒗븳 ?놁쓬)
+     */
+    Text(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, SDL_Color color, bool enableMultiline = false, bool enableNewline = false, int wrapWidth = 0, int maxHeight = 0);
+
+    /*
+     * @brief ?띿뒪????媛쒗뻾 臾몄옄 泥섎━ ?щ?瑜??ㅼ젙??
+     * @param multiline true硫?媛쒗뻾 泥섎━, false硫?媛쒗뻾 臾댁떆
+     */
+    void setMultiline(bool multiline);
+
+    /*
+     * @brief ?띿뒪????媛쒗뻾 臾몄옄 泥섎━ ?щ?瑜??ㅼ젙??(泥?以꾨쭔 ?뚮뜑留????ъ슜).
+     * @param enable true硫?媛쒗뻾 臾몄옄 泥섎━, false硫?媛쒗뻾 臾몄옄 臾댁떆
+     */
+    void setNewline(bool enable);
+
+    /*
+     * @brief ?띿뒪?몄쓽 理쒕? ?덈퉬瑜??ㅼ젙?? ???덈퉬瑜?珥덇낵?섎㈃ 媛쒗뻾??
+     * @param width 理쒕? ?덈퉬 (?쎌? ?⑥쐞). 0?대㈃ ?덈퉬 ?쒗븳 ?놁쓬.
+     */
+    void setWrapWidth(int width);
+
+    /*
+     * @brief ?띿뒪?몄쓽 理쒕? ?믪씠瑜??ㅼ젙?? ???믪씠瑜?珥덇낵?섎㈃ ?뚮뜑留곷릺吏 ?딆쓬.
+     * @param height 理쒕? ?믪씠 (?쎌? ?⑥쐞). 0?대㈃ ?믪씠 ?쒗븳 ?놁쓬.
+     */
+    void setMaxHeight(int height);
+
+    ~Text();
+
+    /*
+     * @brief 吏?뺣맂 ?꾩튂???띿뒪?몃? ?뚮뜑留곹븿.
+     * @param x ?뚮뜑留곹븷 x 醫뚰몴
+     * @param y ?뚮뜑留곹븷 y 醫뚰몴
+     */
+    void render(float x, float y);
+
+    /*
+     * @brief ?띿뒪???댁슜??蹂寃쏀븿.
+     * @param newText ??뼱?뚯슱 ?덈줈???띿뒪???댁슜
+     */
+    void setText(const std::string& newText);
+
+    /*
+     * @brief ?띿뒪???됱긽??蹂寃쏀븿.
+     * @param newColor ?덈줈???띿뒪???됱긽
+     */
+    void setColor(SDL_Color newColor);
+
+    /*
+     * @brief ?띿뒪?몄쓽 ?덈퉬瑜?媛?몄샂.
+     * @return ?띿뒪?몄쓽 ?덈퉬
+     */
+    int getWidth() const;
+
+    /*
+     * @brief ?띿뒪?몄쓽 ?믪씠瑜?媛?몄샂.
+     * @return ?띿뒪?몄쓽 ?믪씠
+     */
+    int getHeight() const;
+
+    SDL_Texture* getSDLTexture() const { return texture_; }
+
+private:
+    /*
+     * @brief ?띿뒪?몃줈遺??SDL_Texture瑜??앹꽦??
+     * ?대??곸쑝濡??몄텧?섏뼱 ?띿뒪???댁슜?대굹 ?됱긽??蹂寃쎈맆 ???띿뒪泥섎? ?ъ깮?깊븿.
+     */
+    void createTexture();
+
+    SDL_Renderer* renderer_;
+    TTF_Font* font_;
+    SDL_Texture* texture_; /* ?뚮뜑留곹븷 ?띿뒪泥?*/
+    std::string text_;
+    SDL_FRect dstRect_; /* ?뚮뜑留곹븷 ?꾩튂 */
+    SDL_Color color_;
+    bool enableNewline; /* 媛쒗뻾 臾몄옄瑜?泥섎━?좎? ?щ?. true硫?媛쒗뻾 臾몄옄瑜?泥섎━?? false硫?媛쒗뻾臾몄옄瑜?臾댁떆?섍퀬 ?쒖쨪濡??대낫?? */
+    bool enableMultiline; /* ?щ윭 以꾩쓣 ?뚮뜑留곹븷吏 ?щ?*/
+    int wrapWidth_;
+    int maxHeight_;
+};
+
+

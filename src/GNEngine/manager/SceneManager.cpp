@@ -39,3 +39,4 @@ void SceneManager::changeScene(const std::string& name) {
         currentScene_ = nullptr;
     }
 }
+

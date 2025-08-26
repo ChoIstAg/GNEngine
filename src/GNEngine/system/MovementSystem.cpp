@@ -1,5 +1,5 @@
 ﻿#include "GNEngine/system/MovementSystem.h"
-#include "RootPath.h"
+#include "GNEngineRootPath.h"
 
 #include <cmath>
 #include <iostream>
@@ -69,4 +69,6 @@ void MovementSystem::update(EntityManager& entityManager, float deltaTime) {
         accY[accelerationIndex] = 0.0f;
     }
 }
+
+
 

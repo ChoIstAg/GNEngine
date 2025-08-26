@@ -24,3 +24,5 @@ struct FadeComponent : public Component {
     std::function<void()> onComplete = nullptr; //TODO1 - void function point로 바꾸기. 현재 오버헤드 존재함
 };
 
+
+

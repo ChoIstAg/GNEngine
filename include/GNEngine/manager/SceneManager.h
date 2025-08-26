@@ -1,5 +1,5 @@
-#pragma once
-#include "../../GNEngine_API.h"
+﻿#pragma once
+#include "../GNEngine_API.h"
 
 #include <memory>
 #include <unordered_map>
@@ -34,8 +34,8 @@ public:
     }
 
     /*
-    * 현재 활성화된 씬의 논리를 업데이트.
-    * @param deltaTime 이전 프레임으로부터 경과된 시간 (초)
+    * ?꾩옱 ?쒖꽦?붾맂 ?ъ쓽 ?쇰━瑜??낅뜲?댄듃.
+    * @param deltaTime ?댁쟾 ?꾨젅?꾩쑝濡쒕???寃쎄낵???쒓컙 (珥?
     */
     void update(float deltaTime) {
         if (currentScene_) {
@@ -44,3 +44,6 @@ public:
     }
 
 };
+
+
+

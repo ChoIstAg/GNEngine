@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <SDL3/SDL.h>
 #include <set>
@@ -30,3 +30,6 @@ public:
     bool isKeyDown(SDL_Scancode key) const;
     bool isKeyUp(SDL_Scancode key) const;
 };
+
+
+

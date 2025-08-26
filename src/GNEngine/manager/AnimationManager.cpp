@@ -1,5 +1,5 @@
 ﻿#include "GNEngine/manager/AnimationManager.h"
-#include "RootPath.h"
+#include "GNEngineRootPath.h"
 
 #include <fstream>
 #include <iostream>
@@ -43,7 +43,7 @@ bool AnimationManager::loadAnimation(const std::filesystem::path& jsonPath) {
         bool loop = true;
 
         if (animData.contains("spritesheetPath") && animData["spritesheetPath"].is_string()) {
-            spritesheetPath = static_cast<std::filesystem::path>(ANIMATION_SHEET_ASSET_ROOT_PATH) / animData["spritesheetPath"].get<std::string>();
+            spritesheetPath = jsonPath.parent_path() / animData["spritesheetPath"].get<std::string>();
         } else {
             std::cerr << "Error: Animation '" << animName << "' in " << jsonPath << " missing 'spritesheetPath'." << std::endl;
             continue;
@@ -103,4 +103,6 @@ std::shared_ptr<Animation> AnimationManager::getAnimation(const std::string& ani
     std::cerr << "Warning: Animation '" << animationName << "' not found in cache." << std::endl;
     return nullptr;
 }
+
+
 

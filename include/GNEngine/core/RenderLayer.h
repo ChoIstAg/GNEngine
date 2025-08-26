@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 enum class RenderLayer {
     BACKGROUND_FAR, // Sky
@@ -16,3 +16,4 @@ enum class RenderLayer {
     CRUCIAL_UI,  // Mouse Pointer
     COUNT // A number of Layer
 };
+

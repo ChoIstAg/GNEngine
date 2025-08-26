@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "GNEngine_API.h"
+#include "../GNEngine_API.h"
 #include <flatbuffers/flatbuffers.h>
 
 #include <string>
@@ -36,11 +36,17 @@ public:
     void operator=(const FileManager&) = delete;
 
     // Settings
-    void init();
+    void init(const std::filesystem::path& configFilePath);
     void setSetting(std::string_view key, std::string_view value);
     std::string getSetting(std::string_view key, std::string_view defaultValue = "");
     void saveSettings(const std::filesystem::path& filePath);
     void loadSettings(const std::filesystem::path& filePath);
+
+    const std::filesystem::path& getConfigFilePath() const { return configFilePath_; }
+    /* 구성 파일의 경로 재설정 */
+    void setConfigFilePath(const std::filesystem::path& configFilePath) {
+        configFilePath_ = configFilePath;
+    }
     
     // Logs
     void addLog(std::string_view message);
@@ -61,5 +67,9 @@ private:
     
     /* @brief For easy access */
     std::map<std::string, std::string> settings_map_;
+
+    std::filesystem::path configFilePath_;
 };
+
+
 

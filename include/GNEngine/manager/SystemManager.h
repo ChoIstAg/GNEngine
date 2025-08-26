@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 #include <vector>
 #include <memory>
 #include <map>
@@ -53,3 +53,6 @@ private:
     EntityManager& entityManager_;
     std::map<SystemPhase, std::vector<std::function<void(float)>>> systems_;
 };
+
+
+

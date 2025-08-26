@@ -56,3 +56,5 @@ const SDL_Rect& AnimationComponent::getCurrentFrameRect() const {
     return emptyRect;
 }
 
+
+

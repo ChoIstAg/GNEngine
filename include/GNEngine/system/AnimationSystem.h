@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <vector>
 
@@ -22,4 +22,7 @@ public:
      */
     void update(EntityManager& entityManager, float deltaTime);
 };
+
+
+
 

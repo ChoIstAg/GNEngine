@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <memory>
 #include <filesystem>
 
 #include "GNEngine/core/Component.h"
-#include "GNEngine/resource/Animation.h"
+#include "GNEngine/core/Animation.h"
 
 /*
  * @class PlayerAnimationControllerComponent
@@ -28,4 +28,7 @@ public:
         std::shared_ptr<Animation> idleAnimation
     ) : walkAnimationData_(walkAnimation), jumpAnimationData_(jumpAnimation), idleAnimationData_(idleAnimation) {}
 };
+
+
+
 

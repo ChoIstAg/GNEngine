@@ -111,3 +111,5 @@ bool InputManager::isKeyDown(SDL_Scancode key) const {
 bool InputManager::isKeyUp(SDL_Scancode key) const {
     return !currentKeyStates_[key] && previousKeyStates_[key];
 }
+
+

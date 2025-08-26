@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <vector>
 #include <memory>
@@ -165,4 +165,7 @@ private:
     size_t nextComponentType_ = 0;
     std::unordered_map<EntityID, Signature> entitySignatures_;
 };
+
+
+
 

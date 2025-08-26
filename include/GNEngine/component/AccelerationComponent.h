@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/core/Component.h"
 
@@ -15,4 +15,7 @@ struct GNEngine_API AccelerationComponent : public Component {
     AccelerationComponent(float ax = 0.0f, float ay = 0.0f)
         : ax(ax), ay(ay) {}
 };
+
+
+
 

@@ -1,8 +1,8 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <SDL3/SDL.h>
-#include "GNEngine/resource/Texture.h"
+#include "GNEngine/core/Texture.h"
 
 class GNEngine_API RenderManager {
 private:
@@ -51,3 +51,6 @@ public:
     void renderTexture(Texture* texture, float x, float y, const SDL_Rect* srcRect, float w, float h, SDL_FlipMode flip = SDL_FLIP_NONE);
     void renderTexture(SDL_Texture* texture, float x, float y, const SDL_Rect* srcRect, float w, float h, SDL_FlipMode flip = SDL_FLIP_NONE);
 };
+
+
+

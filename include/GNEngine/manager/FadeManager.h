@@ -1,5 +1,5 @@
-#pragma once
-#include "../../GNEngine_API.h"
+﻿#pragma once
+#include "../GNEngine_API.h"
 
 #include <SDL3/SDl.h>
 #include <functional>
@@ -7,7 +7,7 @@
 class EntityManager;
 
 /* 
- * 화면 전체에 Fade 효과를 적용시킨다.
+ * ?붾㈃ ?꾩껜??Fade ?④낵瑜??곸슜?쒗궓??
 */
 class GNEngine_API FadeManager {
 public:
@@ -20,3 +20,5 @@ public:
 private:
     EntityManager& entityManager_;
 };
+
+

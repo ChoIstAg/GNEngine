@@ -40,3 +40,5 @@ void InputToAccelerationSystem::onActionEvent(const ActionEvent& event) {
     }
     // SDL_Log("InputToAccSystem: Entity %u acceleration set to (%.2f, %.2f)", event.targetEntityId, accelArray->ax[i], accelArray->ay[i]);
 }
+
+

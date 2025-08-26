@@ -1,5 +1,5 @@
 ﻿#include "GNEngine/manager/FileManager.h"
-#include "RootPath.h"
+#include "GNEngineRootPath.h"
 
 #include <fstream>
 #include <iostream>
@@ -7,20 +7,26 @@
 
 #include <SDL3/SDL.h>
 
-/*
- * 빌더의 초기 용량을 1024바이트로 설정함.
-*/
-FileManager::FileManager() : builder_(1024) {}
+
+FileManager::FileManager() : builder_(1024), configFilePath_() {}
+
+
 
 /*
  * @brief 설정 파일을 초기화하고 기본값을 설정하거나 기존 설정을 불러옴.
  * @param configFilePath: 설정 파일 경로
 */
-void FileManager::init() {
-    std::filesystem::path configFilePath = static_cast<std::filesystem::path>(APP_ROOT_PATH) / "data/config.bin";
-    if (!std::filesystem::exists(configFilePath)) {
+void FileManager::init(const std::filesystem::path& configFilePath) {
+    setConfigFilePath(configFilePath);
+    
+    if (configFilePath == "") { //configFilePath가 기본값일 경우.
+        std::cerr << "[ERROR] FileManager - configFilePath is empty. \n";
+        return;
+    }
+
+    if (!std::filesystem::exists(configFilePath_)) {
         // 상위 디렉토리가 없으면 생성
-        std::filesystem::create_directories(configFilePath.parent_path());
+        std::filesystem::create_directories(configFilePath_.parent_path());
 
         // 모든 모니터의 데이터 추출 <- 나중에 다른 창 매니저나 렌더 매니저에 기능 이항 예정
         // int displayCount = 0; /* A number of display connected. */
@@ -50,12 +56,12 @@ void FileManager::init() {
         setSetting("masterVolume", "100");
 
         // 설정 저장
-        saveSettings(configFilePath);
-        std::cout << "First Init! Created new config file: " << configFilePath << std::endl;
+        saveSettings(configFilePath_);
+        std::cout << "First Init! Created new config file: " << configFilePath_ << std::endl;
     } else {
         // 기존 설정 불러오기
-        loadSettings(configFilePath);
-        std::cout << "Loaded existing config file: " << configFilePath << std::endl;
+        loadSettings(configFilePath_);
+        std::cout << "Loaded existing config file: " << configFilePath_ << std::endl;
     }
 }
 
@@ -187,4 +193,6 @@ void FileManager::saveLogs(const std::filesystem::path& filePath)
     
     logs_offsets_.clear();
 }
+
+
 

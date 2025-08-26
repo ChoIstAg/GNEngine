@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <map>
 #include <typeindex>
@@ -68,4 +68,7 @@ public:
         }
     }
 };
+
+
+
 

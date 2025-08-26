@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/manager/EntityManager.h"
 #include "GNEngine/manager/EventManager.h"
@@ -13,6 +13,7 @@
  * 눌린 키에 매핑된 액션이 있는지 찾고, 있다면 해당 액션에 대한 ActionEvent를 발생시킴.
  * 이 시스템은 게임 로직을 직접 처리하지 않고, 단지 입력을 해석하여 시스템 전체에 알리는 역할만 함.
 */
+
 class GNEngine_API InputSystem {
 public:
     InputSystem(EventManager& eventManager, EntityManager& entityManager);
@@ -33,3 +34,6 @@ private:
      */
     void onKeysHeld(const KeysHeldEvent& event, EntityManager& entityManager);
 };
+
+
+

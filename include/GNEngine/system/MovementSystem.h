@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/manager/EntityManager.h"
 #include "GNEngine/component/TransformComponent.h"
@@ -24,4 +24,7 @@ public:
      */
     void update(EntityManager& entityManager, float deltaTime);
 };
+
+
+
 

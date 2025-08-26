@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <string>
 #include <filesystem>
@@ -44,4 +44,7 @@ struct GNEngine_API TextComponent : public Component {
         }
     }
 };
+
+
+
 

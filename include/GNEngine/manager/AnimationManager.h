@@ -1,29 +1,24 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <string>
 #include <filesystem>
 #include <unordered_map>
 #include <memory>
 
-#include "GNEngine/resource/Animation.h"
+#include "GNEngine/core/Animation.h"
 
 /*
  * @class AnimationManager
- * @brief 애니메이션 데이터를 관리하는 클래스임.
+ * @brief 애니메이션 데이터를 관리하는 매니저.
  * JSON 파일을 파싱하여 Animation 객체를 생성하고 캐시에 저장하는 역할을 함.
- * 이 클래스는 애니메이션 데이터의 로딩과 접근을 담당하며, 실제 렌더링이나 상태 관리는 하지 않음.
+ * @note이 클래스는 애니메이션 데이터의 로딩과 접근을 담당하며, 실제 렌더링이나 상태 관리는 하지 않음.
  */ 
 class GNEngine_API AnimationManager {
 public:
     AnimationManager() = default;
     ~AnimationManager() = default;
 
-    /*
-     * @brief JSON 파일을 로드하여 애니메이션 데이터를 파싱하고 캐시에 저장함.
-     * @param jsonPath - 애니메이션 데이터가 정의된 JSON 파일의 경로.
-     * @return 로딩 및 파싱 성공 시 true, 실패 시 false.
-     */
     bool loadAnimation(const std::filesystem::path& jsonPath);
 
     /*
@@ -36,4 +31,5 @@ public:
 private:
     std::unordered_map<std::string, std::shared_ptr<Animation>> animationCache_;
 };
+
 

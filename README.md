@@ -4,9 +4,9 @@ GNEngine is a 2D game engine developed using Modern C++23 and SDL3.
 
 ## Features
 
-- **DOD + ECS system**
-- **Event-Driven System:** Flexibly handles various events through an `
-- **2D Rendering:** Renders textures and nimation to the screen.
+- **DOD + ECS system**: Very efficient system. 
+- **Event-Driven System**: Flexibly handles various events through an `
+- **2D Rendering**: Renders textures and animation to the screen.
 - **Sound**: Plays and manages WAV, MP3, and OGG format sounds via OpenAL Soft (with dr_libs and stb_vorbis for decoding).
 Can use stereo sound to 3D sound.
 - **Scene Management**: Easily switch and manage game scenes with a `SceneManager`.
@@ -24,12 +24,12 @@ Can use stereo sound to 3D sound.
     - dr_flac(v0.13.0): [https://github.com/mackron/dr_libs](https://github.com/nothings/dr_libs)
     - stb_vorbis(v1.22): [https://github.com/nothings/stb](https://github.com/nothings/stb)
 - nlohmann/json(3.12.0): [https://github.com/nlohmann/json](https://github.com/nlohmann/json)
-- google/flatBuffer()
+- google/flatBuffer(): []()
+- box2D(3.1.1): []()
 
-## Build & Run
-This project use GNU g++(v15.1.0) and ninja(v1.13.0).
+## Build
 
-This project is built using CMake and `CMakePresets.json`.
+This project is built using CMake and `CMakePresets.json`. It requires GNU g++ (v15.1.0) and ninja (v1.13.0) or compatible compilers and build systems.
 
 1.  **Configure CMake:**
     ```bash
@@ -41,15 +41,16 @@ This project is built using CMake and `CMakePresets.json`.
     cmake --build out/build/custom-preset
     ```
 
-3.  **Run:**
-    ```bash
-    out/build/custom-preset/Debug/GNEngineApp.exe
-    ```
+## Running the Example
+
+After the build is complete, you can run the example application. The executable will be created in the build output directory.
+
+```bash
+out/build/custom-preset/Debug/GNEngineApp.exe
+```
 
 ## Directory Structure
 
-- `app/`: Main application source code (Corrent example application).
-    - `app/scene` : all external scene
 - `src/`: All source codes of headers.
 - `include/engine/core`: core files of engine.
 - `include/engine/system`: Perform engine logics

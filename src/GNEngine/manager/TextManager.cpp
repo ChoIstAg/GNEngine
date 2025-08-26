@@ -73,3 +73,5 @@ std::string TextManager::loadTextFromFile(const std::filesystem::path& filePath)
 
     return buffer.str(); /* string으로 반환 */
 }
+
+

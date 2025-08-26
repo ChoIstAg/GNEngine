@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/manager/RenderManager.h"
 #include "GNEngine/manager/EntityManager.h"
@@ -8,7 +8,7 @@
 #include "GNEngine/component/RenderComponent.h"
 #include "GNEngine/component/AnimationComponent.h"
 #include "GNEngine/component/TextComponent.h"
-#include "GNEngine/resource/Texture.h"
+#include "GNEngine/core/Texture.h"
 #include "GNEngine/component/CameraComponent.h"
 
 
@@ -33,3 +33,6 @@ private:
     RenderManager& renderManager_;
     TextManager& textManager_;
 };
+
+
+

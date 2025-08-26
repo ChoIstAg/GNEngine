@@ -3,7 +3,7 @@
 ## 1. 프로젝트 개요 (Project Overview)
 
 - **프로젝트명:** GNEngine
-- **목표:** Modern C++과 SDL3를 이용한 2D 게임 엔진 개발.
+- **목표:** Modern C++과 SDL3를 이용한 2D 게임 엔진 프레임워크 개발.
 - **사용 패러다임:** DOD(Data Oriented Design) + ECS(Entity Component System)
 - 현재 DOD 구조를 사용하고 있다는 것을 꼭 기억해줘.
 

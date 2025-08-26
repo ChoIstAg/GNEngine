@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/core/Component.h"
 
@@ -32,4 +32,7 @@ struct GNEngine_API TransformComponent : public Component {
     /* 0 ~ 360도(degree) 값 */
     float rotatedAngle_;
 };                                                             
+
+
+
 

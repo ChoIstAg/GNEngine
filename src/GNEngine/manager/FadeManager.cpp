@@ -48,3 +48,5 @@ void FadeManager::startFadeOut(float duration, SDL_Color color, std::function<vo
 
     entityManager_.addComponent<RenderComponent>(fadeEntity, nullptr, RenderLayer::SCENE_EFFECT);
 }
+
+

@@ -1,12 +1,12 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/core/Component.h"
-#include "GNEngine/resource/Texture.h"
+#include "GNEngine/core/Texture.h"
+#include "GNEngine/core/RenderLayer.h"
 #include "GNEngine/manager/RenderManager.h"
 #include "GNEngine/component/TransformComponent.h"
 #include "GNEngine/component/AnimationComponent.h"
-#include "GNEngine/core/RenderLayer.h"
 
 /*
  * @class RenderComponent
@@ -57,4 +57,6 @@ private:
     bool flipX_ = false;
     bool flipY_ = false;
 };
+
+
 

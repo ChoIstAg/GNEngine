@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/core/Component.h"
 #include "VelocityComponent.h"
@@ -23,3 +23,6 @@ public:
     PlayerMovementComponent(const PlayerMovementComponent&) = delete;
     PlayerMovementComponent& operator=(const PlayerMovementComponent&) = delete;
 };
+
+
+

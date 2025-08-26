@@ -108,3 +108,4 @@ void RenderManager::renderTexture(SDL_Texture* texture, float x, float y, const 
 //         SDL_Log("RenderManager::setViewport - Failed to set viewport: %s", SDL_GetError());
 //     }
 // }
+

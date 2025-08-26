@@ -16,3 +16,5 @@ void AccelerationResetSystem::update(EntityManager& entityManager, float deltaTi
         ay[i] = 0.0f;
     }
 }
+
+

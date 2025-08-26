@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/core/Component.h"
 #include "GNEngine/core/Entity.h"
@@ -20,4 +20,7 @@ struct GNEngine_API CameraComponent : public Component {
     CameraComponent(EntityID targetId = INVALID_ENTITY_ID, float zoom = 1.0f, float x = 0.0f, float y = 0.0f)
         : targetEntityId(targetId), zoom(zoom), x(x), y(y) {}
 };
+
+
+
 

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/core/Component.h"
 
@@ -17,4 +17,7 @@
 struct GNEngine_API InputControlComponent : public Component {
     std::unordered_map<SDL_Scancode, std::string> keyActions;
 };
+
+
+
 

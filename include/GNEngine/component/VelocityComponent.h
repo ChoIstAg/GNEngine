@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/core/Component.h"
 
@@ -15,4 +15,7 @@ struct GNEngine_API VelocityComponent : public Component {
     VelocityComponent(float vx = 0.0f, float vy = 0.0f)
         : vx(vx), vy(vy) {}
 };
+
+
+
 

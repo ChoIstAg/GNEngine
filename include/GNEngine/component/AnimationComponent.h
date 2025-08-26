@@ -1,10 +1,10 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <memory>
 
 #include "GNEngine/core/Component.h"
-#include "GNEngine/resource/Animation.h"
+#include "GNEngine/core/Animation.h"
 
 /*
  * @class AnimationComponent
@@ -68,4 +68,7 @@ public:
     bool isPlaying_;
     bool isFinished_;
 };
+
+
+
 

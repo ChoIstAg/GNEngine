@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/manager/EntityManager.h"
 #include "GNEngine/manager/EventManager.h"
@@ -34,3 +34,6 @@ private:
      */
     void onActionEvent(const ActionEvent& event);
 };
+
+
+

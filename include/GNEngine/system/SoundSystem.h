@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/manager/EntityManager.h"
 #include "GNEngine/component/SoundComponent.h"
@@ -26,3 +26,6 @@ public:
 private:
     SoundManager& soundManager_;
 };
+
+
+

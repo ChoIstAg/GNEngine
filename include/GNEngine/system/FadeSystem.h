@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include "GNEngine/manager/SystemManager.h"
 
@@ -26,4 +26,7 @@ public:
 
     //TODO - 키 입력시 즉시 페이드 시간을 짧게 설정  
 };
+
+
+
 

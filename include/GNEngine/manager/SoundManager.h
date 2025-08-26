@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -11,7 +11,7 @@
 #include <optional>
 
 #include "GNEngine/core/Entity.h"
-#include "GNEngine/resource/Sound.h"
+#include "GNEngine/core/Sound.h"
 
 #define AL_CHECK_ERROR() checkAlErrors(__FILE__, __LINE__)
 
@@ -96,3 +96,6 @@ private:
     bool loadFlac(const std::filesystem::path& filePath, ALuint& monoBuffer, ALuint& stereoBufferRight, bool& isStereo);
     bool loadOgg(const std::filesystem::path& filePath, ALuint& monoBuffer, ALuint& stereoBufferRight, bool& isStereo);
 };
+
+
+

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <vector>
 #include <memory>
@@ -64,3 +64,6 @@ private:
      */
     void playJumpAnimation(EntityManager& entityManager, EntityID entityId, std::shared_ptr<Animation> jumpAnimationData);
 };
+
+
+

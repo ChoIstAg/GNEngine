@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <string>
 #include <unordered_map>
@@ -8,7 +8,7 @@
 #include <AL/al.h>
 
 #include "GNEngine/core/Component.h"
-#include "GNEngine/resource/Sound.h"
+#include "GNEngine/core/Sound.h"
 #include "GNEngine/manager/SoundManager.h" // only for SoundPriority enum
 
 // std::filesystem::path로 경로로 저장하지 않고 std::string으로 이름으로 Sound를 저장하는 이유
@@ -84,3 +84,6 @@ public:
 private:
     std::unordered_map<std::string, SoundData> sounds_;
 };
+
+
+

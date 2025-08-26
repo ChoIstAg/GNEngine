@@ -92,76 +92,39 @@ bool PlayerAnimationControlSystem::isJumpAnimationActive(AnimationComponent* ani
 void PlayerAnimationControlSystem::setCurrentAnimation(EntityManager& entityManager, EntityID entityId, std::shared_ptr<Animation> newAnimation) {
     if (!newAnimation) {
         std::cerr << "Error: Attempted to set a null animation for entity " << entityId << std::endl;
-        if (entityManager.hasComponent<AnimationComponent>(entityId)) {
-            //entityManager.removeComponent<AnimationComponent>(entityId);
-        }
-        if (entityManager.hasComponent<RenderComponent>(entityId)) {
-            //entityManager.removeComponent<RenderComponent>(entityId);
-        }
         return;
     }
 
-    // AnimationComponent 데이터 직접 수정
+    // Update or add AnimationComponent
     auto animArray = entityManager.getComponentArray<AnimationComponent>();
     if (animArray && animArray->hasComponent(entityId)) {
         const size_t i = animArray->getEntityToIndexMap().at(entityId);
         animArray->animations[i] = newAnimation;
         animArray->currentFrames[i] = 0;
-        animArray->frameTimers[i] = 0.0f; // This is where it crashes
-        animArray->arePlaying[i] = true; // 애니메이션 재생 시작
+        animArray->frameTimers[i] = 0.0f;
+        animArray->arePlaying[i] = true;
         animArray->areFinished[i] = false;
     } else {
-        // AnimationComponent가 없으면 새로 추가
         entityManager.addComponent<AnimationComponent>(entityId, newAnimation);
     }
 
-    // RenderComponent 데이터 직접 수정
+    // Get the texture for the new animation. TextureManager will provide a default texture if it fails.
+    Texture* newAnimTexture = textureManager_.getTexture(newAnimation->getTexturePath());
+
+    // Update or add RenderComponent
     auto renderArray = entityManager.getComponentArray<RenderComponent>();
     if (renderArray && renderArray->hasComponent(entityId)) {
         const size_t i = renderArray->getEntityToIndexMap().at(entityId);
-        // 텍스처 로드 시도
-        if (textureManager_.loadTexture(newAnimation->getTexturePath())) {
-            Texture* newAnimTexture = textureManager_.getTexture(newAnimation->getTexturePath());
-            if (newAnimTexture) {
-                renderArray->textures[i] = newAnimTexture;
-                const SDL_Rect& firstFrameRect = newAnimation->getFrame(0);
-                renderArray->srcRectX[i] = firstFrameRect.x;
-                renderArray->srcRectY[i] = firstFrameRect.y;
-                renderArray->srcRectW[i] = firstFrameRect.w;
-                renderArray->srcRectH[i] = firstFrameRect.h;
-                renderArray->hasAnimations[i] = true;
-            } else {
-                std::cerr << "Error: Could not get texture after loading for new animation: " << newAnimation->getTexturePath().string() << ". RenderComponent not updated." << std::endl;
-            }
-        } else {
-            std::cerr << "Error: Could not load texture for new animation: " << newAnimation->getTexturePath().string() << ". RenderComponent not updated." << std::endl;
-        }
+        renderArray->textures[i] = newAnimTexture;
+        const SDL_Rect& firstFrameRect = newAnimation->getFrame(0);
+        renderArray->srcRectX[i] = firstFrameRect.x;
+        renderArray->srcRectY[i] = firstFrameRect.y;
+        renderArray->srcRectW[i] = firstFrameRect.w;
+        renderArray->srcRectH[i] = firstFrameRect.h;
+        renderArray->hasAnimations[i] = true;
     } else {
-        // RenderComponent가 없으면 새로 추가
-        if (textureManager_.loadTexture(newAnimation->getTexturePath())) {
-            Texture* newAnimTexture = textureManager_.getTexture(newAnimation->getTexturePath());
-            if (newAnimTexture) {
-                entityManager.addComponent<RenderComponent>(entityId, newAnimTexture, RenderLayer::GAME_OBJECT, true, newAnimation->getFrame(0));
-            } else {
-                std::cerr << "Error: Could not get texture after loading for new animation: " << newAnimation->getTexturePath().string() << ". RenderComponent not added." << std::endl;
-            }
-        } else {
-            std::cerr << "Error: Could not load texture for new animation: " << newAnimation->getTexturePath().string() << ". RenderComponent not added." << std::endl;
-        }
-    }
-
-    // Fallback if new animation setup failed (RenderComponent still not present)
-    if (!entityManager.hasComponent<RenderComponent>(entityId)) {
-        std::filesystem::path defaultTexturePath = std::filesystem::path(IMAGE_ASSET_ROOT_PATH) / "example_png.png";
-        if (textureManager_.loadTexture(defaultTexturePath)) {
-            Texture* defaultTexture = textureManager_.getTexture(defaultTexturePath);
-            if (defaultTexture) {
-                entityManager.addComponent<RenderComponent>(entityId, defaultTexture, RenderLayer::GAME_OBJECT, false);
-            } else {
-                std::cerr << "Error: Could not get default texture for fallback: " << defaultTexturePath.string() << ". RenderComponent not added." << std::endl;
-            }
-        } else {
-            std::cerr << "Error: Could not load default texture for fallback: " << defaultTexturePath.string() << ". RenderComponent not added." << std::endl;
-        }
+        entityManager.addComponent<RenderComponent>(entityId, newAnimTexture, RenderLayer::GAME_OBJECT, true, newAnimation->getFrame(0));
     }
 }
+
+

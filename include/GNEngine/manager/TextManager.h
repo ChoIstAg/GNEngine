@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../../GNEngine_API.h"
+#include "../GNEngine_API.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -12,7 +12,7 @@
 #include <format>
 #include <functional> // For std::hash<std::filesystem::path> (if using unordered_map)
 
-#include "GNEngine/resource/Text.h"
+#include "GNEngine/core/Text.h"
 
 /*
  * @brief 폰트를 로드하고 Text 객체를 생성 및 관리하는 클래스.
@@ -67,3 +67,6 @@ private:
     SDL_Renderer* renderer_;
     std::map<std::filesystem::path, TTF_Font*> fontMap_;
 };
+
+
+
