@@ -4,8 +4,8 @@
 
 #include "Application.h"
 
-// SDL_RunApp???몄텧??肄쒕갚 ?⑥닔
-int SDLCALL myAppCallback(int argc, char* argv[]) {
+// SDL_RunApp이 호출할 메인 콜백. 
+int SDLCALL appCallback(int argc, char* argv[]) {
     Application application;
 
     if(application.init() != 0){
@@ -22,7 +22,7 @@ int SDLCALL myAppCallback(int argc, char* argv[]) {
 
 int main(int argc, char* argv[]) {
     std::cout << "Acess main" << std::endl;
-    const int result = SDL_RunApp(argc, argv, myAppCallback, nullptr);
+    const int result = SDL_RunApp(argc, argv, appCallback, nullptr);
 
     if (result != 0 ) {
         SDL_Log("Application exited with errors : %s", SDL_GetError());
