@@ -1,10 +1,6 @@
 ﻿#include "GNEngine/core/ComponentArray.h"
 #include "GNEngine/manager/EntityManager.h"
 
-// SoAComponentArray의 static 멤버 변수 정의
-// GNEngine_API std::unordered_map<EntityID, size_t> SoAComponentArray::entityToIndexMap;
-// GNEngine_API std::unordered_map<size_t, EntityID> SoAComponentArray::indexToEntityMap;
-
 /*
  * @brief 엔티티가 파괴될 때 호출되어 공유 맵과 각 컴포넌트 배열의 데이터를 정리함.
 */

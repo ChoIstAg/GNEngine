@@ -24,8 +24,8 @@ Can use stereo sound to 3D sound.
     - dr_flac(v0.13.0): [https://github.com/mackron/dr_libs](https://github.com/nothings/dr_libs)
     - stb_vorbis(v1.22): [https://github.com/nothings/stb](https://github.com/nothings/stb)
 - nlohmann/json(3.12.0): [https://github.com/nlohmann/json](https://github.com/nlohmann/json)
-- google/flatBuffer(): []()
-- box2D(3.1.1): []()
+- google/flatBuffer(): [https://github.com/google/flatbuffers](https://github.com/google/flatbuffers)
+- box2D(3.1.1): [https://github.com/erincatto/box2d](https://github.com/erincatto/box2d)
 
 ## Build
 
@@ -46,15 +46,16 @@ This project is built using CMake and `CMakePresets.json`. It requires GNU g++ (
 After the build is complete, you can run the example application. The executable will be created in the build output directory.
 
 ```bash
-out/build/custom-preset/Debug/GNEngineApp.exe
+out/build/custom-preset/Debug/{A name of example}.exe
 ```
 
 ## Directory Structure
 
-- `src/`: All source codes of headers.
-- `include/engine/core`: core files of engine.
-- `include/engine/system`: Perform engine logics
-- `include/engine/manager`: Contains various manager classes for core engine functionalities.
-- `include/engine/component`: Defines the base component and other concrete components like TransformComponent.
-- `asset/`: Game resources (images, fonts, sounds, etc.)
-- `lib/`: Used external libraries 
+- `src/GNEngine/`: All source codes of GNEngine headers.
+- `include/engine/`: All header files of GNEngine. 
+  - `core`: core files of engine.
+  - `system/`: Perform engine logics
+  - `manager/`: Contains various manager classes for core engine functionalities.
+  - `component`: Defines the base component and other concrete components like TransformComponent.
+  - `resurce/`: General purpose resources (images, fonts, sounds, etc.)
+- `lib/`: External libraries to use
