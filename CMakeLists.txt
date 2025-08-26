@@ -6,8 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "-std=c++23")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+# Set output directories for libraries and executables to keep the build directory clean.
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/$<CONFIG>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>)
 
 # SDL 경로 설정 
 set(SDL3_DIR "${CMAKE_SOURCE_DIR}/lib/SDL3-3.2.18/x86_64-w64-mingw32/lib/cmake/SDL3")
@@ -34,10 +36,13 @@ find_package(SDL3_ttf CONFIG REQUIRED)
 # Box2D
 add_subdirectory(lib/box2d-3.1.1)
 
-# GNEngineRootPath.h.in으로 GNEngineRootPath.h 생성. 소스에서 프로젝트 경로 지정용.
+# Create a directory for generated files to keep the build directory clean.
+set(GENERATED_DIR ${CMAKE_BINARY_DIR}/generated)
+
+# Generate GNEngineRootPath.h from the .in template for use in the source code.
 configure_file(
     "${CMAKE_SOURCE_DIR}/include/GNEngine/GNEngineRootPath.h.in"
-    "${CMAKE_BINARY_DIR}/GNEngineRootPath.h"
+    "${GENERATED_DIR}/GNEngineRootPath.h"
     @ONLY
 )
 
@@ -79,7 +84,7 @@ add_library(GNEngine SHARED
 
 # GNEngine 라이브러리 인클루드 디렉터리 설정
 target_include_directories(GNEngine PUBLIC
-    "${CMAKE_BINARY_DIR}"
+    "${GENERATED_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
     "${SDL3_INCLUDE_DIR}"
     "${SDL3_image_INCLUDE_DIR}"
@@ -119,16 +124,16 @@ target_compile_options(GNEngine PRIVATE -include cstring)
 add_custom_command(TARGET GNEngine POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${SDL3_DLL_DIR}/SDL3.dll"
-    $<TARGET_FILE_DIR:GNEngine>
+    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${SDL3_image_DLL_DIR}/SDL3_image.dll"
-    $<TARGET_FILE_DIR:GNEngine>
+    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${SDL3_ttf_DLL_DIR}/SDL3_ttf.dll"
-    $<TARGET_FILE_DIR:GNEngine>
+    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${OPENAL_DIR}/bin/Win64/soft_oal.dll"
-    $<TARGET_FILE_DIR:GNEngine>/OpenAL32.dll
+    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/OpenAL32.dll"
 )
 
 
@@ -138,7 +143,4 @@ add_subdirectory(example)
 # Remove target_link_directories as it might not be needed with direct target linking
 # target_link_directories(GNEngine PUBLIC ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
-# target_compile_definitions
-target_compile_definitions(GNEngine PUBLIC
-    PROJECT_ROOT_PATH="${CMAKE_SOURCE_DIR}"
-)
+

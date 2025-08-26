@@ -41,12 +41,18 @@ This project is built using CMake and `CMakePresets.json`. It requires GNU g++ (
     cmake --build out/build/custom-preset
     ```
 
-## Running the Example
+## Buile and Run the Example
 
-After the build is complete, you can run the example application. The executable will be created in the build output directory.
+### Buile
 
 ```bash
-out/build/custom-preset/Debug/{A name of example}.exe
+cmake --build out/build/custom-preset --target {A folder name of example}
+```
+
+### Run
+
+```bash
+out/build/custom-preset/Debug/{A file name of example}.exe
 ```
 
 ## Directory Structure

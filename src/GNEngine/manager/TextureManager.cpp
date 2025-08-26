@@ -55,6 +55,8 @@ bool TextureManager::loadTexture(const std::filesystem::path& filePath) {
 
     if (SDL_SetTextureScaleMode(sdlTexture, SDL_SCALEMODE_NEAREST) != 0) {
         SDL_Log("TextureManager::loadTexture - Failed to set texture scale mode for %s: %s", filePath.string().c_str(), SDL_GetError());
+        // Even if setting scale mode fails, we still want to use the texture if it was created successfully.
+        // This log helps diagnose, but doesn't prevent texture usage.
     }
 
     textureMap_[filePath] = std::make_unique<Texture>(sdlTexture, sdlTexture->w, sdlTexture->h);
@@ -80,6 +82,8 @@ bool TextureManager::loadTextureEmbedded(const std::string& name, const unsigned
 
     if (SDL_SetTextureScaleMode(sdlTexture, SDL_SCALEMODE_NEAREST) != 0) {
         SDL_Log("TextureManager::loadTextureEmbedded - Failed to set texture scale mode for %s: %s", name.c_str(), SDL_GetError());
+        // Even if setting scale mode fails, we still want to use the texture if it was created successfully.
+        // This log helps diagnose, but doesn't prevent texture usage.
     }
 
     embeddedTextureMap_[name] = std::make_unique<Texture>(sdlTexture);
