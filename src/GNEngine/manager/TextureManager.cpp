@@ -3,23 +3,35 @@
 #include <iostream>
 #include <filesystem>
 #include <memory>
+
+#include <SDL3/SDL_render.h>
 #include <SDL3_image/SDL_image.h>
 
-#include "GNEngine/resource/embedded/image/ErrorImage.h"
+#include "GNEngine/resource/embedded/image/ImageError.h"
 
 TextureManager::TextureManager(SDL_Renderer* renderer)
     : renderer_(renderer) {
     if (!renderer) {
         SDL_Log("TextureManager::init - rawRenderer is null: %s", SDL_GetError());
     }
+    
 
-    // Load the embedded default texture
-    if (loadTextureEmbedded("__DEFAULT__", GNEngine::resource::embedded::EmbeddedLogo_png, sizeof(GNEngine::resource::embedded::EmbeddedLogo_png))) {
-        defaultTexture_ = std::move(embeddedTextureMap_.at("__DEFAULT__"));
-        embeddedTextureMap_.erase("__DEFAULT__");
+    // // Load the embedded default texture
+    // if (loadTextureEmbedded("__DEFAULT__", GNEngine::resource::embedded::defaultImage, defaultImage_len)) {
+    //     defaultTexture_ = std::move(embeddedTextureMap_.at("__DEFAULT__"));
+    //     embeddedTextureMap_.erase("__DEFAULT__");
+    // } else {
+    //     SDL_Log("TextureManager::init - FAILED TO LOAD EMBEDDED DEFAULT TEXTURE");
+    //     defaultTexture_ = nullptr;
+    // }
+
+    /* 이미지 오류시 대체되어 렌더링되는 이미지. */
+    if (loadTextureEmbedded("__IMAGE_ERROR__", GNEngine::resource::embedded::imageErrorImage, GNEngine::resource::embedded::imageErrorImage_len)) {
+        imageErrorTexture_ = std::move(embeddedTextureMap_.at("__IMAGE_ERROR__"));
+        embeddedTextureMap_.erase("__IMAGE_ERROR__");
     } else {
-        SDL_Log("TextureManager::init - FAILED TO LOAD EMBEDDED DEFAULT TEXTURE");
-        defaultTexture_ = nullptr;
+        SDL_Log("TextureManager::init - Failed to load embedded__IMAGE_ERROR__ texture. ");
+        imageErrorTexture_ = nullptr;
     }
 }
 
@@ -63,6 +75,9 @@ bool TextureManager::loadTexture(const std::filesystem::path& filePath) {
     return true;
 }
 
+/* 
+ * @brief GNEngine 내장 이미지를 로딩함.
+*/
 bool TextureManager::loadTextureEmbedded(const std::string& name, const unsigned char* data, size_t size) {
     if (embeddedTextureMap_.count(name)) {
         return true;
@@ -80,13 +95,18 @@ bool TextureManager::loadTextureEmbedded(const std::string& name, const unsigned
         return false;
     }
 
+    float width_f, height_f;
+    SDL_GetTextureSize(sdlTexture, &width_f, &height_f);
+    int width = static_cast<int>(width_f);
+    int height = static_cast<int>(height_f);
+
     if (SDL_SetTextureScaleMode(sdlTexture, SDL_SCALEMODE_NEAREST) != 0) {
         SDL_Log("TextureManager::loadTextureEmbedded - Failed to set texture scale mode for %s: %s", name.c_str(), SDL_GetError());
         // Even if setting scale mode fails, we still want to use the texture if it was created successfully.
         // This log helps diagnose, but doesn't prevent texture usage.
     }
 
-    embeddedTextureMap_[name] = std::make_unique<Texture>(sdlTexture);
+    embeddedTextureMap_[name] = std::make_unique<Texture>(sdlTexture, width, height);
     return true;
 }
 

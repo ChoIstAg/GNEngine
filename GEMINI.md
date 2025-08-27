@@ -27,44 +27,47 @@
 3.  **실행 (Run):**
     빌드가 완료되면 실행 파일은 `out/build/custom-preset/Debug/` 디렉터리에 생성됩니다.
     ```bash
-    out/build/custom-preset/Debug/GNEngineApp.exe
+    out/build/custom-preset/Debug/{실행할항목}.exe
     ```
 
 ## 3. 의존성 (Dependencies)
 
-- SDL3 (v3.2.18): [https://github.com/libsdl-org/SDL](https://github.com/libsdl-org/SDL)
-- SDL3_image (v3.2.4): [https://github.com/libsdl-org/SDL_image](https://github.com/libsdl-org/SDL_image)
-- SDL3_ttf (v3.2.2): [https://github.com/libsdl-org/SDL_ttf](https://github.com/libsdl-org/SDL_ttf)
-- OpenAL Soft (v1.24.3): [https://github.com/kcat/openal-soft](https://github.com/kcat/openal-soft)
-- for decoding sound files :
-    - dr_wav (v0.14.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs) 
-    - dr_mp3 (v0.7.1): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
-    - dr_flac (v0.13.0): [https://github.com/mackron/dr_libs](https://github.com/mackron/dr_libs)
-    - stb_vorbis (v1.22): [https://github.com/nothings/stb](https://github.com/nothings/stb)
-- nlohmann/json (3.12.0): [https://github.com/nlohmann/json](https://github.com/nlohmann/json)
+- SDL3
+- SDL3_image
+- SDL3_ttf
+- OpenAL soft
+- dr_wav
+- dr_mp3
+- dr_flac
+- stb_vorbis
+- nlohmann/json
+- flatBuffers
+- Box2d
 
 의존성 라이브러리들은 `include/lib/` 디렉터리에서 관리됩니다.
 
 ## 4. 디렉터리 구조 (Directory Structure)
 - 각 파일의 자세한 역할은 ./Engine Struct.md 파일 참조..
 
-- `app/`: 메인 애플리케이션 소스 코드 (`main.cpp`, `Application.cpp` 등)
-- `include/engine/`: 엔진 핵심 로직
-    - `/manager/` : 매니저
-    - `/component/` : 게임 오브젝트들이 기능을 사용할 수 있도록 함.
-- `asset/`: 게임에 사용될 이미지, 폰트, 텍스트 파일
+- `include/GNEngine/`: GNEngine 라이브러리 헤더.
+  - `manager/`
+  - `component/`
+  - `system/`
+  - `resource/` : 엔진의 범용 에셋. 
+    - `image/`: 이미지가 헤더파일로 존재함. TextManager::loadTextureEmbedded로 로딩하기. 
 - `out/build/`: 빌드 결과물이 저장되는 디렉터리
-- `CMakeLists.txt`: 최상위 CMake 빌드 스크립트
+- `example/`: 예제 프로젝트들. 
+  - `top_view_game`
 
 ## 5. 소스 파일들의 역할과 구조
 - System : 모든 직접적인 로직을 담당함.
 - Manager : 리소스 관리와 초기화 등 유틸리티 기능을 담당하는 관리자.
 - Component : 각 Entity가 기능을 사용하기 위해 갖는 객체.
-- Entity : EntityManager를 통해 Component를 등록할 수 있음. ID로만 사용
+- Entity : EntityManager를 통해 Component를 등록할 수 있음. ID만 저장 및 사용.
 - prefab : Entity를 생성하는 빌드 템플릿.
 
 
-- app/main.cpp: 어플리케이션의 진입점. 단지 메인 콜백을 실행하기 위한 시발점으로 사용됨.
+- example/main.cpp: 어플리케이션의 진입점. 단지 메인 콜백을 실행하기 위한 시발점으로 사용됨.
 - app/Application.cpp: 메인 콜백 함수와 어플리케이션에서 필요한 각 매니저와 부가 요소들을 멤버 변수로 정의함. 그리고 메인 run 함수가 존재.
 - engine/event/EventInterface.h: 이벤트 객체들을 정의해놓음. 새 이벤트를 만들 때 여기서 타입을 추가하기.
 - engine/component/: 각 Entity가 기능을 사용하기 위해 갖는 객체.

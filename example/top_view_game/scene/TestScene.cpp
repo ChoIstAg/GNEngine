@@ -42,7 +42,7 @@ TestScene::TestScene(EntityManager& entityManager,
     animationManager_(animationManager)
 {}
 
-bool TestScene::loadScene() {    
+bool TestScene::loadScene() {
     /* --- Player --- */
     playerEntity_ = PlayerPrefab::create(entityManager_, eventManager_, textureManager_, renderManager_, soundManager_, animationManager_);
     entityIDs_.push_back(playerEntity_);
@@ -69,12 +69,26 @@ bool TestScene::loadScene() {
     }
     // std::cerr << "[DEBUG] TestScene::loadScene - bgm is successfully loaded.\n";
     
-    
     auto textEntity = entityManager_.createEntity();
     entityIDs_.push_back(textEntity);
-    std::filesystem::path textPath = static_cast<std::filesystem::path>(TEXT_ASSET_ROOT_PATH) / "test.txt";
-    
-    
+    std::filesystem::path textPath = static_cast<std::filesystem::path>(TEXT_ASSET_ROOT_PATH) / "test.txt"; // Original line
+
+    // Add components to the existing textEntity
+    std::filesystem::path fontPath = static_cast<std::filesystem::path>(FONT_ASSET_ROOT_PATH) / "CookieRun Regular.ttf";
+    if (!textManager_.loadFont(fontPath, 24)) {
+        std::cerr << "[ERROR] TestScene - Failed to load font: " << fontPath << std::endl;
+    }
+
+    entityManager_.addComponent<TransformComponent>(textEntity, 50.0f, 50.0f, 0.0f, 1.0f, 1.0f);
+    SDL_Color textColor = {255, 255, 255, 255}; // White color
+    entityManager_.addComponent<TextComponent>(textEntity,
+                                           "Hello, GNEngine Refactored Text!",
+                                           fontPath,
+                                           24,
+                                           textColor,
+                                           RenderLayer::UI);
+    entityManager_.addComponent<RenderComponent>(textEntity, nullptr, 0, 0, RenderLayer::UI);
+
     isLoaded_ = true;
     return true;
 }

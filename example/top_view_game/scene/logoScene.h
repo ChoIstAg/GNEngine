@@ -54,10 +54,11 @@ public:
 private:
     EntityID logoEntity_;
 
-    float sceneTimer_ = 0.0f;
+    float sceneTimer_ = 0.0f; /* 페이드인이 끝난 직후부터 시간을 기록함. */
 
+    /* --- 표시 시간 --- */
     float screenTime_ = 2.0f;
-    float fadeInTime_ = 1.5f;
+    float fadeInTime_ = 2.0f;
     float fadeOutTime_ = 5.0f;
 
     enum class LogoSceneState {

@@ -1,20 +1,20 @@
-﻿#pragma once
+#pragma once
 #include <cstddef>
 
 /*
- * ?ъ슜踰?
- * 1. ?대?吏 ?뚯씪??C++ 諛붿씠??諛곗뿴濡?蹂?섑빀?덈떎.
- * 2. ?⑤씪??蹂???꾧뎄 ?ъ슜??沅뚯옣?⑸땲?? https://tomeko.net/online_tools/file_to_hex.php
- *    - ?뚯씪???낅줈?쒗빀?덈떎.
- *    - 異쒕젰 ?뺤떇??"C++"濡??좏깮?⑸땲??
- *    - ?앹꽦??諛곗뿴??蹂듭궗?⑸땲??
- * 3. ?꾨옒??鍮꾩뼱?덈뒗 諛곗뿴 珥덇린??遺遺꾩뿉 蹂듭궗???댁슜??遺숈뿬?ｌ뒿?덈떎.
- */
+ * 사용법
+ * 1. 이미지 파일을 C++ 바이트 배열로 변환합니다.
+ * 2. 온라인 변환 도구 사용을 권장합니다. https://tomeko.net/online_tools/file_to_hex.php
+ *    - 파일을 업로드합니다.
+ *    - 출력 형식을 "C++"로 선택합니다.
+ *    - 생성된 배열을 복사합니다.
+ * 3. 아래의 비어있는 배열 초기화 부분에 복사한 내용을 붙여넣습니다.
+*/
 
 namespace GNEngine::resource::embedded
 {
-    // ?덉떆: inline constexpr unsigned char EmbeddedLogo_png[] = { 0x89, 0x50, ... };
-    inline constexpr unsigned char EmbeddedLogo_png[] = {
+    // 예시: inline constexpr unsigned char EmbeddedLogo_png[] = { 0x89, 0x50, ... };
+    inline constexpr unsigned char imageErrorImage[] = {
         0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, 
         0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, 0x00, 0x08, 0x06, 0x00, 0x00, 0x00, 0xF4, 0x78, 0xD4, 
         0xFA, 0x00, 0x00, 0x00, 0x09, 0x70, 0x48, 0x59, 0x73, 0x00, 0x00, 0x0B, 0x12, 0x00, 0x00, 0x0B, 
@@ -5920,7 +5920,6 @@ namespace GNEngine::resource::embedded
         0xFF, 0x01, 0xF8, 0xEB, 0x09, 0xB6, 0x77, 0xD3, 0x09, 0xB2, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 
         0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82
     };
-    inline constexpr size_t EmbeddedLogo_png_len = sizeof(EmbeddedLogo_png);
+    inline constexpr size_t imageErrorImage_len = sizeof(imageErrorImage);
 }
-
 

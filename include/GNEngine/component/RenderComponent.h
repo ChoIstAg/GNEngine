@@ -20,21 +20,31 @@
 */
 class GNEngine_API RenderComponent : public Component {
 public:
-    RenderComponent(Texture* texture, RenderLayer layer = RenderLayer::GAME_OBJECT, bool hasAnimation = false, SDL_Rect srcRect = {0,0,0,0}, bool flipX = false, bool flipY = false)
-        : texture_(texture), layer_(layer), hasAnimation_(hasAnimation), flipX_(flipX), flipY_(flipY) {
-        if (texture_ && srcRect.w == 0 && srcRect.h == 0) {
-            srcRect_ = {0, 0, texture_->width_, texture_->height_};
+    RenderComponent(RenderLayer layer)
+        : sdlTexture_(nullptr), width_(0), height_(0), layer_(layer), hasAnimation_(false), srcRect_({0,0,0,0}), flipX_(false), flipY_(false) {}
+
+    RenderComponent(SDL_Texture* sdlTexture, int width, int height, RenderLayer layer = RenderLayer::GAME_OBJECT, bool hasAnimation = false, SDL_Rect srcRect = {0,0,0,0}, bool flipX = false, bool flipY = false)
+        : sdlTexture_(sdlTexture), width_(width), height_(height), layer_(layer), hasAnimation_(hasAnimation), flipX_(flipX), flipY_(flipY) {
+        if (sdlTexture_ && srcRect.w == 0 && srcRect.h == 0) {
+            srcRect_ = {0, 0, width_, height_};
         } else {
             srcRect_ = srcRect;
         }
     }
         
     ~RenderComponent() {
-
+        // RenderComponent는 SDL_Texture*의 소유권을 가지지 않으므로 파괴하지 않음.
     }
     
-    Texture* getTexture() const { return texture_; }
-    void setTexture(Texture* texture) { texture_ = texture; }
+    SDL_Texture* getSDLTexture() const { return sdlTexture_; }
+    void setSDLTexture(SDL_Texture* sdlTexture, int width, int height) { 
+        sdlTexture_ = sdlTexture; 
+        width_ = width; 
+        height_ = height; 
+    }
+
+    int getWidth() const { return width_; }
+    int getHeight() const { return height_; }
 
     RenderLayer getLayer() const { return layer_; }
     void setLayer(RenderLayer layer) { layer_ = layer; }
@@ -50,7 +60,9 @@ public:
     void setFlipY(bool flip) { flipY_ = flip; }
 
 private:
-    Texture* texture_;
+    SDL_Texture* sdlTexture_;
+    int width_;
+    int height_;
     RenderLayer layer_;
     bool hasAnimation_ = false;
     SDL_Rect srcRect_;

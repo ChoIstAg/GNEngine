@@ -1,4 +1,4 @@
-﻿#include "GNEngine/manager/FadeManager.h"
+#include "GNEngine/manager/FadeManager.h"
 
 #include "GNEngine/manager/EntityManager.h"
 #include "GNEngine/component/FadeComponent.h"
@@ -26,7 +26,7 @@ void FadeManager::startFadeIn(float duration, SDL_Color color, std::function<voi
     fade.onComplete = onComplete;
     fade.currentAlpha = 255.0f; // 페이드 인 시작 시 알파값은 255 (불투명)
 
-    entityManager_.addComponent<RenderComponent>(fadeEntity, nullptr, RenderLayer::SCENE_EFFECT);
+    entityManager_.addComponent<RenderComponent>(fadeEntity, RenderLayer::SCENE_EFFECT);
 }
 
 /*
@@ -46,7 +46,5 @@ void FadeManager::startFadeOut(float duration, SDL_Color color, std::function<vo
     fade.onComplete = onComplete;
     fade.currentAlpha = 0.0f; // 페이드 아웃 시작 시 알파값은 0 (투명)
 
-    entityManager_.addComponent<RenderComponent>(fadeEntity, nullptr, RenderLayer::SCENE_EFFECT);
+    entityManager_.addComponent<RenderComponent>(fadeEntity, RenderLayer::SCENE_EFFECT);
 }
-
-

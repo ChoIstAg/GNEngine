@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -266,8 +266,10 @@ public:
             index = it->second;
         }
 
-        if (index >= textures.size()) {
-            textures.resize(index + 1);
+        if (index >= sdlTextures.size()) {
+            sdlTextures.resize(index + 1);
+            widths.resize(index + 1);
+            heights.resize(index + 1);
             layers.resize(index + 1);
             hasAnimations.resize(index + 1);
             srcRectX.resize(index + 1);
@@ -278,7 +280,9 @@ public:
             flipY.resize(index + 1);
         }
 
-        textures[index] = component.getTexture();
+        sdlTextures[index] = component.getSDLTexture();
+        widths[index] = component.getWidth();
+        heights[index] = component.getHeight();
         layers[index] = component.getLayer();
         hasAnimations[index] = component.hasAnimation();
         const auto& rect = component.getSrcRect();
@@ -297,10 +301,12 @@ public:
             throw std::runtime_error("RenderComponent not found for entity.");
         }
         size_t i = entityToIndexMap.at(entity);
-        return RenderComponent(textures[i], layers[i], hasAnimations[i], {srcRectX[i], srcRectY[i], srcRectW[i], srcRectH[i]}, flipX[i], flipY[i]);
+        return RenderComponent(sdlTextures[i], widths[i], heights[i], layers[i], hasAnimations[i], {srcRectX[i], srcRectY[i], srcRectW[i], srcRectH[i]}, flipX[i], flipY[i]);
     }
 
-    std::vector<Texture*> textures;
+    std::vector<SDL_Texture*> sdlTextures;
+    std::vector<int> widths;
+    std::vector<int> heights;
     std::vector<RenderLayer> layers;
     std::vector<bool> hasAnimations;
     std::vector<int> srcRectX, srcRectY, srcRectW, srcRectH;
@@ -308,7 +314,12 @@ public:
 
 protected:
     void swapAndPop(size_t indexOfRemoved, size_t indexOfLast) override {
-        textures[indexOfRemoved] = textures[indexOfLast];
+        if (sdlTextures[indexOfRemoved] != nullptr) {
+            SDL_DestroyTexture(sdlTextures[indexOfRemoved]);
+        }
+        sdlTextures[indexOfRemoved] = sdlTextures[indexOfLast];
+        widths[indexOfRemoved] = widths[indexOfLast];
+        heights[indexOfRemoved] = heights[indexOfLast];
         layers[indexOfRemoved] = layers[indexOfLast];
         hasAnimations[indexOfRemoved] = hasAnimations[indexOfLast];
         srcRectX[indexOfRemoved] = srcRectX[indexOfLast];
@@ -318,7 +329,9 @@ protected:
         flipX[indexOfRemoved] = flipX[indexOfLast];
         flipY[indexOfRemoved] = flipY[indexOfLast];
 
-        textures.pop_back();
+        sdlTextures.pop_back();
+        widths.pop_back();
+        heights.pop_back();
         layers.pop_back();
         hasAnimations.pop_back();
         srcRectX.pop_back();
@@ -419,9 +432,7 @@ public:
             colorsB.resize(index + 1);
             colorsA.resize(index + 1);
             areDirty.resize(index + 1);
-            textures.resize(index + 1);
-            textureWidths.resize(index + 1);
-            textureHeights.resize(index + 1);
+            layers.resize(index + 1);
         }
 
         texts[index] = std::move(component.text);
@@ -432,9 +443,7 @@ public:
         colorsB[index] = component.color.b;
         colorsA[index] = component.color.a;
         areDirty[index] = component.isDirty;
-        textures[index] = component.texture;
-        textureWidths[index] = component.textureWidth;
-        textureHeights[index] = component.textureHeight;
+        layers[index] = component.layer;
     }
 
     void removeComponent(EntityID entity) { /* Stub */ }
@@ -444,11 +453,8 @@ public:
             throw std::runtime_error("TextComponent not found for entity.");
         }
         size_t i = entityToIndexMap.at(entity);
-        TextComponent comp(texts[i], fontPaths[i], fontSizes[i], {colorsR[i], colorsG[i], colorsB[i], colorsA[i]});
+        TextComponent comp(texts[i], fontPaths[i], fontSizes[i], {colorsR[i], colorsG[i], colorsB[i], colorsA[i]}, layers[i]);
         comp.isDirty = areDirty[i];
-        comp.texture = textures[i];
-        comp.textureWidth = textureWidths[i];
-        comp.textureHeight = textureHeights[i];
         return comp;
     }
 
@@ -457,16 +463,10 @@ public:
     std::vector<int> fontSizes;
     std::vector<Uint8> colorsR, colorsG, colorsB, colorsA;
     std::vector<bool> areDirty;
-    std::vector<SDL_Texture*> textures;
-    std::vector<float> textureWidths;
-    std::vector<float> textureHeights;
+    std::vector<RenderLayer> layers;
 
 protected:
     void swapAndPop(size_t i, size_t last_i) override {
-        if (textures[i] != nullptr) {
-            SDL_DestroyTexture(textures[i]);
-        }
-
         texts[i] = std::move(texts[last_i]);
         fontPaths[i] = std::move(fontPaths[last_i]);
         fontSizes[i] = fontSizes[last_i];
@@ -475,9 +475,7 @@ protected:
         colorsB[i] = colorsB[last_i];
         colorsA[i] = colorsA[last_i];
         areDirty[i] = areDirty[last_i];
-        textures[i] = textures[last_i];
-        textureWidths[i] = textureWidths[last_i];
-        textureHeights[i] = textureHeights[last_i];
+        layers[i] = layers[last_i];
 
         texts.pop_back();
         fontPaths.pop_back();
@@ -487,9 +485,7 @@ protected:
         colorsB.pop_back();
         colorsA.pop_back();
         areDirty.pop_back();
-        textures.pop_back();
-        textureWidths.pop_back();
-        textureHeights.pop_back();
+        layers.pop_back();
     }
 };
 
@@ -548,5 +544,3 @@ protected:
         targetEntityIds.pop_back();
     }
 };
-
-

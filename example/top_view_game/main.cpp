@@ -21,7 +21,7 @@ int SDLCALL appCallback(int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
-    std::cout << "Acess main" << std::endl;
+    std::cout << "main func is called. " << std::endl;
     const int result = SDL_RunApp(argc, argv, appCallback, nullptr);
 
     if (result != 0 ) {

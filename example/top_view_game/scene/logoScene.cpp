@@ -54,8 +54,9 @@ bool LogoScene::loadScene() {
     Texture* logoIMG = textureManager_.getTexture(logoPath);
     if(logoIMG == nullptr) {
         std::cerr << "[ERROR] LogoScene - can't load logoIMG \n";
+    } else {
+        entityManager_.addComponent<RenderComponent>(logoEntity_, logoIMG->sdlTexture_, logoIMG->width_, logoIMG->height_, RenderLayer::UI);
     }
-    entityManager_.addComponent<RenderComponent>(logoEntity_, logoIMG, RenderLayer::UI);
     
     /* Skip to input key */
     auto skipLogoScene = [&](const KeyReleasedEvent& event) {

@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿
+#pragma once
 #include "../GNEngine_API.h"
 
 #include <string>
@@ -19,6 +20,7 @@
  * @param fontSize 폰트의 크기.
  * @param color 텍스트의 색상 (SDL_Color).
  * @param layer(RenderLayer::UI) 렌더링 레이어.
+ * @param isDirty(true) 내용이 변경될 때 텍스처를 다시 만들어야할지 여부. 텍스처를 정상적으로 변경시 false로 바뀜.
  */
 struct GNEngine_API TextComponent : public Component {
     std::string text;
@@ -27,11 +29,6 @@ struct GNEngine_API TextComponent : public Component {
     SDL_Color color;
     RenderLayer layer = RenderLayer::UI;
     bool isDirty = true; // 내용이 변경되어 텍스처를 다시 만들어야 하는지 여부
-
-    // RenderSystem이 생성하고 관리하는 텍스처 캐시
-    SDL_Texture* texture = nullptr;
-    int textureWidth = 0;
-    int textureHeight = 0;
 
     TextComponent(std::string text, std::filesystem::path fontPath, int fontSize, SDL_Color color, RenderLayer layer = RenderLayer::UI)
         : text(std::move(text)), fontPath(std::move(fontPath)), fontSize(fontSize), color(color), layer(layer) {}
@@ -44,7 +41,3 @@ struct GNEngine_API TextComponent : public Component {
         }
     }
 };
-
-
-
-

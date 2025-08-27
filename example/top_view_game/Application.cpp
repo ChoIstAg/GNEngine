@@ -85,11 +85,11 @@ int Application::init(){
     auto& sceneManager = GNManager::getInstance().getSceneManager();
     auto& renderManager = GNManager::getInstance().getRenderManager();
 
-    SDL_Rect viewport = {0, 0, windowWidth, windowHeight};
+    SDL_Rect viewport = {0, 0, windowWidth, windowHeight}; //RenderManager이나 다른 클래스로 이항 예정. 
     GNManager::getInstance().getRenderManager().setViewport(viewport);
 
     /* --- Regist all systems --- */
-    systemManager.registerSystem<RenderSystem>(SystemPhase::RENDER, renderManager, textManager);
+    systemManager.registerSystem<RenderSystem>(SystemPhase::RENDER, renderManager);
     systemManager.registerSystem<InputSystem>(SystemPhase::PRE_UPDATE, eventManager, entityManager);
     systemManager.registerSystem<PlayerAnimationControlSystem>(SystemPhase::LOGIC_UPDATE, animationManager, textureManager, renderManager);
     systemManager.registerSystem<SoundSystem>(SystemPhase::LOGIC_UPDATE, soundManager);
@@ -113,20 +113,23 @@ int Application::init(){
     entityManager.registerComponentType<CameraComponent>();
 
 
-    /* --- Regist all scane ---*/
+    /* --- Regist all scenes ---*/
     sceneManager.addScene("LogoScene", std::make_unique<LogoScene>(entityManager, sceneManager, eventManager, renderManager, soundManager, textureManager, animationManager, fadeManager));
     sceneManager.addScene("TestScene", std::make_unique<TestScene>(entityManager, eventManager, renderManager, soundManager, textureManager, textManager, animationManager));
     //sceneManager.addScene("MainMenuScene", std::make_unique<MainMenuScene>());
 
+
+    /* Change scene */
     sceneManager.loadScene("LogoScene");
     sceneManager.changeScene("LogoScene");
-    // sceneManager.changeScene("TestScene");
 
     lastFrameTime_ = std::chrono::high_resolution_clock::now();
     return 0;
 }
 
 void Application::quit() {
+
+    /* Save config file. */
     auto& fileManager = FileManager::getInstance();
     const std::filesystem::path configBinPath = static_cast<std::filesystem::path>(PROJECT_ROOT_PATH) /"app/data/config.bin";
     fileManager.saveSettings(configBinPath);
@@ -179,8 +182,8 @@ void Application::run() {
         }
         inputManager.updateKeyStates();
         
-        
         renderManager.clear();
+
         /*
         * SystemManager perform in the order. {PRE_UPDATE, LOGIT_UPDATE, PHYSICS_UPDATE, POST_UPDATE, RENDER}
         */

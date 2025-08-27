@@ -1,4 +1,4 @@
-﻿#include "GNEngine/system/PlayerAnimationControlSystem.h"
+#include "GNEngine/system/PlayerAnimationControlSystem.h"
 
 #include <iostream>
 #include <filesystem>
@@ -115,7 +115,7 @@ void PlayerAnimationControlSystem::setCurrentAnimation(EntityManager& entityMana
     auto renderArray = entityManager.getComponentArray<RenderComponent>();
     if (renderArray && renderArray->hasComponent(entityId)) {
         const size_t i = renderArray->getEntityToIndexMap().at(entityId);
-        renderArray->textures[i] = newAnimTexture;
+        renderArray->sdlTextures[i] = newAnimTexture->sdlTexture_;
         const SDL_Rect& firstFrameRect = newAnimation->getFrame(0);
         renderArray->srcRectX[i] = firstFrameRect.x;
         renderArray->srcRectY[i] = firstFrameRect.y;
@@ -123,8 +123,7 @@ void PlayerAnimationControlSystem::setCurrentAnimation(EntityManager& entityMana
         renderArray->srcRectH[i] = firstFrameRect.h;
         renderArray->hasAnimations[i] = true;
     } else {
-        entityManager.addComponent<RenderComponent>(entityId, newAnimTexture, RenderLayer::GAME_OBJECT, true, newAnimation->getFrame(0));
+        const SDL_Rect& firstFrameRect = newAnimation->getFrame(0);
+        entityManager.addComponent<RenderComponent>(entityId, newAnimTexture->sdlTexture_, firstFrameRect.w, firstFrameRect.h, RenderLayer::GAME_OBJECT, true, firstFrameRect);
     }
 }
-
-

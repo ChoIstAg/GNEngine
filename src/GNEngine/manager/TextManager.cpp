@@ -45,15 +45,6 @@ bool TextManager::setFontSizePt(const std::filesystem::path& filePath, int fontP
     return true;
 }
 
-std::unique_ptr<Text> TextManager::createText(const std::filesystem::path& filePath, const std::string& text, SDL_Color color, bool enableMultiline, bool enableNewline, int wrapWidth, int maxHeight) {
-    auto it = fontMap_.find(filePath);
-    if (it == fontMap_.end()) { /* 만약 폰트를 찾지 못했다면 */
-        SDL_Log("createText - Font not found: %s", filePath.string().c_str());
-        return nullptr; 
-    }
-    return std::make_unique<Text>(renderer_, it->second, text, color, enableMultiline, enableNewline, wrapWidth, maxHeight);
-}
-
 std::string TextManager::loadTextFromFile(const std::filesystem::path& filePath) {
     if (!std::filesystem::exists(filePath)) {
         std::string errorMessage = std::format("File does not exist({}) : {}", filePath.string(), SDL_GetError());
@@ -72,6 +63,18 @@ std::string TextManager::loadTextFromFile(const std::filesystem::path& filePath)
     buffer << file.rdbuf(); /* 파일의 모든 내용을 버퍼로 저장. */
 
     return buffer.str(); /* string으로 반환 */
+}
+
+TTF_Font* TextManager::getFont(const std::filesystem::path& filePath, int fontPointSize) {
+    auto it = fontMap_.find(filePath);
+    if (it != fontMap_.end()) {
+        return it->second;
+    }
+    // If not found, try to load it
+    if (loadFont(filePath, fontPointSize)) {
+        return fontMap_.at(filePath);
+    }
+    return nullptr;
 }
 
 

@@ -8,8 +8,8 @@
 #include "GNEngine/core/RenderLayer.h"
 #include "GNEngine/component/FadeComponent.h"
 
-RenderSystem::RenderSystem(RenderManager& renderManager, TextManager& textManager)
-    : renderManager_(renderManager), textManager_(textManager) {}
+RenderSystem::RenderSystem(RenderManager& renderManager)
+    : renderManager_(renderManager) {}
 
 void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
     // 이 함수 내에서만 사용할 로컬 구조체
@@ -34,22 +34,13 @@ void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
         }
     }
 
-    // 2. TextComponent가 있는 엔티티 수집
-    auto textArray = entityManager.getComponentArray<TextComponent>();
-    if (textArray) {
-        for (const auto& entity : entityManager.getEntitiesWith<TextComponent, TransformComponent>()) {
-            const auto& textComponent = textArray->getComponent(entity);
-            renderables.push_back({entity, textComponent.layer});
-        }
-    }
-
-    // 3. 레이어 기준으로 모든 렌더링 대상 정렬
+    // 2. 레이어 기준으로 모든 렌더링 대상 정렬
     std::sort(renderables.begin(), renderables.end(), compareRenderables);
 
-    // 4. 정렬된 순서대로 렌더링
+    // 3. 정렬된 순서대로 렌더링
     auto transformArray = entityManager.getComponentArray<TransformComponent>();
     auto animArray = entityManager.getComponentArray<AnimationComponent>();
-    auto fadeArray = entityManager.getComponentArray<FadeComponent>(); // FadeComponent 배열 가져오기
+    auto fadeArray = entityManager.getComponentArray<FadeComponent>();
 
     for (const auto& renderable : renderables) {
         EntityID entity = renderable.entity;
@@ -61,7 +52,7 @@ void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
         // RenderComponent 처리
         if (renderArray && renderArray->hasComponent(entity)) {
             const auto& render = renderArray->getComponent(entity);
-            if (render.getTexture()) {
+            if (render.getSDLTexture()) {
                 SDL_Rect srcRect = render.getSrcRect();
                 float destW = static_cast<float>(srcRect.w);
                 float destH = static_cast<float>(srcRect.h);
@@ -79,7 +70,7 @@ void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
                 if (render.getFlipX()) flip = static_cast<SDL_FlipMode>(flip | SDL_FLIP_HORIZONTAL);
                 if (render.getFlipY()) flip = static_cast<SDL_FlipMode>(flip | SDL_FLIP_VERTICAL);
 
-                renderManager_.renderTexture(render.getTexture(), transform.positionX_, transform.positionY_, &srcRect, destW, destH, flip);
+                renderManager_.renderTexture(render.getSDLTexture(), transform.positionX_, transform.positionY_, &srcRect, destW, destH, flip);
             } else {
                 // 텍스처가 없는 RenderComponent는 페이드 효과로 간주
                 if (fadeArray && fadeArray->hasComponent(entity)) {
@@ -95,36 +86,6 @@ void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
                     SDL_RenderFillRect(renderer, &fadeRect);
                     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
                 }
-            }
-        }
-
-        // TextComponent 처리
-        if (textArray && textArray->hasComponent(entity)) {
-            // TextComponent의 데이터를 직접 접근하여 수정
-            const size_t textIndex = textArray->getEntityToIndexMap().at(entity);
-            
-            if (textArray->areDirty[textIndex]) {
-                if (textArray->textures[textIndex] != nullptr) {
-                    SDL_DestroyTexture(textArray->textures[textIndex]);
-                    textArray->textures[textIndex] = nullptr;
-                }
-                SDL_Color color = {textArray->colorsR[textIndex], textArray->colorsG[textIndex], textArray->colorsB[textIndex], textArray->colorsA[textIndex]};
-                
-                auto tempText = textManager_.createText(textArray->fontPaths[textIndex], textArray->texts[textIndex], color, false, false, 0, 0);
-                if (tempText) {
-                    textArray->textures[textIndex] = tempText->getSDLTexture();
-                    float texW, texH;
-                    SDL_GetTextureSize(textArray->textures[textIndex], &texW, &texH);
-                    textArray->textureWidths[textIndex] = texW;
-                    textArray->textureHeights[textIndex] = texH;
-                } else {
-                    textArray->textures[textIndex] = nullptr;
-                }
-                textArray->areDirty[textIndex] = false;
-            }
-
-            if (textArray->textures[textIndex] != nullptr) {
-                renderManager_.renderTexture(textArray->textures[textIndex], transform.positionX_, transform.positionY_, nullptr, static_cast<float>(textArray->textureWidths[textIndex]), static_cast<float>(textArray->textureHeights[textIndex]), SDL_FLIP_NONE);
             }
         }
     }

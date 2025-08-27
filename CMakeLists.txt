@@ -52,7 +52,6 @@ add_library(GNEngine SHARED
     src/GNEngine/core/ComponentArray.cpp
     src/GNEngine/core/Animation.cpp
     src/GNEngine/core/Sound.cpp
-    src/GNEngine/core/Text.cpp
 
     src/GNEngine/manager/FileManager.cpp
     src/GNEngine/manager/EntityManager.cpp
@@ -71,9 +70,10 @@ add_library(GNEngine SHARED
     src/GNEngine/system/SoundSystem.cpp
     src/GNEngine/system/InputSystem.cpp
     src/GNEngine/system/CameraSystem.cpp
-    src/GNEngine/system/FadeSystem.cpp
     src/GNEngine/system/AnimationSystem.cpp
+    src/GNEngine/system/TextSystem.cpp
     src/GNEngine/system/MovementSystem.cpp
+    src/GNEngine/system/FadeSystem.cpp
     src/GNEngine/system/InputToAccelerationSystem.cpp
     src/GNEngine/system/PlayerAnimationControlSystem.cpp
     src/GNEngine/system/AccelerationResetSystem.cpp

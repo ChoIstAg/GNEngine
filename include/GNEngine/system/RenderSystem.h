@@ -19,7 +19,7 @@
 
 class GNEngine_API RenderSystem {
 public:
-    RenderSystem(RenderManager& renderManager, TextManager& textManager);
+    RenderSystem(RenderManager& renderManager);
 
     /*
      * @brief 모든 렌더링 가능한 엔티티를 업데이트하고 그림.
@@ -31,7 +31,6 @@ public:
 
 private:
     RenderManager& renderManager_;
-    TextManager& textManager_;
 };
 
 

@@ -7,7 +7,7 @@
 class EntityManager;
 
 /* 
- * ?붾㈃ ?꾩껜??Fade ?④낵瑜??곸슜?쒗궓??
+ * 화면 전체에 Fade 효과를 적용시킴.
 */
 class GNEngine_API FadeManager {
 public:

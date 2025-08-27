@@ -24,6 +24,7 @@ private:
 
     /* 기본 텍스처 저장소 */
     std::unique_ptr<Texture> defaultTexture_;
+    std::unique_ptr<Texture> imageErrorTexture_;
 
 public:
     TextureManager(SDL_Renderer* renderer);

@@ -52,7 +52,8 @@ EntityID PlayerPrefab::create(EntityManager& entityManager, EventManager& eventM
         }
         Texture* animationTexture = textureManager.getTexture(texturePath);
         if (animationTexture) {
-            entityManager.addComponent<RenderComponent>(entityId, animationTexture, RenderLayer::CRUCIAL_GAME_OBJECT, true, tcWalkAnimationData->getFrame(0), SDL_FLIP_NONE);
+            SDL_Rect frame = tcWalkAnimationData->getFrame(0);
+            entityManager.addComponent<RenderComponent>(entityId, animationTexture->sdlTexture_, frame.w, frame.h, RenderLayer::CRUCIAL_GAME_OBJECT, true, frame, false, false);
         } else {
             std::cerr << "Error: Animation texture is null for: " << texturePath << std::endl;
         }
