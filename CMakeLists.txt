@@ -11,6 +11,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/$<CONFIG>)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>)
 
+# Set the installation directory to be inside the build folder.
+set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install")
+
 # SDL 경로 설정 
 set(SDL3_DIR "${CMAKE_SOURCE_DIR}/lib/SDL3-3.2.18/x86_64-w64-mingw32/lib/cmake/SDL3")
 set(SDL3_DLL_DIR "${CMAKE_SOURCE_DIR}/lib/SDL3-3.2.18/x86_64-w64-mingw32/bin")
@@ -46,101 +49,17 @@ configure_file(
     @ONLY
 )
 
-# GNEngine 라이브러리 정의
-add_library(GNEngine SHARED
-    # Include All source files.
-    src/GNEngine/core/ComponentArray.cpp
-    src/GNEngine/core/Animation.cpp
-    src/GNEngine/core/Sound.cpp
+# Add the GNEngine library from its own directory
+add_subdirectory(include)
 
-    src/GNEngine/manager/FileManager.cpp
-    src/GNEngine/manager/EntityManager.cpp
-    src/GNEngine/manager/SystemManager.cpp
-    src/GNEngine/manager/RenderManager.cpp
-    src/GNEngine/manager/InputManager.cpp
-    src/GNEngine/manager/SceneManager.cpp
-    src/GNEngine/manager/SoundManager.cpp
-    src/GNEngine/manager/AnimationManager.cpp
-    src/GNEngine/manager/TextManager.cpp
-    src/GNEngine/manager/TextureManager.cpp
-    src/GNEngine/manager/FadeManager.cpp
-    src/GNEngine/GNManager.cpp
-    
-    src/GNEngine/system/RenderSystem.cpp
-    src/GNEngine/system/SoundSystem.cpp
-    src/GNEngine/system/InputSystem.cpp
-    src/GNEngine/system/CameraSystem.cpp
-    src/GNEngine/system/AnimationSystem.cpp
-    src/GNEngine/system/TextSystem.cpp
-    src/GNEngine/system/MovementSystem.cpp
-    src/GNEngine/system/FadeSystem.cpp
-    src/GNEngine/system/InputToAccelerationSystem.cpp
-    src/GNEngine/system/PlayerAnimationControlSystem.cpp
-    src/GNEngine/system/AccelerationResetSystem.cpp
-
-    src/GNEngine/component/AnimationComponent.cpp
-    src/GNEngine/component/SoundComponent.cpp
-)
-
-# GNEngine 라이브러리 인클루드 디렉터리 설정
-target_include_directories(GNEngine PUBLIC
-    "${GENERATED_DIR}"
-    "${CMAKE_SOURCE_DIR}/include"
-    "${SDL3_INCLUDE_DIR}"
-    "${SDL3_image_INCLUDE_DIR}"
-    "${SDL3_ttf_INCLUDE_DIR}"
-    "${OPENAL_DIR}/include"
-    "${CMAKE_SOURCE_DIR}/lib"
-    "${CMAKE_SOURCE_DIR}/lib/dr_libs"
-    "${CMAKE_SOURCE_DIR}/lib/nlohmann"
-    "${CMAKE_SOURCE_DIR}/lib/box2d-3.1.1/include"
-    
-    "${CMAKE_SOURCE_DIR}/include/GNEngine/flatbuffers_generated"
-    "${CMAKE_SOURCE_DIR}/src/GNEngine/component"
-    "${CMAKE_SOURCE_DIR}/src/GNEngine/core"
-    "${CMAKE_SOURCE_DIR}/src/GNEngine/manager"
-    "${CMAKE_SOURCE_DIR}/src/GNEngine/prefab"
-    "${CMAKE_SOURCE_DIR}/src/GNEngine/resource"
-    "${CMAKE_SOURCE_DIR}/src/GNEngine/system"
-)
-
-# GNEngine 라이브러리 링크 설정
-target_link_libraries(GNEngine PUBLIC
-    SDL3::SDL3
-    SDL3_image::SDL3_image
-    SDL3_ttf::SDL3_ttf
-    "${OPENAL_DIR}/libs/Win64/OpenAL32.lib"
-    stdc++fs
-    box2d
-)
-
-# GNEngine_EXPORTS 정의 (DLL 빌드 시 필요)
-target_compile_definitions(GNEngine PRIVATE GNEngine_EXPORTS)
-
-# Force include <cstring> for compatibility with some libraries
-target_compile_options(GNEngine PRIVATE -include cstring)
-
-# DLL 복사
-add_custom_command(TARGET GNEngine POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${SDL3_DLL_DIR}/SDL3.dll"
-    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${SDL3_image_DLL_DIR}/SDL3_image.dll"
-    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${SDL3_ttf_DLL_DIR}/SDL3_ttf.dll"
-    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${OPENAL_DIR}/bin/Win64/soft_oal.dll"
-    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/OpenAL32.dll"
-)
-
-
-# 애플리케이션 디렉터리 추가
+# Add the example project
 add_subdirectory(example)
 
-# Remove target_link_directories as it might not be needed with direct target linking
-# target_link_directories(GNEngine PUBLIC ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-
-
+# Install dependency DLLs.
+install(FILES
+    "${SDL3_DLL_DIR}/SDL3.dll"
+    "${SDL3_image_DLL_DIR}/SDL3_image.dll"
+    "${SDL3_ttf_DLL_DIR}/SDL3_ttf.dll"
+    DESTINATION bin
+)
+install(FILES "${OPENAL_DIR}/bin/Win64/soft_oal.dll" DESTINATION bin RENAME "OpenAL32.dll")

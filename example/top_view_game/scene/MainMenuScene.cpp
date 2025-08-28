@@ -2,11 +2,11 @@
 #include <iostream>
 
 MainMenuScene::MainMenuScene() {
-    // ?꾩슂??Manager媛 ?덈떎硫??ш린??二쇱엯諛쏆븘 珥덇린?뷀빀?덈떎.
+
 }
 
 bool MainMenuScene::loadScene() {
-    // ???ъ뿉 ?꾩슂???뷀떚?? 由ъ냼???깆쓣 濡쒕뱶?⑸땲??
+    
     isLoaded_ = true;
     return true;
 }

@@ -58,7 +58,7 @@ int Application::init(){
     windowWidth = std::stoi(fileManager.getSetting("windowWidth", "1920"));
     windowHeight = std::stoi(fileManager.getSetting("windowHeight", "1080"));
 
-    window_ = SDL_CreateWindow("Application", windowWidth, windowHeight, 0);
+    window_ = SDL_CreateWindow("top_view_game", windowWidth, windowHeight, 0);
     renderer_ = SDL_CreateRenderer(window_, nullptr);
     if(!window_ || !renderer_){
         SDL_Log("Error occured in SDL_CreateWindow or SDL_CreateRenderer : %s", SDL_GetError());

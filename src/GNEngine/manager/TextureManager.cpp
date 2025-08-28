@@ -14,7 +14,8 @@ TextureManager::TextureManager(SDL_Renderer* renderer)
     if (!renderer) {
         SDL_Log("TextureManager::init - rawRenderer is null: %s", SDL_GetError());
     }
-    
+
+    /* --- Load embedded images. --- */
 
     // // Load the embedded default texture
     // if (loadTextureEmbedded("__DEFAULT__", GNEngine::resource::embedded::defaultImage, defaultImage_len)) {

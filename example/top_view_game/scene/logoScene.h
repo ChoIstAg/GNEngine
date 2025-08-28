@@ -32,7 +32,7 @@ class SceneManager;
  * @param textureManager 텍스처 관리 매니저 참조
  * @param animationManager 애니메이션 관리 매니저 참조
  * @param fadeManager 페이드 효과 관리 매니저 참조
- */
+*/
 class LogoScene : public Scene {
 public: 
     LogoScene(EntityManager& entityManager,
@@ -52,6 +52,7 @@ public:
     
 
 private:
+std::vector<EntityID> sceneEntityIDs;
     EntityID logoEntity_;
 
     float sceneTimer_ = 0.0f; /* 페이드인이 끝난 직후부터 시간을 기록함. */

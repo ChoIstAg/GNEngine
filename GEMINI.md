@@ -58,6 +58,7 @@
 - `out/build/`: 빌드 결과물이 저장되는 디렉터리
 - `example/`: 예제 프로젝트들. 
   - `top_view_game`
+  - `snake_game`
 
 ## 5. 소스 파일들의 역할과 구조
 - System : 모든 직접적인 로직을 담당함.

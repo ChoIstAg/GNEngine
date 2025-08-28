@@ -12,6 +12,3 @@ public:
     bool loadScene() override;
     void update(float deltaTime) override;
 };
-
-
-

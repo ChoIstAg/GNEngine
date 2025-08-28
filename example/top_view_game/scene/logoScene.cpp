@@ -48,6 +48,7 @@ LogoScene::LogoScene(EntityManager& entityManager,
 
 bool LogoScene::loadScene() {
     logoEntity_ = entityManager_.createEntity();
+    sceneEntityIDs.push_back(logoEntity_);
     entityManager_.addComponent<TransformComponent>(logoEntity_);
     
     std::filesystem::path logoPath = static_cast<std::filesystem::path>(IMAGE_ASSET_ROOT_PATH) / "logo/" / "logo_no_background.png";
@@ -92,7 +93,10 @@ void LogoScene::onEnter() {
 
 void LogoScene::onExit() {
     std::cerr << "LogoScene::onExit()\n";
-    entityManager_.destroyEntity(logoEntity_); // 씬 종료 시 로고 엔티티 파괴
+
+    for (EntityID entity : sceneEntityIDs) {
+        entityManager_.destroyEntity(entity);
+    }
 }
 
 void LogoScene::update(float deltaTime) {
