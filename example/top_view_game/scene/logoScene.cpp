@@ -48,7 +48,7 @@ LogoScene::LogoScene(EntityManager& entityManager,
 
 bool LogoScene::loadScene() {
     logoEntity_ = entityManager_.createEntity();
-    sceneEntityIDs.push_back(logoEntity_);
+    sceneEntityIDs_.push_back(logoEntity_);
     entityManager_.addComponent<TransformComponent>(logoEntity_);
     
     std::filesystem::path logoPath = static_cast<std::filesystem::path>(IMAGE_ASSET_ROOT_PATH) / "logo/" / "logo_no_background.png";
@@ -56,7 +56,7 @@ bool LogoScene::loadScene() {
     if(logoIMG == nullptr) {
         std::cerr << "[ERROR] LogoScene - can't load logoIMG \n";
     } else {
-        entityManager_.addComponent<RenderComponent>(logoEntity_, logoIMG->sdlTexture_, logoIMG->width_, logoIMG->height_, RenderLayer::UI);
+        entityManager_.addComponent<RenderComponent>(logoEntity_, logoIMG->sdlTexture_, RenderLayer::UI, false, false, logoIMG->width_, logoIMG->height_);
     }
     
     /* Skip to input key */
@@ -68,7 +68,7 @@ bool LogoScene::loadScene() {
         }
     };
     eventManager_.subscribe<KeyReleasedEvent>(skipLogoScene);
-    
+
     std::cerr << "LogoScene is successfully loaded.\n";
     isLoaded_ = true;
     return true;
@@ -94,9 +94,10 @@ void LogoScene::onEnter() {
 void LogoScene::onExit() {
     std::cerr << "LogoScene::onExit()\n";
 
-    for (EntityID entity : sceneEntityIDs) {
+    for (EntityID entity : sceneEntityIDs_) {
         entityManager_.destroyEntity(entity);
     }
+    sceneEntityIDs_.clear();
 }
 
 void LogoScene::update(float deltaTime) {

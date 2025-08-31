@@ -16,7 +16,7 @@ public:
     TextSystem(EntityManager& entityManager, TextManager& textManager, SDL_Renderer* renderer);
     ~TextSystem();
 
-    void update(float deltaTime);
+    void update(EntityManager& entityManager, float deltaTime);
 
 private:
     EntityManager& entityManager_;

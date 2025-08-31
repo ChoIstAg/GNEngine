@@ -13,6 +13,7 @@
 #include "GNEngine/core/Entity.h"
 #include "GNEngine/core/ComponentArray.h"
 #include "GNEngine/component/CameraComponent.h"
+#include "GNEngine/component/TextComponent.h"
 
 #include <iostream>
 
@@ -59,7 +60,7 @@ public:
      * @tparam Args 컴포넌트 생성자의 파라미터
     */
     template<typename T, typename... Args>
-    auto addComponent(EntityID entity, Args&&... args) -> std::conditional_t<std::is_same_v<T, TransformComponent> || std::is_same_v<T, RenderComponent> || std::is_same_v<T, AnimationComponent> || std::is_same_v<T, TextComponent> || std::is_same_v<T, CameraComponent> || std::is_same_v<T, VelocityComponent> || std::is_same_v<T, AccelerationComponent>, void, T&>
+    auto addComponent(EntityID entity, Args&&... args) -> std::conditional_t<std::is_same_v<T, TransformComponent> || std::is_same_v<T, RenderComponent> || std::is_same_v<T, AnimationComponent> || std::is_same_v<T, TextComponent> || std::is_same_v<T, CameraComponent> || std::is_same_v<T, VelocityComponent> || std::is_same_v<T, AccelerationComponent> || std::is_same_v<T, TextComponent>, void, T&>
     {
         std::type_index type = typeid(T);
         if (componentTypes_.find(type) == componentTypes_.end()) {

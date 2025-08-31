@@ -19,10 +19,7 @@ private:
     /* 파일 경로 기반 텍스처 저장소 */
     std::unordered_map<std::filesystem::path, std::unique_ptr<Texture>> textureMap_;
 
-    /* 내장 리소스 이름 기반 텍스처 저장소 */
-    std::unordered_map<std::string, std::unique_ptr<Texture>> embeddedTextureMap_;
-
-    /* 기본 텍스처 저장소 */
+    /* 엔진 내장 텍스처 저장소 */
     std::unique_ptr<Texture> defaultTexture_;
     std::unique_ptr<Texture> imageErrorTexture_;
 
@@ -58,7 +55,8 @@ public:
     * @param name 텍스처의 고유 이름.
     * @return Texture에 대한 포인터. 맵에 없으면 nullptr.
     */
-    Texture* getTexture(const std::string& name);
+    Texture* getEmbeddedTexture(const std::string& name);
+
+    void setScaleModeOfTexture(const std::string& name, SDL_ScaleMode scaleMode);
+    void setScaleModeOfTexture(const std::filesystem::path& name, SDL_ScaleMode scaleMode);
 };
-
-

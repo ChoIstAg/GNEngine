@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -271,6 +271,7 @@ public:
             widths.resize(index + 1);
             heights.resize(index + 1);
             layers.resize(index + 1);
+            isScreenSpace.resize(index + 1);
             hasAnimations.resize(index + 1);
             srcRectX.resize(index + 1);
             srcRectY.resize(index + 1);
@@ -281,10 +282,11 @@ public:
         }
 
         sdlTextures[index] = component.getSDLTexture();
+        layers[index] = component.getLayer();
         widths[index] = component.getWidth();
         heights[index] = component.getHeight();
-        layers[index] = component.getLayer();
         hasAnimations[index] = component.hasAnimation();
+        isScreenSpace[index] = component.isScreenSpace();
         const auto& rect = component.getSrcRect();
         srcRectX[index] = rect.x;
         srcRectY[index] = rect.y;
@@ -301,7 +303,27 @@ public:
             throw std::runtime_error("RenderComponent not found for entity.");
         }
         size_t i = entityToIndexMap.at(entity);
-        return RenderComponent(sdlTextures[i], widths[i], heights[i], layers[i], hasAnimations[i], {srcRectX[i], srcRectY[i], srcRectW[i], srcRectH[i]}, flipX[i], flipY[i]);
+        return RenderComponent(sdlTextures[i], layers[i], isScreenSpace[i], hasAnimations[i], widths[i], heights[i], {srcRectX[i], srcRectY[i], srcRectW[i], srcRectH[i]}, flipX[i], flipY[i]);
+    }
+
+    void updateTexture(EntityID entity, SDL_Texture* texture, int width, int height) {
+        if (!entityToIndexMap.count(entity)) {
+            return; // Or throw an exception
+        }
+        size_t i = entityToIndexMap.at(entity);
+
+        // Destroy the old texture if it exists to prevent leaks
+        if (sdlTextures[i] != nullptr) {
+            SDL_DestroyTexture(sdlTextures[i]);
+        }
+
+        sdlTextures[i] = texture;
+        widths[i] = width;
+        heights[i] = height;
+        srcRectX[i] = 0;
+        srcRectY[i] = 0;
+        srcRectW[i] = width;
+        srcRectH[i] = height;
     }
 
     std::vector<SDL_Texture*> sdlTextures;
@@ -311,6 +333,7 @@ public:
     std::vector<bool> hasAnimations;
     std::vector<int> srcRectX, srcRectY, srcRectW, srcRectH;
     std::vector<bool> flipX, flipY;
+    std::vector<bool> isScreenSpace;
 
 protected:
     void swapAndPop(size_t indexOfRemoved, size_t indexOfLast) override {
@@ -318,10 +341,11 @@ protected:
             SDL_DestroyTexture(sdlTextures[indexOfRemoved]);
         }
         sdlTextures[indexOfRemoved] = sdlTextures[indexOfLast];
+        layers[indexOfRemoved] = layers[indexOfLast];
         widths[indexOfRemoved] = widths[indexOfLast];
         heights[indexOfRemoved] = heights[indexOfLast];
-        layers[indexOfRemoved] = layers[indexOfLast];
         hasAnimations[indexOfRemoved] = hasAnimations[indexOfLast];
+        isScreenSpace[indexOfRemoved] = isScreenSpace[indexOfLast];
         srcRectX[indexOfRemoved] = srcRectX[indexOfLast];
         srcRectY[indexOfRemoved] = srcRectY[indexOfLast];
         srcRectW[indexOfRemoved] = srcRectW[indexOfLast];
@@ -330,9 +354,10 @@ protected:
         flipY[indexOfRemoved] = flipY[indexOfLast];
 
         sdlTextures.pop_back();
+        layers.pop_back();
         widths.pop_back();
         heights.pop_back();
-        layers.pop_back();
+        isScreenSpace.pop_back();
         hasAnimations.pop_back();
         srcRectX.pop_back();
         srcRectY.pop_back();
@@ -456,6 +481,14 @@ public:
         TextComponent comp(texts[i], fontPaths[i], fontSizes[i], {colorsR[i], colorsG[i], colorsB[i], colorsA[i]}, layers[i]);
         comp.isDirty = areDirty[i];
         return comp;
+    }
+
+    void setDirty(EntityID entity, bool isDirty) {
+        if (!entityToIndexMap.count(entity)) {
+            return; // Or throw an exception
+        }
+        size_t i = entityToIndexMap.at(entity);
+        areDirty[i] = isDirty;
     }
 
     std::vector<std::string> texts;

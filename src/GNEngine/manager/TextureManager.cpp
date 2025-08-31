@@ -17,28 +17,15 @@ TextureManager::TextureManager(SDL_Renderer* renderer)
 
     /* --- Load embedded images. --- */
 
-    // // Load the embedded default texture
-    // if (loadTextureEmbedded("__DEFAULT__", GNEngine::resource::embedded::defaultImage, defaultImage_len)) {
-    //     defaultTexture_ = std::move(embeddedTextureMap_.at("__DEFAULT__"));
-    //     embeddedTextureMap_.erase("__DEFAULT__");
-    // } else {
-    //     SDL_Log("TextureManager::init - FAILED TO LOAD EMBEDDED DEFAULT TEXTURE");
-    //     defaultTexture_ = nullptr;
-    // }
-
     /* 이미지 오류시 대체되어 렌더링되는 이미지. */
-    if (loadTextureEmbedded("__IMAGE_ERROR__", GNEngine::resource::embedded::imageErrorImage, GNEngine::resource::embedded::imageErrorImage_len)) {
-        imageErrorTexture_ = std::move(embeddedTextureMap_.at("__IMAGE_ERROR__"));
-        embeddedTextureMap_.erase("__IMAGE_ERROR__");
-    } else {
+    std::string imageErrorImage = "__IMAGE_ERROR__";
+    if (!loadTextureEmbedded(imageErrorImage, GNEngine::resource::embedded::imageErrorImage, GNEngine::resource::embedded::imageErrorImage_len)) {
         SDL_Log("TextureManager::init - Failed to load embedded__IMAGE_ERROR__ texture. ");
-        imageErrorTexture_ = nullptr;
     }
 }
 
 TextureManager::~TextureManager() {
     textureMap_.clear();
-    embeddedTextureMap_.clear();
     std::cerr << "TextureManager " << this << " is successfully destroyed" << std::endl;
 }
 
@@ -66,12 +53,6 @@ bool TextureManager::loadTexture(const std::filesystem::path& filePath) {
         return false;
     }
 
-    if (SDL_SetTextureScaleMode(sdlTexture, SDL_SCALEMODE_NEAREST) != 0) {
-        SDL_Log("TextureManager::loadTexture - Failed to set texture scale mode for %s: %s", filePath.string().c_str(), SDL_GetError());
-        // Even if setting scale mode fails, we still want to use the texture if it was created successfully.
-        // This log helps diagnose, but doesn't prevent texture usage.
-    }
-
     textureMap_[filePath] = std::make_unique<Texture>(sdlTexture, sdlTexture->w, sdlTexture->h);
     return true;
 }
@@ -80,12 +61,12 @@ bool TextureManager::loadTexture(const std::filesystem::path& filePath) {
  * @brief GNEngine 내장 이미지를 로딩함.
 */
 bool TextureManager::loadTextureEmbedded(const std::string& name, const unsigned char* data, size_t size) {
-    if (embeddedTextureMap_.count(name)) {
+    if (textureMap_.count(name)) {
         return true;
     }
 
     SDL_IOStream* io = SDL_IOFromConstMem(data, size);
-    if (io == nullptr) {
+    if (io == NULL) {
         SDL_Log("Failed to create IOStream from memory for %s: %s", name.c_str(), SDL_GetError());
         return false;
     }
@@ -100,14 +81,8 @@ bool TextureManager::loadTextureEmbedded(const std::string& name, const unsigned
     SDL_GetTextureSize(sdlTexture, &width_f, &height_f);
     int width = static_cast<int>(width_f);
     int height = static_cast<int>(height_f);
-
-    if (SDL_SetTextureScaleMode(sdlTexture, SDL_SCALEMODE_NEAREST) != 0) {
-        SDL_Log("TextureManager::loadTextureEmbedded - Failed to set texture scale mode for %s: %s", name.c_str(), SDL_GetError());
-        // Even if setting scale mode fails, we still want to use the texture if it was created successfully.
-        // This log helps diagnose, but doesn't prevent texture usage.
-    }
-
-    embeddedTextureMap_[name] = std::make_unique<Texture>(sdlTexture, width, height);
+ 
+    textureMap_[name] = std::make_unique<Texture>(sdlTexture, width, height);
     return true;
 }
 
@@ -121,9 +96,9 @@ Texture* TextureManager::getTexture(const std::filesystem::path& filePath) {
     return textureMap_.at(filePath).get();
 }
 
-Texture* TextureManager::getTexture(const std::string& name) {
-    auto it = embeddedTextureMap_.find(name);
-    if (it != embeddedTextureMap_.end()) {
+Texture* TextureManager::getEmbeddedTexture(const std::string& name) {
+    auto it = textureMap_.find(name);
+    if (it != textureMap_.end()) {
         return it->second.get();
     }
 
@@ -131,3 +106,18 @@ Texture* TextureManager::getTexture(const std::string& name) {
     return defaultTexture_.get();
 }
 
+void TextureManager::setScaleModeOfTexture(const std::string& name, SDL_ScaleMode scaleMode) {
+    if (!SDL_SetTextureScaleMode(getEmbeddedTexture(name)->sdlTexture_, scaleMode)) {
+        SDL_Log("TextureManager::setScaleModeOfTexture - Failed to set texture scale mode for %s: %s", name.c_str(), SDL_GetError());
+        // Even if setting scale mode fails, we still want to use the texture if it was created successfully.
+        // This log helps diagnose, but doesn't prevent texture usage.
+    }
+}
+
+void TextureManager::setScaleModeOfTexture(const std::filesystem::path& texturePath, SDL_ScaleMode scaleMode) {
+    if (!SDL_SetTextureScaleMode(getTexture(texturePath)->sdlTexture_, scaleMode)) {
+        SDL_Log("TextureManager::setScaleModeOfTexture - Failed to set texture scale mode for %s: %s", texturePath.c_str(), SDL_GetError());
+        // Even if setting scale mode fails, we still want to use the texture if it was created successfully.
+        // This log helps diagnose, but doesn't prevent texture usage.
+    }
+}

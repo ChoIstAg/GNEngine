@@ -16,7 +16,6 @@ add_library(GNEngine SHARED
     ${PROJECT_SOURCE_DIR}/src/GNEngine/manager/TextManager.cpp
     ${PROJECT_SOURCE_DIR}/src/GNEngine/manager/TextureManager.cpp
     ${PROJECT_SOURCE_DIR}/src/GNEngine/manager/FadeManager.cpp
-    ${PROJECT_SOURCE_DIR}/src/GNEngine/GNManager.cpp
     
     ${PROJECT_SOURCE_DIR}/src/GNEngine/system/RenderSystem.cpp
     ${PROJECT_SOURCE_DIR}/src/GNEngine/system/SoundSystem.cpp

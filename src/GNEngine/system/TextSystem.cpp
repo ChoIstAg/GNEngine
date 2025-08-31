@@ -10,14 +10,16 @@ TextSystem::TextSystem(EntityManager& entityManager, TextManager& textManager, S
 TextSystem::~TextSystem() {
 }
 
-void TextSystem::update(float deltaTime) {
+void TextSystem::update(EntityManager& entityManager, float deltaTime) {
+    auto renderComponentArray = entityManager.getComponentArray<RenderComponent>();
+    auto textComponentArray = entityManager.getComponentArray<TextComponent>();
+    if (!renderComponentArray || !textComponentArray) return;
+
     for (auto& entity : entityManager_.getEntitiesWith<TextComponent, RenderComponent>()) {
         auto textComponentOpt = entityManager_.getComponent<TextComponent>(entity);
-        auto renderComponentOpt = entityManager_.getComponent<RenderComponent>(entity);
 
-        if (textComponentOpt && renderComponentOpt && textComponentOpt->isDirty) {
+        if (textComponentOpt && textComponentOpt->isDirty) {
             auto& textComponent = *textComponentOpt;
-            auto& renderComponent = *renderComponentOpt;
 
             TTF_Font* font = textManager_.getFont(textComponent.fontPath, textComponent.fontSize);
             if (!font) {
@@ -44,8 +46,13 @@ void TextSystem::update(float deltaTime) {
 
             SDL_DestroySurface(surface);
 
-            renderComponent.setSDLTexture(newTexture, textureWidth, textureHeight);
-            textComponent.isDirty = false;
+            renderComponentArray->updateTexture(entity, newTexture, textureWidth, textureHeight);
+            textComponentArray->setDirty(entity, false);
+            
+            auto transformComp = entityManager.getComponent<TransformComponent>(entity);
+            SDL_Log("--- TEXT SYSTEM DEBUG --- Text: '%s' | Position: (%.2f, %.2f) | Texture Size: (%d, %d)", textComponent.text.c_str(), transformComp->positionX_, transformComp->positionY_, textureWidth, textureHeight);
+        } else if (textComponentOpt && !textComponentOpt->isDirty) {
+            // SDL_Log("TextSystem::update - TextComponent is not dirty, skipping texture regeneration.");
         }
     }
 }

@@ -1,12 +1,16 @@
 ﻿#pragma once
 #include "../GNEngine_API.h"
 
+#include <SDL3/SDL_render.h>
 #include <string>
 #include <filesystem>
 #include <unordered_map>
 #include <memory>
 
 #include "GNEngine/core/Animation.h"
+
+/* --- 전방선언 --- */
+class TextureManager;
 
 /*
  * @class AnimationManager
@@ -16,7 +20,8 @@
  */ 
 class GNEngine_API AnimationManager {
 public:
-    AnimationManager() = default;
+    AnimationManager(TextureManager& textureManager) 
+        : textureManager_(textureManager) {}
     ~AnimationManager() = default;
 
     bool loadAnimation(const std::filesystem::path& jsonPath);
@@ -28,8 +33,12 @@ public:
      */
     std::shared_ptr<Animation> getAnimation(const std::string& animationName);
 
+    void setScaleModeOfAnimation(const std::string& animationName, SDL_ScaleMode scaleMode);
+
 private:
     std::unordered_map<std::string, std::shared_ptr<Animation>> animationCache_;
+
+    TextureManager& textureManager_;
 };
 
 

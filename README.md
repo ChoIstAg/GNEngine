@@ -5,11 +5,11 @@ GNEngine is a 2D game engine developed using Modern C++23 and SDL3.
 ## Features
 
 - **DOD, ECS system**
-- **Event-Driven System**: Flexibly handles various events through an `
+- **Event-Driven System**: Flexibly handles various events
 - **2D Rendering**: Renders textures and animation to the screen.
-- **Sound**: Plays and manages WAV, MP3, and OGG format sounds via OpenAL Soft (with dr_libs and stb_vorbis for decoding).
+- **Sound**: Plays and manages WAV, MP3, and OGG format sounds.
 Can use stereo sound to 3D sound.
-- **Scene Management**: Easily switch and manage game scenes with a `SceneManager`.
+- **Scene Management**: Easily switch and manage game scenes
 
 
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "../GNEngine_API.h" 
 
 #include <vector>
@@ -8,55 +8,55 @@
 
 /*
  * @class Animation
- * @brief ?좊땲硫붿씠???곗씠???먯껜瑜??뺤쓽?섎뒗 ?대옒?ㅼ엫.
- * ?띿뒪泥?寃쎈줈, 媛??꾨젅?꾩쓽 ?곸뿭怨?吏???쒓컙, 諛섎났 ?щ? ?깆쓽 ?뺣낫瑜??닿퀬 ?덉쓬.
- * ???대옒?ㅻ뒗 ?곗씠??而⑦뀒?대꼫 ??븷???섎ŉ, ?ㅼ젣 ?좊땲硫붿씠??濡쒖쭅? AnimationComponent?먯꽌 泥섎━??
+ * @brief 애니메이션 데이터
+ * 텍스처 경로, 각 프레임의 영역과 지속 시간, 반복 여부만 정의하고 Texture 자체는 갖고있지 않음.
+ * 이 클래스는 데이터 컨테이너 역할을 하며, 실제 애니메이션 로직은 AnimationComponent에서 처리함.
  */
 class GNEngine_API Animation {
 public:
     /*
-     * @brief Animation ?앹꽦??
-     * @param texturePath - ?좊땲硫붿씠?섏뿉 ?ъ슜???띿뒪泥??ㅽ봽?쇱씠???쒗듃)???뚯씪 寃쎈줈.
-     * @param loop - ?좊땲硫붿씠?섏쓽 諛섎났 ?щ? (湲곕낯媛? true).
+     * @brief Animation 생성자
+     * @param texturePath - 애니메이션에 사용될 텍스처(스프라이트 시트) 파일 경로.
+     * @param loop - 애니메이션의 반복 여부 (기본값 true).
      */
     Animation(std::filesystem::path texturePath, bool loop = true);
 
     /*
-     * @brief ?좊땲硫붿씠?섏뿉 ???꾨젅?꾩쓣 異붽???
-     * @param frameRect - ?ㅽ봽?쇱씠???쒗듃?먯꽌 ?대떦 ?꾨젅?꾩씠 李⑥??섎뒗 ?ш컖???곸뿭.
-     * @param duration - ?대떦 ?꾨젅?꾩쓽 吏???쒓컙 (諛由ъ큹 ?⑥쐞).
+     * @brief 애니메이션에 새 프레임을 추가함.
+     * @param frameRect - 스프라이트 시트에서 해당 프레임이 차지하는 사각형 영역.
+     * @param duration - 해당 프레임의 지속 시간 (밀리초 단위).
      */
     void addFrame(SDL_Rect frameRect, int duration);
 
     /*
-     * @brief ?뱀젙 ?몃뜳?ㅼ쓽 ?꾨젅???ш컖???곸뿭??諛섑솚??
-     * @param frameIndex - 媛?몄삱 ?꾨젅?꾩쓽 ?몃뜳??
-     * @return ?대떦 ?꾨젅?꾩쓽 SDL_Rect. ?몃뜳?ㅺ? ?좏슚?섏? ?딆쑝硫?鍮?SDL_Rect瑜?諛섑솚.
+     * @brief 특정 인덱스의 프레임 사각형 영역을 반환함.
+     * @param frameIndex - 가져올 프레임의 인덱스.
+     * @return 해당 프레임의 SDL_Rect. 인덱스가 유효하지 않으면 빈 SDL_Rect를 반환.
      */
     const SDL_Rect& getFrame(int frameIndex) const;
 
     /*
-     * @brief ?뱀젙 ?몃뜳?ㅼ쓽 ?꾨젅??吏???쒓컙??諛섑솚??
-     * @param frameIndex - 媛?몄삱 ?꾨젅?꾩쓽 ?몃뜳??
-     * @return ?대떦 ?꾨젅?꾩쓽 吏???쒓컙 (諛由ъ큹). ?몃뜳?ㅺ? ?좏슚?섏? ?딆쑝硫?0??諛섑솚.
+     * @brief 특정 인덱스의 프레임 지속 시간을 반환함.
+     * @param frameIndex - 가져올 프레임의 인덱스.
+     * @return 해당 프레임의 지속 시간 (밀리초). 인덱스가 유효하지 않으면 0을 반환.
      */
     int getFrameDuration(int frameIndex) const;
 
     /*
-     * @brief ?꾩껜 ?꾨젅???섎? 諛섑솚??
-     * @return ?좊땲硫붿씠?섏쓽 珥??꾨젅????
+     * @brief 전체 프레임 수를 반환함.
+     * @return 애니메이션의 총 프레임 수.
      */
     int getFrameCount() const;
 
     /*
-     * @brief ?좊땲硫붿씠?섏뿉 ?ъ슜?섎뒗 ?띿뒪泥섏쓽 ?뚯씪 寃쎈줈瑜?諛섑솚??
-     * @return ?띿뒪泥섏쓽 ?뚯씪 寃쎈줈.
+     * @brief 애니메이션에 사용되는 텍스처의 파일 경로를 반환함.
+     * @return 텍스처의 파일 경로.
      */
     const std::filesystem::path& getTexturePath() const;
 
     /*
-     * @brief ?좊땲硫붿씠?섏쓽 諛섎났 ?щ?瑜?諛섑솚??
-     * @return 諛섎났?섎㈃ true, ?꾨땲硫?false.
+     * @brief 애니메이션의 반복 여부를 반환함.
+     * @return 반복하면 true, 아니면 false.
      */
     bool isLooping() const;
 
@@ -66,6 +66,3 @@ private:
     std::vector<int> frameDurations_;
     bool loop_;
 };
-
-
-

@@ -98,14 +98,46 @@ void RenderManager::renderTexture(SDL_Texture* texture, float x, float y, const 
     }
 }
 
-// void RenderManager::setViewport(SDL_Rect viewport) {
-//     if (!renderer_) {
-//         SDL_Log("RenderManager::setViewport - Renderer is null. : %s", SDL_GetError());
-//         return;
-//     }
+void RenderManager::renderUITexture(SDL_Texture* texture, float x, float y, const SDL_Rect* srcRect, float w, float h, SDL_FlipMode flip) {
+    if (!renderer_) {
+        SDL_Log("RenderManager::renderUITexture - Renderer is null: %s", SDL_GetError());
+        return;
+    }
+    if (!texture) {
+        SDL_Log("RenderManager::renderUITexture - SDL_Texture* is null: %s", SDL_GetError());
+        return;
+    }
 
-//     if (!SDL_SetRenderViewport(renderer_, &viewport)) {
-//         SDL_Log("RenderManager::setViewport - Failed to set viewport: %s", SDL_GetError());
-//     }
-// }
+    SDL_FRect dstRect;
+    SDL_FRect srcFRect;
 
+    if (srcRect) {
+        srcFRect.x = static_cast<float>(srcRect->x);
+        srcFRect.y = static_cast<float>(srcRect->y);
+        srcFRect.w = static_cast<float>(srcRect->w);
+        srcFRect.h = static_cast<float>(srcRect->h);
+    }
+
+    if (w == 0 || h == 0) {
+        float queryW, queryH;
+        SDL_GetTextureSize(texture, &queryW, &queryH);
+        if (srcRect) {
+            dstRect.w = static_cast<float>(srcRect->w);
+            dstRect.h = static_cast<float>(srcRect->h);
+        } else {
+            dstRect.w = static_cast<float>(queryW);
+            dstRect.h = static_cast<float>(queryH);
+        }
+    } else {
+        dstRect.w = w;
+        dstRect.h = h;
+    }
+
+    // UI 요소는 카메라 변환 없이 x, y를 화면 좌표로 직접 사용
+    dstRect.x = x;
+    dstRect.y = y;
+
+    if (!SDL_RenderTextureRotated(renderer_, texture, srcRect ? &srcFRect : nullptr, &dstRect, 0.0, nullptr, flip)) {
+        SDL_Log("RenderManager::renderUITexture - Failed to render texture: %s", SDL_GetError());
+    }
+}

@@ -17,7 +17,7 @@
  *        텍스처를 생성하고 화면에 렌더링함.
  * @param text 렌더링할 텍스트 문자열.
  * @param fontPath 사용할 폰트 파일의 경로.
- * @param fontSize 폰트의 크기.
+ * @param fontSize 폰트의 크기(포인트).
  * @param color 텍스트의 색상 (SDL_Color).
  * @param layer(RenderLayer::UI) 렌더링 레이어.
  * @param isDirty(true) 내용이 변경될 때 텍스처를 다시 만들어야할지 여부. 텍스처를 정상적으로 변경시 false로 바뀜.

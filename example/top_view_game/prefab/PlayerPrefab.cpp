@@ -2,6 +2,8 @@
 
 #include "AppRootPath.h"
 
+#include <SDL3/SDL_render.h>
+
 #include "GNEngine/manager/EntityManager.h"
 #include "GNEngine/manager/EventManager.h"
 #include "GNEngine/manager/TextureManager.h"
@@ -40,8 +42,13 @@ EntityID PlayerPrefab::create(EntityManager& entityManager, EventManager& eventM
     if (!animationManager.loadAnimation(tcAnimationJsonPath)) {
         std::cerr << "Error: Failed to load animation JSON: " << tcAnimationJsonPath << std::endl;
     }
+    
+    std::shared_ptr<Animation> tcIdleAnimationData = animationManager.getAnimation("idle");
     std::shared_ptr<Animation> tcWalkAnimationData = animationManager.getAnimation("walk");
     std::shared_ptr<Animation> tcJumpAnimationData = animationManager.getAnimation("jump");
+    animationManager.setScaleModeOfAnimation("idle", SDL_SCALEMODE_NEAREST);
+    animationManager.setScaleModeOfAnimation("walk", SDL_SCALEMODE_NEAREST);
+    animationManager.setScaleModeOfAnimation("jump", SDL_SCALEMODE_NEAREST);
 
     // RenderComponent 추가
     // 애니메이션 데이터에서 텍스처 경로를 가져와 TextureManager를 통해 로드
@@ -53,15 +60,13 @@ EntityID PlayerPrefab::create(EntityManager& entityManager, EventManager& eventM
         Texture* animationTexture = textureManager.getTexture(texturePath);
         if (animationTexture) {
             SDL_Rect frame = tcWalkAnimationData->getFrame(0);
-            entityManager.addComponent<RenderComponent>(entityId, animationTexture->sdlTexture_, frame.w, frame.h, RenderLayer::CRUCIAL_GAME_OBJECT, true, frame, false, false);
+            entityManager.addComponent<RenderComponent>(entityId, animationTexture->sdlTexture_, RenderLayer::CRUCIAL_GAME_OBJECT, false, true, frame.w, frame.h, frame, false, false);
         } else {
             std::cerr << "Error: Animation texture is null for: " << texturePath << std::endl;
         }
     } else {
         std::cerr << "Error: Walk animation data is null. Cannot add RenderComponent." << std::endl;
     }
-
-    std::shared_ptr<Animation> tcIdleAnimationData = animationManager.getAnimation("idle");
 
     entityManager.addComponent<PlayerAnimationControllerComponent>(entityId, tcWalkAnimationData, tcJumpAnimationData, tcIdleAnimationData);
 
@@ -88,5 +93,3 @@ EntityID PlayerPrefab::create(EntityManager& entityManager, EventManager& eventM
 
     return entityId;
 }
-
-

@@ -11,6 +11,10 @@
 RenderSystem::RenderSystem(RenderManager& renderManager)
     : renderManager_(renderManager) {}
 
+
+/*
+ * TransformComponent와 RenderComponent를 가진 엔티티를 렌더링 계층 순서대로 렌더링함. 
+*/
 void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
     // 이 함수 내에서만 사용할 로컬 구조체
     struct Renderable {
@@ -45,7 +49,7 @@ void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
     for (const auto& renderable : renderables) {
         EntityID entity = renderable.entity;
 
-        // TransformComponent는 필수
+        // TransformComponent
         if (!transformArray->hasComponent(entity)) continue;
         const auto& transform = transformArray->getComponent(entity);
 
@@ -54,15 +58,15 @@ void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
             const auto& render = renderArray->getComponent(entity);
             if (render.getSDLTexture()) {
                 SDL_Rect srcRect = render.getSrcRect();
-                float destW = static_cast<float>(srcRect.w);
-                float destH = static_cast<float>(srcRect.h);
+                float destW = static_cast<float>(render.getWidth()) * transform.scaleX_;
+                float destH = static_cast<float>(render.getHeight()) * transform.scaleY_;
 
                 if (render.hasAnimation() && animArray && animArray->hasComponent(entity)) {
                     const auto& anim = animArray->getComponent(entity);
                     if (anim.animation_) { // animation_이 유효한지 확인
                         srcRect = anim.animation_->getFrame(anim.currentFrame_); // currentFrame_ 사용
-                        destW = static_cast<float>(srcRect.w);
-                        destH = static_cast<float>(srcRect.h);
+                        destW = static_cast<float>(srcRect.w) * transform.scaleX_;
+                        destH = static_cast<float>(srcRect.h) * transform.scaleY_;
                     }
                 }
 
@@ -70,9 +74,16 @@ void RenderSystem::update(EntityManager& entityManager, float deltaTime) {
                 if (render.getFlipX()) flip = static_cast<SDL_FlipMode>(flip | SDL_FLIP_HORIZONTAL);
                 if (render.getFlipY()) flip = static_cast<SDL_FlipMode>(flip | SDL_FLIP_VERTICAL);
 
-                renderManager_.renderTexture(render.getSDLTexture(), transform.positionX_, transform.positionY_, &srcRect, destW, destH, flip);
+                if (render.isScreenSpace()) {
+                    renderManager_.renderUITexture(render.getSDLTexture(), transform.positionX_, transform.positionY_, &srcRect, destW, destH, flip);
+                } else {
+                    renderManager_.renderTexture(render.getSDLTexture(), transform.positionX_, transform.positionY_, &srcRect, destW, destH, flip);
+                }
+
+                // SDL_Log("RenderSystem::update - Rendering texture at (%.2f, %.2f) with size (%.2f, %.2f)", transform.positionX_, transform.positionY_, destW, destH);
             } else {
-                // 텍스처가 없는 RenderComponent는 페이드 효과로 간주
+                // TODO 4 - 아래 로직 삭제. imageError 이미지를 대신 렌더링하게 하기. 
+                // 임시 : 텍스처가 없는 RenderComponent는 페이드 효과로 간주 
                 if (fadeArray && fadeArray->hasComponent(entity)) {
                     const auto& fade = fadeArray->getComponent(entity);
                     SDL_Renderer* renderer = renderManager_.getRenderer();

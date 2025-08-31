@@ -45,49 +45,60 @@ TestScene::TestScene(EntityManager& entityManager,
 bool TestScene::loadScene() {
     /* --- Player --- */
     playerEntity_ = PlayerPrefab::create(entityManager_, eventManager_, textureManager_, renderManager_, soundManager_, animationManager_);
-    entityIDs_.push_back(playerEntity_);
+    sceneEntityIDs_.push_back(playerEntity_);
     // std::cerr << "[DEBUG] TestScene::loadScene -  Player is successfully loaded.\n";
     
     /* --- Camera --- */
     cameraEntity_ = entityManager_.createEntity();
-    entityManager_.addComponent<CameraComponent>(cameraEntity_, playerEntity_, 10.0f);
-    entityIDs_.push_back(cameraEntity_);
+    entityManager_.addComponent<CameraComponent>(cameraEntity_, playerEntity_, 1.0f);
+    sceneEntityIDs_.push_back(cameraEntity_);
     // std::cerr << "[DEBUG] TestScene::loadScene - Camera is successfully loaded.\n";
     
     /* --- BGM --- */
-    auto bgmEntity = entityManager_.createEntity();
-    entityIDs_.push_back(bgmEntity);
-    std::filesystem::path bgmPath = static_cast<std::filesystem::path>(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3";
-    auto bgmSound = soundManager_.getSound(bgmPath);
-    if (bgmSound) {
-        auto& soundComp = entityManager_.addComponent<SoundComponent>(bgmEntity);
-        entityManager_.addComponent<TransformComponent>(bgmEntity);
-        soundComp.addSound("bgm", bgmSound, true, 0.5f);
-        soundComp.play("bgm");
-    } else {
-        std::cerr << "[ERROR] TestScene - Can't load bgm. \n";
-    }
-    // std::cerr << "[DEBUG] TestScene::loadScene - bgm is successfully loaded.\n";
+    // auto bgmEntity = entityManager_.createEntity();
+    // sceneEntityIDs_.push_back(bgmEntity);
+    // std::filesystem::path bgmPath = static_cast<std::filesystem::path>(SOUND_ASSET_ROOT_PATH) / "TestMp3.mp3";
+    // auto bgmSound = soundManager_.getSound(bgmPath);
+    // if (bgmSound) {
+    //     auto& soundComp = entityManager_.addComponent<SoundComponent>(bgmEntity);
+    //     entityManager_.addComponent<TransformComponent>(bgmEntity);
+    //     soundComp.addSound("bgm", bgmSound, true, 0.5f);
+    //     soundComp.play("bgm");
+    // } else {
+    //     std::cerr << "[ERROR] TestScene - Can't load bgm. \n";
+    // }
+    // // std::cerr << "[DEBUG] TestScene::loadScene - bgm is successfully loaded.\n";
     
-    auto textEntity = entityManager_.createEntity();
-    entityIDs_.push_back(textEntity);
-    std::filesystem::path textPath = static_cast<std::filesystem::path>(TEXT_ASSET_ROOT_PATH) / "test.txt"; // Original line
-
     // Add components to the existing textEntity
-    std::filesystem::path fontPath = static_cast<std::filesystem::path>(FONT_ASSET_ROOT_PATH) / "CookieRun Regular.ttf";
+    std::filesystem::path fontPath = static_cast<std::filesystem::path>(APP_ROOT_PATH) / "asset" / "font" / "CookieRun Regular.ttf";
     if (!textManager_.loadFont(fontPath, 24)) {
         std::cerr << "[ERROR] TestScene - Failed to load font: " << fontPath << std::endl;
     }
+    
+    EntityID textEntity = entityManager_.createEntity();
+    sceneEntityIDs_.push_back(textEntity);
+    std::filesystem::path textPath = static_cast<std::filesystem::path>(TEXT_ASSET_ROOT_PATH) / "test.txt";
+    std::string text = textManager_.loadTextFromFile(textPath);
+    SDL_Color textColor = {255, 255, 255, 255};
+    entityManager_.addComponent<TextComponent>(textEntity, text, fontPath, 24, textColor, RenderLayer::UI);
+    entityManager_.addComponent<TransformComponent>(textEntity, 100.0f, 50.0f, 1.0f, 1.0f, 1.0f);
+    entityManager_.addComponent<RenderComponent>(textEntity, RenderLayer::UI, true);
 
-    entityManager_.addComponent<TransformComponent>(textEntity, 50.0f, 50.0f, 0.0f, 1.0f, 1.0f);
-    SDL_Color textColor = {255, 255, 255, 255}; // White color
-    entityManager_.addComponent<TextComponent>(textEntity,
-                                           "Hello, GNEngine Refactored Text!",
-                                           fontPath,
-                                           24,
-                                           textColor,
-                                           RenderLayer::UI);
-    entityManager_.addComponent<RenderComponent>(textEntity, nullptr, 0, 0, RenderLayer::UI);
+    // auto imageErrorImageEntity = entityManager_.createEntity();
+    // sceneEntityIDs_.push_back(imageErrorImageEntity);
+    // Texture* imageErrorImage = textureManager_.getEmbeddedTexture("__IMAGE_ERROR__");
+    // entityManager_.addComponent<TransformComponent>(imageErrorImageEntity);
+    // entityManager_.addComponent<RenderComponent>(imageErrorImageEntity, RenderLayer::GAME_OBJECT);
+
+    EntityID exampleEntity = entityManager_.createEntity();
+    sceneEntityIDs_.push_back(exampleEntity);
+    std::filesystem::path texturePath = static_cast<std::filesystem::path>(IMAGE_ASSET_ROOT_PATH) / "example_png.png";
+    Texture* exampleTexture = textureManager_.getTexture(texturePath);
+    if (exampleTexture)
+    {
+        entityManager_.addComponent<RenderComponent>(exampleEntity, exampleTexture->sdlTexture_, RenderLayer::GAME_OBJECT, false, false, exampleTexture->width_, exampleTexture->height_);
+        entityManager_.addComponent<TransformComponent>(exampleEntity, 100.0f, 100.0f);
+    }
 
     isLoaded_ = true;
     return true;
@@ -102,10 +113,10 @@ void TestScene::onEnter() {
 }
 
 void TestScene::onExit() {
-    for (auto entity : entityIDs_) {
+    for (auto entity : sceneEntityIDs_) {
         entityManager_.destroyEntity(entity);
     }
-    entityIDs_.clear();
+    sceneEntityIDs_.clear();
     isLoaded_ = false;
     std::cerr << "TestScene::onExit()" << std::endl;
 }

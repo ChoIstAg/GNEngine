@@ -6,6 +6,8 @@
 
 #include "./json.hpp"
 
+#include "GNEngine/manager/TextureManager.h"
+
 /*
  * @brief JSON 파일을 로드하여 애니메이션 데이터를 파싱하고 캐시에 저장함.
  * @param jsonPath - 애니메이션 데이터가 정의된 JSON 파일의 경로.
@@ -104,5 +106,8 @@ std::shared_ptr<Animation> AnimationManager::getAnimation(const std::string& ani
     return nullptr;
 }
 
-
-
+void AnimationManager::setScaleModeOfAnimation(const std::string& animationName, SDL_ScaleMode scaleMode) {
+    if(!SDL_SetTextureScaleMode(textureManager_.getTexture(getAnimation(animationName)->getTexturePath())->sdlTexture_, scaleMode)) {
+        SDL_Log("AnimationManager::setScaleModeOfAnimation - Failed to set texture scale mode. (%s) Reason : %s", animationName, SDL_GetError());
+    }
+}
