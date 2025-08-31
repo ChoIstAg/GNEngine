@@ -50,7 +50,7 @@ void TextSystem::update(EntityManager& entityManager, float deltaTime) {
             textComponentArray->setDirty(entity, false);
             
             auto transformComp = entityManager.getComponent<TransformComponent>(entity);
-            SDL_Log("--- TEXT SYSTEM DEBUG --- Text: '%s' | Position: (%.2f, %.2f) | Texture Size: (%d, %d)", textComponent.text.c_str(), transformComp->positionX_, transformComp->positionY_, textureWidth, textureHeight);
+            // SDL_Log("--- TEXT SYSTEM DEBUG --- Text: '%s' | Position: (%.2f, %.2f) | Texture Size: (%d, %d)", textComponent.text.c_str(), transformComp->positionX_, transformComp->positionY_, textureWidth, textureHeight);
         } else if (textComponentOpt && !textComponentOpt->isDirty) {
             // SDL_Log("TextSystem::update - TextComponent is not dirty, skipping texture regeneration.");
         }
