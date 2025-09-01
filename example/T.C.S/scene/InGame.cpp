@@ -1,4 +1,4 @@
-﻿#include "TestScene.h"
+﻿#include "InGame.h"
 #include "AppRootPath.h"
 
 #include <iostream>
@@ -26,7 +26,7 @@
 /* --- Prefabs --- */
 #include "../prefab/PlayerPrefab.h"
 
-TestScene::TestScene(EntityManager& entityManager,
+InGame::InGame(EntityManager& entityManager,
                     EventManager& eventManager,
                     RenderManager& renderManager,
                     SoundManager& soundManager,
@@ -42,17 +42,17 @@ TestScene::TestScene(EntityManager& entityManager,
     animationManager_(animationManager)
 {}
 
-bool TestScene::loadScene() {
+bool InGame::loadScene() {
     /* --- Player --- */
     playerEntity_ = PlayerPrefab::create(entityManager_, eventManager_, textureManager_, renderManager_, soundManager_, animationManager_);
     sceneEntityIDs_.push_back(playerEntity_);
-    // std::cerr << "[DEBUG] TestScene::loadScene -  Player is successfully loaded.\n";
+    // std::cerr << "[DEBUG] InGame::loadScene -  Player is successfully loaded.\n";
     
     /* --- Camera --- */
     cameraEntity_ = entityManager_.createEntity();
     entityManager_.addComponent<CameraComponent>(cameraEntity_, playerEntity_, 1.0f);
     sceneEntityIDs_.push_back(cameraEntity_);
-    // std::cerr << "[DEBUG] TestScene::loadScene - Camera is successfully loaded.\n";
+    // std::cerr << "[DEBUG] InGame::loadScene - Camera is successfully loaded.\n";
     
     /* --- BGM --- */
     // auto bgmEntity = entityManager_.createEntity();
@@ -65,14 +65,14 @@ bool TestScene::loadScene() {
     //     soundComp.addSound("bgm", bgmSound, true, 0.5f);
     //     soundComp.play("bgm");
     // } else {
-    //     std::cerr << "[ERROR] TestScene - Can't load bgm. \n";
+    //     std::cerr << "[ERROR] InGame - Can't load bgm. \n";
     // }
-    // // std::cerr << "[DEBUG] TestScene::loadScene - bgm is successfully loaded.\n";
+    // // std::cerr << "[DEBUG] InGame::loadScene - bgm is successfully loaded.\n";
     
     // Add components to the existing textEntity
     std::filesystem::path fontPath = static_cast<std::filesystem::path>(APP_ROOT_PATH) / "asset" / "font" / "CookieRun Regular.ttf";
     if (!textManager_.loadFont(fontPath, 24)) {
-        std::cerr << "[ERROR] TestScene - Failed to load font: " << fontPath << std::endl;
+        std::cerr << "[ERROR] InGame - Failed to load font: " << fontPath << std::endl;
     }
     
     EntityID textEntity = entityManager_.createEntity();
@@ -104,24 +104,24 @@ bool TestScene::loadScene() {
     return true;
 }
 
-void TestScene::onEnter() {
+void InGame::onEnter() {
     if (!isLoaded_) {
         loadScene();
     }
     renderManager_.setBackgroundColor({0, 0, 0, 255}); // black
-    std::cerr << "TestScene::onEnter()" << std::endl;
+    std::cerr << "InGame::onEnter()" << std::endl;
 }
 
-void TestScene::onExit() {
+void InGame::onExit() {
     for (auto entity : sceneEntityIDs_) {
         entityManager_.destroyEntity(entity);
     }
     sceneEntityIDs_.clear();
     isLoaded_ = false;
-    std::cerr << "TestScene::onExit()" << std::endl;
+    std::cerr << "InGame::onExit()" << std::endl;
 }
 
-void TestScene::update(float deltaTime) {
+void InGame::update(float deltaTime) {
     // This scene might not have complex update logic itself
 }
 

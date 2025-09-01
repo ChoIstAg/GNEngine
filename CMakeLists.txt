@@ -55,6 +55,16 @@ add_subdirectory(include)
 # Add the example project
 add_subdirectory(example)
 
+# Copy dependency DLLs to the runtime output directory for development builds.
+file(COPY
+    "${SDL3_DLL_DIR}/SDL3.dll"
+    "${SDL3_image_DLL_DIR}/SDL3_image.dll"
+    "${SDL3_ttf_DLL_DIR}/SDL3_ttf.dll"
+    DESTINATION "${CMAKE_BINARY_DIR}/bin/Debug"
+)
+file(COPY "${OPENAL_DIR}/bin/Win64/soft_oal.dll" DESTINATION "${CMAKE_BINARY_DIR}/bin/Debug")
+file(RENAME "${CMAKE_BINARY_DIR}/bin/Debug/soft_oal.dll" "${CMAKE_BINARY_DIR}/bin/Debug/OpenAL32.dll")
+
 # Install dependency DLLs.
 install(FILES
     "${SDL3_DLL_DIR}/SDL3.dll"

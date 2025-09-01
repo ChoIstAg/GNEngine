@@ -37,7 +37,7 @@
 /* --- Include All Scenes to use --- */
 #include "scene/LogoScene.h"
 #include "scene/MainMenuScene.h"
-#include "scene/TestScene.h"
+#include "scene/InGame.h"
 
 
 Application::Application() {}
@@ -59,7 +59,7 @@ int Application::init(){
     windowWidth = std::stoi(fileManager.getSetting("windowWidth", "1920"));
     windowHeight = std::stoi(fileManager.getSetting("windowHeight", "1080"));
 
-    window_ = SDL_CreateWindow("top_view_game", windowWidth, windowHeight, 0);
+    window_ = SDL_CreateWindow("T.C.S", windowWidth, windowHeight, 0);
     renderer_ = SDL_CreateRenderer(window_, nullptr);
     if(!window_ || !renderer_){
         SDL_Log("Error occured in SDL_CreateWindow or SDL_CreateRenderer : %s", SDL_GetError());
@@ -116,7 +116,7 @@ int Application::init(){
 
     /* --- Regist all scenes ---*/
     sceneManager_->addScene("LogoScene", std::make_unique<LogoScene>(*entityManager_, *sceneManager_, *eventManager_, *renderManager_, *soundManager_, *textureManager_, *animationManager_, *fadeManager_));
-    sceneManager_->addScene("TestScene", std::make_unique<TestScene>(*entityManager_, *eventManager_, *renderManager_, *soundManager_, *textureManager_, *textManager_, *animationManager_));
+    sceneManager_->addScene("InGame", std::make_unique<InGame>(*entityManager_, *eventManager_, *renderManager_, *soundManager_, *textureManager_, *textManager_, *animationManager_));
     //sceneManager_->addScene("MainMenuScene", std::make_unique<MainMenuScene>());
 
 

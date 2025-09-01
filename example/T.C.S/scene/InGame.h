@@ -16,16 +16,16 @@ class TextManager;
 class AnimationManager;
 
 
-class TestScene : public Scene {
+class InGame : public Scene {
 public:
-    TestScene(EntityManager& entityManager,
+    InGame(EntityManager& entityManager,
             EventManager& eventManager, 
             RenderManager& renderManager, 
             SoundManager& soundManager, 
             TextureManager& textureManager,
             TextManager& textManager, 
             AnimationManager& animationManager);
-    ~TestScene() override = default;
+    ~InGame() override = default;
 
     void onEnter() override;
     void onExit() override;

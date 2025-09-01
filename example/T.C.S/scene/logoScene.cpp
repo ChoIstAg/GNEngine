@@ -107,8 +107,8 @@ void LogoScene::update(float deltaTime) {
             currentState_ = LogoSceneState::FADING_OUT;
             fadeManager_.startFadeOut(2.0f, {0, 0, 0, 255}, 
                 [this]() {
-                    sceneManager_.loadScene("TestScene");
-                    sceneManager_.changeScene("TestScene");
+                    sceneManager_.loadScene("InGame");
+                    sceneManager_.changeScene("InGame");
                 } );
         }
     }

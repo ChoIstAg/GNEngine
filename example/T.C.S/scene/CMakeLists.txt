@@ -1,5 +1,5 @@
 target_sources(GNEngine 
 PUBLIC
-    TestScene.cpp
+    InGame.cpp
     MainMenuScene.cpp
 )
