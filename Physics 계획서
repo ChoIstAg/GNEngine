@@ -39,10 +39,7 @@
        * 대상: include/GNEngine/CMakeLists.txt, src/GNEngine/CMakeLists.txt
        * 작업: target_sources()에 위에서 생성한 모든 파일(RigidBodyComponent.h, PhysicsSystem.h, PhysicsSystem.cpp, PhysicsManager.h, PhysicsManager.cpp)들을 추가하여 GNEngine 라이브러리에 포함시킵니다.
 
-   * 1-5. Box2D 라이브러리 연결
-       * 대상: CMakeLists.txt (최상위 또는 라이브러리 링크 담당 파일)
-       * 작업: find_package(Box2D REQUIRED)를 통해 라이브러리를 찾고, target_link_libraries()를 사용하여 GNEngine이 Box2D와 링크되도록 설정합니다. 이를 통해 Box2D의 함수들을 코드에서 사용할 수 있게 됩니다.
-
+    * CMakeLists에서 Box2D 링크 작업은 이미 끝냈습니다. 
   ---
 
   2단계: `RigidBodyComponent` 상세 구현
